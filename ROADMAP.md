@@ -9,13 +9,14 @@ This document outlines the planned direction for Phonix. Priorities may shift ba
 - ✅ Acurast provider — full deploy, messaging, and runtime adapter
 - ✅ Fluence provider — deploy via CLI shell-out, P2P messaging via `@fluencelabs/js-client`
 - ✅ Koii provider — deploy via CLI shell-out, HTTP task node messaging
+- ✅ **Akash Network provider** — containerised deployments via SDL + IPFS bundle distribution; HTTP lease messaging; `phonix auth akash` wizard
 - ✅ Provider-agnostic runtime bootstrap (`phonix.*` global injected at bundle time)
-- ✅ `phonix auth` — interactive credential wizard for all three providers
+- ✅ `phonix auth` — interactive credential wizard for all four providers
 - ✅ `phonix run-local` — local mock runtime with SSRF and DNS rebinding protection
 - ✅ Inference template — real OpenAI-compatible LLM inference in TEE
 - ✅ Oracle template — scheduled price feed with TEE-signed results
-- ✅ Security hardening — prototype pollution prevention, key validation, response caps
-- ✅ Full test suite — 71 tests across all providers and core modules
+- ✅ Security hardening — prototype pollution prevention, key validation, response caps, SDL path traversal guard
+- ✅ Full test suite — 104 tests across all providers and core modules
 
 ---
 
@@ -33,8 +34,8 @@ This document outlines the planned direction for Phonix. Priorities may shift ba
 ## v0.4 — Provider expansion
 
 - [ ] **Bacalhau** provider — distributed Docker/WASM compute jobs
-- [ ] **Akash** provider — containerised deployments on the Akash decentralised cloud
 - [ ] **Multi-provider deploy** — deploy to multiple providers simultaneously with a single command and unified status view
+- [ ] **Akash persistent leases** — auto-renew bids and monitor lease health with `phonix status`
 
 ---
 

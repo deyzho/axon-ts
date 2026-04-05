@@ -1,8 +1,8 @@
 # Phonix SDK
 
-**Build edge dApps once. Run them confidentially on millions of smartphones — no servers, no headaches.**
+**Build edge dApps once. Run them confidentially on decentralised compute networks — no servers, no headaches.**
 
-Phonix is the unified developer platform for building and deploying confidential edge applications across decentralised compute networks. It abstracts the complexity of multiple DePIN providers behind a single, consistent API — starting with [Acurast](https://acurast.com) (237k+ smartphone TEE nodes) and expanding to Fluence and Koii.
+Phonix is the unified developer platform for building and deploying confidential edge applications across decentralised compute networks. It abstracts the complexity of multiple DePIN providers behind a single, consistent API — supporting [Acurast](https://acurast.com) (237k+ smartphone TEE nodes), [Fluence](https://fluence.network), [Koii](https://koii.network), and [Akash Network](https://akash.network).
 
 > Phonix is to edge compute what Ethers.js is to EVM chains: **one interface, any provider**.
 
@@ -10,11 +10,12 @@ Phonix is the unified developer platform for building and deploying confidential
 
 ## Supported providers
 
-| Provider | Status | Nodes | Runtime |
-|---|---|---|---|
-| [Acurast](https://acurast.com) | ✅ Supported | 237k+ smartphones | nodejs, wasm |
-| [Fluence](https://fluence.network) | ✅ Supported | Decentralised cloud | nodejs |
-| [Koii](https://koii.network) | ✅ Supported | Community compute | nodejs |
+| Provider | Status | Nodes | Runtime | Token |
+|---|---|---|---|---|
+| [Acurast](https://acurast.com) | ✅ Supported | 237k+ smartphones (TEE) | nodejs, wasm | ACU |
+| [Fluence](https://fluence.network) | ✅ Supported | Decentralised serverless cloud | nodejs | FLT |
+| [Koii](https://koii.network) | ✅ Supported | Community compute task nodes | nodejs | KOII |
+| [Akash Network](https://akash.network) | ✅ Supported | Decentralised container marketplace | nodejs | AKT |
 
 ---
 
@@ -57,7 +58,7 @@ Runs your script in a local mock environment — simulates WebSocket messages, r
 phonix deploy
 ```
 
-Bundles your script, uploads it to IPFS, and registers the deployment on-chain.
+Bundles your script, uploads it to IPFS, and registers the deployment on-chain (or submits the SDL to Akash's marketplace).
 
 ```
 ✔ Deployment live!
@@ -74,7 +75,7 @@ Bundles your script, uploads it to IPFS, and registers the deployment on-chain.
 import { PhonixClient } from '@phonix/sdk';
 
 const client = new PhonixClient({
-  provider: 'acurast',
+  provider: 'acurast', // 'acurast' | 'fluence' | 'koii' | 'akash'
   secretKey: process.env.PHONIX_SECRET_KEY,
 });
 
@@ -107,6 +108,8 @@ client.disconnect();
 | `phonix send <id> <msg>` | Send a test message to a processor node |
 | `phonix template list` | Show available built-in templates |
 
+Supported values for `[provider]`: `acurast`, `fluence`, `koii`, `akash`
+
 ---
 
 ## SDK reference
@@ -116,7 +119,7 @@ import { PhonixClient } from '@phonix/sdk';
 import type { DeploymentConfig } from '@phonix/sdk';
 
 const client = new PhonixClient({
-  provider: 'acurast',           // 'acurast' | 'fluence' | 'koii'
+  provider: 'akash',  // 'acurast' | 'fluence' | 'koii' | 'akash'
   secretKey: process.env.PHONIX_SECRET_KEY,
 });
 
@@ -127,22 +130,23 @@ const cost = await client.estimate({
   runtime: 'nodejs',
   code: './dist/index.js',
   schedule: { type: 'on-demand', durationMs: 86_400_000 },
-  replicas: 3,
+  replicas: 1,
 });
 console.log(`Estimated: ${cost.amount} ${cost.token}`);
+// e.g. "Estimated: 6000000000 AKT" (in uAKT)
 
 // Deploy
 const deployment = await client.deploy({
   runtime: 'nodejs',
   code: './dist/index.js',
   schedule: { type: 'on-demand', durationMs: 86_400_000 },
-  replicas: 3,
+  replicas: 1,
 });
 
 // List deployments
 const deployments = await client.listDeployments();
 
-// Send a message to a processor
+// Send a message to a processor / container
 await client.send(deployment.processorIds[0], { prompt: 'Hello' });
 
 // Receive results
@@ -152,6 +156,72 @@ const unsubscribe = client.onMessage((msg) => {
 
 client.disconnect();
 ```
+
+---
+
+## Provider setup
+
+### Acurast
+
+```bash
+phonix auth acurast
+```
+
+Requires a Polkadot-compatible wallet mnemonic (12 or 24 words) and an IPFS endpoint. Get a wallet at [console.acurast.com](https://console.acurast.com) and testnet tokens at [faucet.acurast.com](https://faucet.acurast.com).
+
+**Required `.env` keys:** `ACURAST_MNEMONIC`, `ACURAST_IPFS_URL`, `ACURAST_IPFS_API_KEY`
+
+---
+
+### Fluence
+
+```bash
+phonix auth fluence
+```
+
+Requires an EVM-compatible private key (hex). The wizard generates one automatically and prints the address so you can fund it.
+
+**Required `.env` keys:** `FLUENCE_PRIVATE_KEY`, `FLUENCE_RELAY_ADDR`, `FLUENCE_NETWORK`
+
+---
+
+### Koii
+
+```bash
+phonix auth koii
+```
+
+Requires a Solana-compatible keypair (base58). The wizard generates one automatically.
+
+**Required `.env` keys:** `KOII_PRIVATE_KEY`, `KOII_IPFS_URL`, `KOII_NETWORK`
+
+---
+
+### Akash Network
+
+```bash
+phonix auth akash
+```
+
+Requires a BIP-39 wallet mnemonic (12 or 24 words) and an IPFS endpoint. The wizard stores your mnemonic and configures the RPC node and chain ID automatically.
+
+**Required `.env` keys:** `AKASH_MNEMONIC`, `AKASH_IPFS_URL`
+
+**Optional `.env` keys:** `AKASH_IPFS_API_KEY`, `AKASH_NODE` (default: `https://rpc.akashnet.net:443`), `AKASH_CHAIN_ID` (default: `akashnet-2`), `AKASH_KEY_NAME` (default: `phonix`)
+
+**Prerequisite:** The `provider-services` CLI must be installed:
+```bash
+# Install Akash provider-services CLI
+curl https://raw.githubusercontent.com/akash-network/provider/main/script/install.sh | bash
+```
+Docs: [docs.akash.network/guides/cli/akash-provider-services](https://docs.akash.network/guides/cli/akash-provider-services)
+
+**How it works:**
+1. Your TypeScript entry file is bundled with esbuild
+2. The bundle is uploaded to IPFS — the CID is the immutable source of truth
+3. An Akash SDL (Stack Definition Language) is generated with `node:20-alpine`, the CID embedded as `BUNDLE_CID`, and your env vars
+4. `provider-services tx deployment create` submits the SDL to the Akash marketplace
+5. A winning provider bids and spins up the container, which fetches the bundle from IPFS at startup and runs it
 
 ---
 
@@ -170,15 +240,15 @@ client.disconnect();
 ```json
 {
   "projectName": "my-edge-app",
-  "provider": "acurast",
+  "provider": "akash",
   "runtime": "nodejs",
   "entryFile": "src/index.ts",
   "schedule": {
     "type": "on-demand",
     "durationMs": 86400000
   },
-  "replicas": 3,
-  "maxCostPerExecution": 1000000,
+  "replicas": 1,
+  "maxCostPerExecution": 10000,
   "environment": {
     "MY_VAR": "my-value"
   },
@@ -189,14 +259,14 @@ client.disconnect();
 | Field | Type | Description |
 |---|---|---|
 | `projectName` | `string` | Human-readable project name |
-| `provider` | `acurast \| fluence \| koii` | Target compute provider |
+| `provider` | `acurast \| fluence \| koii \| akash` | Target compute provider |
 | `runtime` | `nodejs \| python \| docker \| wasm` | Execution runtime |
 | `entryFile` | `string` | Path to your script entry point |
 | `schedule.type` | `on-demand \| interval \| onetime` | When the script runs |
 | `schedule.intervalMs` | `number` | Milliseconds between runs (interval only) |
 | `schedule.durationMs` | `number` | Total deployment lifetime in ms |
-| `replicas` | `number` | Number of processor nodes |
-| `maxCostPerExecution` | `number` | Cost cap per run (in provider micro-units) |
+| `replicas` | `number` | Number of processor nodes / container replicas |
+| `maxCostPerExecution` | `number` | Cost cap per run (in provider micro-units: uACU, uAKT, etc.) |
 | `environment` | `object` | Key-value pairs injected into your script at bundle time |
 | `destinations` | `string[]` | On-chain addresses to push results to |
 
@@ -209,6 +279,14 @@ phonix/
 ├── packages/
 │   ├── cli/          # @phonix/cli — command-line tool
 │   └── sdk/          # @phonix/sdk — core library
+│       └── src/
+│           ├── providers/
+│           │   ├── acurast/  # Acurast provider
+│           │   ├── fluence/  # Fluence provider
+│           │   ├── koii/     # Koii provider
+│           │   └── akash/    # Akash Network provider
+│           └── runtime/
+│               └── adapters/ # Per-provider runtime bootstraps
 ├── templates/
 │   ├── inference/    # Confidential LLM inference
 │   └── oracle/       # Data oracle
@@ -222,7 +300,7 @@ phonix/
 
 ```bash
 # Clone
-git clone https://github.com/YOUR_USERNAME/phonix.git
+git clone https://github.com/deyzho/phonix.git
 cd phonix
 
 # Install dependencies
@@ -245,7 +323,7 @@ cd packages/sdk
 npx vitest run
 ```
 
-Tests cover config loading and validation, runtime bootstrap generation for all providers, provider client construction, cost estimation, message handler registration, and disconnect lifecycle.
+104 tests covering config loading and validation, runtime bootstrap generation for all four providers, provider client construction and SSRF protection, cost estimation, message handler registration, SDL generation (Akash), and disconnect lifecycle.
 
 ---
 
@@ -255,10 +333,11 @@ Phonix is designed to protect both developers and end users:
 
 - **Secrets never leave `.env`** — the auth wizard generates keys locally and stores them with `chmod 600`. They are never logged or transmitted.
 - **esbuild injection guard** — the deploy pipeline rejects any `environment` key that looks like a secret (`_KEY`, `_SECRET`, `_TOKEN`, `_MNEMONIC`, `_PASSWORD`) to prevent accidental bundle-time embedding of credentials.
-- **SSRF protection** — all HTTP calls (IPFS upload, Koii task nodes, mock runtime) validate URLs against a private-IP blocklist and enforce HTTPS.
+- **SSRF protection** — all HTTP calls (IPFS upload, Akash lease endpoints, Koii task nodes) validate URLs against a private-IP blocklist and enforce HTTPS.
 - **DNS rebinding defence** — the local mock runtime resolves hostnames to IPs via `dns.lookup()` before opening any TCP connection, then re-validates the resolved IP against the blocklist.
 - **Prototype pollution prevention** — remote JSON payloads are parsed with key blocklisting (`__proto__`, `constructor`, `prototype`) and `phonix.json` environment maps use `Object.create(null)`.
 - **Response size caps** — all provider clients enforce a 1 MiB cap on remote responses; the mock runtime enforces a 4 MiB cap on HTTP bodies.
+- **SDL path traversal guard** — Akash deploy validates that the entry file path cannot escape the project directory before bundling.
 
 ---
 
@@ -272,7 +351,7 @@ Pull requests are welcome. To get started:
 4. Open a pull request with a clear description
 
 High-impact areas:
-- Integration tests against Acurast testnet
+- Integration tests against Acurast testnet and Akash sandbox
 - Additional provider support (Bacalhau, Render Network)
 - Template marketplace
 
@@ -284,4 +363,4 @@ MIT — see [LICENSE](./LICENSE).
 
 ---
 
-*Phonix is not affiliated with Acurast, Fluence, or Koii. Provider names and trademarks belong to their respective owners.*
+*Phonix is not affiliated with Acurast, Fluence, Koii, or Akash Network. Provider names and trademarks belong to their respective owners.*

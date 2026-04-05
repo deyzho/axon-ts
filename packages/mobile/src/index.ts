@@ -51,5 +51,5 @@ export type { PhonixProviderProps } from './context.js';
 export { SecureKeyStorage } from './storage.js';
 
 // ─── Re-export shared types from the SDK so consumers only need one import ────
-export type { Message, Deployment, CostEstimate } from '@phonix/sdk';
-export { PhonixError } from '@phonix/sdk';
+export type { Message, Deployment, CostEstimate } from '@phonixsdk/sdk';
+export { PhonixError } from '@phonixsdk/sdk';

@@ -35,8 +35,8 @@
 
 import { MobilePhonixClient } from './client.js';
 import type { MobileProviderName } from './client.js';
-import type { Message } from '@phonix/sdk';
-import { PhonixError } from '@phonix/sdk';
+import type { Message } from '@phonixsdk/sdk';
+import { PhonixError } from '@phonixsdk/sdk';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 

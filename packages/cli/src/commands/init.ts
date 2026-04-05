@@ -12,8 +12,8 @@
 import { writeFile, copyFile, mkdir, access } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import { createRequire } from 'node:module';
-import { generateConfig, generateP256KeyPair } from '@phonix/sdk';
-import type { ProviderName, RuntimeType } from '@phonix/sdk';
+import { generateConfig, generateP256KeyPair } from '@phonixsdk/sdk';
+import type { ProviderName, RuntimeType } from '@phonixsdk/sdk';
 
 // ─── Lazy imports for ESM-only packages ──────────────────────────────────────
 

@@ -72,7 +72,7 @@ Bundles your script, uploads it to IPFS, and registers the deployment on-chain (
 ### 6. Call from your dApp
 
 ```typescript
-import { PhonixClient } from '@phonix/sdk';
+import { PhonixClient } from '@phonixsdk/sdk';
 
 const client = new PhonixClient({
   provider: 'acurast', // 'acurast' | 'fluence' | 'koii' | 'akash'
@@ -115,8 +115,8 @@ Supported values for `[provider]`: `acurast`, `fluence`, `koii`, `akash`
 ## SDK reference
 
 ```typescript
-import { PhonixClient } from '@phonix/sdk';
-import type { DeploymentConfig } from '@phonix/sdk';
+import { PhonixClient } from '@phonixsdk/sdk';
+import type { DeploymentConfig } from '@phonixsdk/sdk';
 
 const client = new PhonixClient({
   provider: 'akash',  // 'acurast' | 'fluence' | 'koii' | 'akash'
@@ -164,7 +164,7 @@ client.disconnect();
 `PhonixRouter` routes requests across multiple DePIN providers simultaneously, picking the best one on every call based on real-time health data.
 
 ```typescript
-import { PhonixRouter } from '@phonix/sdk';
+import { PhonixRouter } from '@phonixsdk/sdk';
 
 const router = new PhonixRouter({
   providers: ['akash', 'acurast'],
@@ -480,7 +480,7 @@ Docs: [docs.akash.network/guides/cli/akash-provider-services](https://docs.akash
 phonix/
 ├── packages/
 │   ├── cli/          # @phonix/cli — command-line tool
-│   └── sdk/          # @phonix/sdk — core library
+│   └── sdk/          # @phonixsdk/sdk — core library
 │       └── src/
 │           ├── providers/
 │           │   ├── acurast/  # Acurast provider

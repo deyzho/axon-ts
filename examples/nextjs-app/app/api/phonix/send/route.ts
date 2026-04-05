@@ -10,7 +10,7 @@
  * Response body:         { result?: string; error?: string }
  */
 
-import { PhonixClient } from '@phonix/sdk';
+import { PhonixClient } from '@phonixsdk/sdk';
 import { NextResponse } from 'next/server';
 
 export const runtime = 'nodejs';

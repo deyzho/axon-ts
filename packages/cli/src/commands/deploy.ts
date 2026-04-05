@@ -5,8 +5,8 @@
  * and prints a friendly success message.
  */
 
-import { loadConfig, PhonixClient } from '@phonix/sdk';
-import type { DeploymentConfig } from '@phonix/sdk';
+import { loadConfig, PhonixClient } from '@phonixsdk/sdk';
+import type { DeploymentConfig } from '@phonixsdk/sdk';
 import { config as loadDotenv } from '../utils/env.js';
 
 async function getChalk() {

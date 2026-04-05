@@ -77,7 +77,7 @@ The template targets the OpenAI-compatible `/v1/chat/completions` endpoint:
 ### From a Node.js / Next.js backend
 
 ```typescript
-import { PhonixClient } from '@phonix/sdk';
+import { PhonixClient } from '@phonixsdk/sdk';
 
 const client = new PhonixClient({
   provider: 'acurast',

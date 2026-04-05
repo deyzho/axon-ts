@@ -5,12 +5,12 @@
  * Reference this in your deployment script's tsconfig.json:
  *   {
  *     "compilerOptions": {
- *       "types": ["@phonix/sdk/runtime/global"]
+ *       "types": ["@phonixsdk/sdk/runtime/global"]
  *     }
  *   }
  *
  * Or add a triple-slash reference at the top of your script:
- *   /// <reference types="@phonix/sdk/dist/runtime/global" />
+ *   /// <reference types="@phonixsdk/sdk/dist/runtime/global" />
  */
 
 import type { IPhonixRuntime } from './types.js';

@@ -1,5 +1,5 @@
 {
-  "name": "@phonix/sdk",
+  "name": "@phonixsdk/sdk",
   "version": "0.2.0",
   "description": "Provider-abstracted SDK for deploying and calling confidential edge applications across DePIN compute networks (Acurast, Akash, Fluence, Koii).",
   "type": "module",

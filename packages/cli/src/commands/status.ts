@@ -4,9 +4,9 @@
  * Prints a table of deployments with ID, status, processor pubkeys, and URL.
  */
 
-import { loadConfig, PhonixClient } from '@phonix/sdk';
+import { loadConfig, PhonixClient } from '@phonixsdk/sdk';
 import { config as loadDotenv } from '../utils/env.js';
-import type { Deployment } from '@phonix/sdk';
+import type { Deployment } from '@phonixsdk/sdk';
 
 async function getChalk() {
   const mod = await import('chalk');

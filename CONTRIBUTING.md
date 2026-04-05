@@ -29,7 +29,7 @@ cd packages/mobile && npx vitest run
 ```
 phonix/
 ├── packages/
-│   ├── sdk/          # @phonix/sdk — core TypeScript library
+│   ├── sdk/          # @phonixsdk/sdk — core TypeScript library
 │   │   └── src/
 │   │       ├── providers/
 │   │       │   ├── acurast/   # Acurast TEE smartphone network

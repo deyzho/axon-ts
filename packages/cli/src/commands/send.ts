@@ -2,7 +2,7 @@
  * phonix send <pubkey> <message> — send a test message to a processor.
  */
 
-import { loadConfig, PhonixClient } from '@phonix/sdk';
+import { loadConfig, PhonixClient } from '@phonixsdk/sdk';
 import { config as loadDotenv } from '../utils/env.js';
 
 async function getChalk() {

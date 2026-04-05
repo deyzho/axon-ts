@@ -60,4 +60,4 @@ This document outlines the planned direction for Phonix. Priorities may shift ba
 
 ## Versioning policy
 
-Phonix follows [Semantic Versioning](https://semver.org). The public API is the `PhonixClient` interface in `@phonix/sdk` and the `phonix` CLI commands. Breaking changes to either will increment the major version.
+Phonix follows [Semantic Versioning](https://semver.org). The public API is the `PhonixClient` interface in `@phonixsdk/sdk` and the `phonix` CLI commands. Breaking changes to either will increment the major version.

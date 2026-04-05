@@ -66,7 +66,7 @@ Browser (React)
     │
 Next.js API Route (server-side only)
     │
-    │  PhonixClient from '@phonix/sdk'
+    │  PhonixClient from '@phonixsdk/sdk'
     │
     ├── Acurast: wss://ws-1.acurast.com  →  Smartphone TEE
     │
@@ -81,7 +81,7 @@ The browser never sees `PHONIX_SECRET_KEY`. All provider calls happen in the API
 
 ```typescript
 // app/api/phonix/send/route.ts
-import { PhonixClient } from '@phonix/sdk';
+import { PhonixClient } from '@phonixsdk/sdk';
 import { NextResponse } from 'next/server';
 
 export async function POST(req: Request) {
@@ -123,7 +123,7 @@ export async function POST(req: Request) {
 
 ```typescript
 // app/api/phonix/send/route.ts  (Akash variant)
-import { PhonixClient } from '@phonix/sdk';
+import { PhonixClient } from '@phonixsdk/sdk';
 import { NextResponse } from 'next/server';
 
 export async function POST(req: Request) {

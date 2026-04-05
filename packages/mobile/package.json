@@ -12,7 +12,7 @@
     "clean": "echo 'source-only package — nothing to clean'"
   },
   "dependencies": {
-    "@phonix/sdk": "*"
+    "@phonixsdk/sdk": "*"
   },
   "peerDependencies": {
     "react": ">=18.0.0",

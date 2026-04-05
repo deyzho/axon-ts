@@ -84,7 +84,7 @@ See the [Acurast Consumer documentation](https://docs.acurast.com/developers/sub
 ### From a Node.js / Next.js backend
 
 ```typescript
-import { PhonixClient } from '@phonix/sdk';
+import { PhonixClient } from '@phonixsdk/sdk';
 
 const client = new PhonixClient({
   provider: 'acurast',

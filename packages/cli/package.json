@@ -14,7 +14,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@phonix/sdk": "*",
+    "@phonixsdk/sdk": "*",
     "commander": "^12.0.0",
     "inquirer": "^8.2.6",
     "chalk": "^5.0.0",

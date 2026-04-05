@@ -4,7 +4,7 @@
  * Phonix Next.js Example — Confidential Inference dApp
  *
  * The private key (PHONIX_SECRET_KEY) is held exclusively by the server.
- * This component never imports @phonix/sdk — it only calls the server-side
+ * This component never imports @phonixsdk/sdk — it only calls the server-side
  * API route at /api/phonix/send, which relays the message and returns the result.
  *
  * Setup:

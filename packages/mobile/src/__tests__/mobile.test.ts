@@ -9,7 +9,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { MobilePhonixClient } from '../client.js';
 import { SecureKeyStorage } from '../storage.js';
-import { PhonixError } from '@phonix/sdk';
+import { PhonixError } from '@phonixsdk/sdk';
 
 // ─── Mock react-native ────────────────────────────────────────────────────────
 

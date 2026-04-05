@@ -421,7 +421,7 @@
           <div class="step-num">4</div>
           <div class="step-content">
             <h4>Deploy and call</h4>
-            <p>One command bundles, uploads to IPFS, and registers on-chain. Then call from any JavaScript environment with <code style="color:var(--accent);font-size:.85em">@phonix/sdk</code>.</p>
+            <p>One command bundles, uploads to IPFS, and registers on-chain. Then call from any JavaScript environment with <code style="color:var(--accent);font-size:.85em">@phonixsdk/sdk</code>.</p>
           </div>
         </div>
       </div>
@@ -436,7 +436,7 @@
             your-app/index.ts
           </div>
           <pre><span class="cm">// Deploy once — run on edge nodes</span>
-<span class="kw">import</span> { <span class="obj">PhonixClient</span> } <span class="kw">from</span> <span class="str">'@phonix/sdk'</span>;
+<span class="kw">import</span> { <span class="obj">PhonixClient</span> } <span class="kw">from</span> <span class="str">'@phonixsdk/sdk'</span>;
 
 <span class="kw">const</span> client = <span class="kw">new</span> <span class="fn">PhonixClient</span>({
   provider: <span class="str">'acurast'</span>,
@@ -647,7 +647,7 @@ client.<span class="fn">disconnect</span>();</pre>
       </div>
       <div>
         <pre class="code-block" style="font-size:0.78rem;"><code><span style="color:#64748b">// Server SDK</span>
-<span style="color:#fb923c">import</span> { PhonixRouter } <span style="color:#fb923c">from</span> <span style="color:#86efac">'@phonix/sdk'</span>;
+<span style="color:#fb923c">import</span> { PhonixRouter } <span style="color:#fb923c">from</span> <span style="color:#86efac">'@phonixsdk/sdk'</span>;
 
 <span style="color:#fb923c">const</span> router = <span style="color:#fb923c">new</span> <span style="color:#38bdf8">PhonixRouter</span>({
   providers: [<span style="color:#86efac">'akash'</span>, <span style="color:#86efac">'acurast'</span>],

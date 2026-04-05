@@ -1,6 +1,6 @@
 # Phonix Inference Template
 
-Confidential LLM inference running privately inside a Trusted Execution Environment (TEE) on Acurast smartphone nodes.
+Confidential LLM inference running privately inside a Trusted Execution Environment (TEE) on Acurast smartphone nodes — callable from any JavaScript app, Next.js backend, or iOS/Android app.
 
 ## What this does
 
@@ -12,7 +12,7 @@ Confidential LLM inference running privately inside a Trusted Execution Environm
 ## Quick deploy
 
 ```bash
-# 1. Initialise credentials (if you haven't already)
+# 1. Set up Acurast credentials (one-time)
 phonix auth acurast
 
 # 2. Set your inference endpoint in .env
@@ -26,7 +26,7 @@ phonix run-local
 # 4. Deploy
 phonix deploy
 
-# 5. Send a prompt
+# 5. Note the processor ID(s) from the output, then send a prompt
 phonix send <processorId> '{"prompt":"Summarize: The quick brown fox...","requestId":"1"}'
 ```
 
@@ -38,7 +38,7 @@ phonix send <processorId> '{"prompt":"Summarize: The quick brown fox...","reques
 | `INFERENCE_API_KEY` | *(empty)* | API key — leave empty for local Ollama |
 | `INFERENCE_MODEL` | `llama3` | Model name to use |
 
-Set these in `phonix.json` under `environment` (injected at bundle time):
+Set non-secret values in `phonix.json` under `environment` (injected at bundle time):
 
 ```json
 {
@@ -57,20 +57,24 @@ Set these in `phonix.json` under `environment` (injected at bundle time):
 |---|---|---|
 | `replicas` | 3 | Number of processor nodes |
 | `schedule.durationMs` | 86400000 | Deployment lifetime (24h) |
-| `maxCostPerExecution` | 1000000 | Max cost in microACU |
+| `maxCostPerExecution` | 1000000 | Max cost per run in microACU |
 
 ## Supported inference backends
 
-The template targets the OpenAI-compatible `/v1/chat/completions` endpoint, which works with:
+The template targets the OpenAI-compatible `/v1/chat/completions` endpoint:
 
 | Backend | URL |
 |---|---|
-| [Ollama](https://ollama.com) | `http://localhost:11434` (use ngrok/cloudflared for HTTPS) |
+| [Ollama](https://ollama.com) | `http://localhost:11434` (expose via ngrok/cloudflared for HTTPS) |
 | [OpenAI](https://platform.openai.com) | `https://api.openai.com` |
 | [vLLM](https://github.com/vllm-project/vllm) | `https://your-vllm-server` |
 | Any OpenAI-compatible API | `https://your-endpoint` |
 
-## Calling from your dApp
+---
+
+## Calling from your app
+
+### From a Node.js / Next.js backend
 
 ```typescript
 import { PhonixClient } from '@phonix/sdk';
@@ -94,12 +98,49 @@ client.onMessage((msg) => {
 // Get processor IDs from `phonix status`
 await client.send('0xproc...', {
   requestId: 'req-001',
-  model: 'llama3',        // optional — overrides INFERENCE_MODEL
+  model: 'llama3',        // optional — overrides INFERENCE_MODEL env var
   prompt: 'Summarize: The quick brown fox...',
 });
 
 client.disconnect();
 ```
+
+### From an iOS or Android app (React Native / Expo)
+
+```tsx
+import { usePhonix, useMessages, useSend } from '@phonix/mobile';
+
+export function InferenceScreen() {
+  const { client, connected, connect } = usePhonix({
+    provider: 'acurast',
+    secretKey: PHONIX_SECRET_KEY,
+  });
+  const messages = useMessages(client);
+  const { send, sending } = useSend(client);
+
+  return (
+    <View>
+      <Button title="Connect" onPress={connect} disabled={connected} />
+      <Button
+        title={sending ? 'Thinking...' : 'Run inference'}
+        disabled={!connected || sending}
+        onPress={() =>
+          send('0xproc...', {
+            requestId: crypto.randomUUID(),
+            prompt: 'Summarize: The quick brown fox...',
+          })
+        }
+      />
+      {messages.map((m, i) => {
+        const p = m.payload as { result?: string; error?: string };
+        return <Text key={i}>{p.result ?? p.error}</Text>;
+      })}
+    </View>
+  );
+}
+```
+
+---
 
 ## Message format
 
@@ -115,5 +156,5 @@ client.disconnect();
 
 **Error response**:
 ```json
-{ "requestId": "req-001", "error": "LLM API error: ..." }
+{ "requestId": "req-001", "error": "LLM API error: rate limit exceeded" }
 ```

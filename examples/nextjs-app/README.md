@@ -1,28 +1,49 @@
-# Phonix Next.js Example
+# Phonix × Next.js Example
 
-A minimal Next.js app demonstrating how to use `@phonix/sdk` to call a confidential inference endpoint running on Acurast smartphone nodes.
+A minimal Next.js App Router example showing how to call a Phonix edge processor from a web application — keeping your secret key server-side and streaming results to the browser.
+
+## What this demonstrates
+
+- Calling a deployed Acurast or Akash processor from a Next.js API Route
+- Keeping `PHONIX_SECRET_KEY` server-side (never exposed to the browser)
+- Returning inference results to the client over a standard JSON response
+- Switching providers with a single config change
+
+---
 
 ## Setup
 
-### 1. Deploy the inference template
+### 1. Deploy a processor
+
+Deploy the inference template to your chosen provider:
 
 ```bash
+# Acurast (TEE smartphones)
 cd ../../templates/inference
-phonix auth acurast   # one-time credential setup
+phonix auth acurast
 phonix deploy
-# Copy the processor ID from the output
+
+# — or — Akash (container marketplace)
+phonix auth akash
+# Edit phonix.json → "provider": "akash"
+phonix deploy
 ```
+
+Copy the processor ID (Acurast) or lease URL (Akash) from the output.
 
 ### 2. Configure environment variables
 
 Create `.env.local` in this directory:
 
 ```bash
-# Your P256 private key — keep this server-side in production
+# Your Phonix secret key — keep this server-side only
 PHONIX_SECRET_KEY=your_secret_key_hex
 
-# Processor ID from `phonix deploy` or `phonix status`
+# For Acurast: processor public key from `phonix status`
 PROCESSOR_ID=0xabc...your_processor_id
+
+# For Akash: full lease URL from `phonix status`
+# PROCESSOR_ID=https://provider.akash.network:31234
 ```
 
 ### 3. Install and run
@@ -34,40 +55,37 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
+---
+
 ## Architecture
 
 ```
-Browser (Next.js)
+Browser (React)
+    │
+    │  POST /api/phonix/send
+    │
+Next.js API Route (server-side only)
     │
     │  PhonixClient from '@phonix/sdk'
     │
-    ├── connect(secretKey)
-    │      ↓
-    │   wss://ws-1.ws-server-1.acurast.com  (Acurast relay)
-    │      ↓
-    │   Processor (smartphone TEE)
+    ├── Acurast: wss://ws-1.acurast.com  →  Smartphone TEE
     │
-    ├── send(processorId, { prompt })
-    │      ↓
-    │   TEE runs inference privately
-    │      ↓
-    └── onMessage((msg) => display result)
+    └── Akash:   https://provider.akash.network:31234/message  →  Container
 ```
 
-## Security notes
+The browser never sees `PHONIX_SECRET_KEY`. All provider calls happen in the API Route.
 
-- In this example the secret key is server-side (API route / Server Component). Keep it there — never expose it to the browser.
-- For production, use a Next.js API Route or Server Action to proxy calls through your backend.
+---
 
-## Using the SDK in your own Next.js project
+## API Route — Acurast
 
 ```typescript
-// app/api/phonix/send/route.ts  (Next.js App Router)
+// app/api/phonix/send/route.ts
 import { PhonixClient } from '@phonix/sdk';
 import { NextResponse } from 'next/server';
 
 export async function POST(req: Request) {
-  const { prompt } = await req.json();
+  const { prompt } = await req.json() as { prompt: string };
 
   const client = new PhonixClient({
     provider: 'acurast',
@@ -76,21 +94,140 @@ export async function POST(req: Request) {
 
   await client.connect();
 
-  let result: string | null = null;
+  const result = await new Promise<string>((resolve, reject) => {
+    const requestId = crypto.randomUUID();
+    const timeout = setTimeout(() => {
+      unsubscribe();
+      client.disconnect();
+      reject(new Error('Processor timed out'));
+    }, 30_000);
 
-  const unsubscribe = client.onMessage((msg) => {
-    const payload = msg.payload as { result?: string };
-    result = payload.result ?? null;
+    const unsubscribe = client.onMessage((msg) => {
+      const payload = msg.payload as { requestId?: string; result?: string };
+      if (payload.requestId === requestId && payload.result !== undefined) {
+        clearTimeout(timeout);
+        unsubscribe();
+        client.disconnect();
+        resolve(payload.result);
+      }
+    });
+
+    client.send(process.env.PROCESSOR_ID!, { requestId, prompt }).catch(reject);
   });
 
-  await client.send(process.env.PROCESSOR_ID!, { requestId: crypto.randomUUID(), prompt });
+  return NextResponse.json({ result });
+}
+```
 
-  // Allow time for the response to arrive
-  await new Promise((r) => setTimeout(r, 5_000));
+## API Route — Akash
+
+```typescript
+// app/api/phonix/send/route.ts  (Akash variant)
+import { PhonixClient } from '@phonix/sdk';
+import { NextResponse } from 'next/server';
+
+export async function POST(req: Request) {
+  const { prompt } = await req.json() as { prompt: string };
+
+  const client = new PhonixClient({
+    provider: 'akash',
+    secretKey: process.env.PHONIX_SECRET_KEY,
+  });
+
+  await client.connect();
+
+  let result: string | null = null;
+  const unsubscribe = client.onMessage((msg) => {
+    result = typeof msg.payload === 'string'
+      ? msg.payload
+      : JSON.stringify(msg.payload);
+  });
+
+  // Akash uses synchronous HTTP — send returns after the container responds
+  await client.send(process.env.PROCESSOR_ID!, { prompt });
 
   unsubscribe();
   client.disconnect();
 
   return NextResponse.json({ result });
 }
+```
+
+## React component
+
+```tsx
+// app/page.tsx
+'use client';
+import { useState } from 'react';
+
+export default function Page() {
+  const [prompt, setPrompt] = useState('');
+  const [result, setResult] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  async function submit() {
+    setLoading(true);
+    setResult('');
+    const res = await fetch('/api/phonix/send', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt }),
+    });
+    const data = await res.json() as { result: string };
+    setResult(data.result);
+    setLoading(false);
+  }
+
+  return (
+    <main style={{ maxWidth: 600, margin: '4rem auto', padding: '0 1rem' }}>
+      <h1>Phonix Inference</h1>
+      <textarea
+        value={prompt}
+        onChange={(e) => setPrompt(e.target.value)}
+        placeholder="Enter your prompt..."
+        rows={4}
+        style={{ width: '100%', marginBottom: '1rem' }}
+      />
+      <button onClick={submit} disabled={loading || !prompt}>
+        {loading ? 'Processing...' : 'Run'}
+      </button>
+      {result && (
+        <pre style={{ marginTop: '1.5rem', whiteSpace: 'pre-wrap' }}>{result}</pre>
+      )}
+    </main>
+  );
+}
+```
+
+---
+
+## Switching providers
+
+Change a single line in your API Route:
+
+```typescript
+const client = new PhonixClient({
+  provider: 'akash',   // 'acurast' | 'fluence' | 'koii' | 'akash'
+  secretKey: process.env.PHONIX_SECRET_KEY,
+});
+```
+
+Then update `PROCESSOR_ID` in `.env.local` to the corresponding endpoint for the new provider.
+
+---
+
+## Security notes
+
+- **Never expose `PHONIX_SECRET_KEY` to the browser** — keep all `PhonixClient` usage in API Routes, Server Components, or Server Actions
+- The API Route validates that `prompt` is a string before forwarding it to the processor
+- For production, add rate limiting (e.g. [Upstash Rate Limit](https://github.com/upstash/ratelimit)) to the `/api/phonix/send` route
+
+---
+
+## Want to call processors from mobile?
+
+Use [`@phonix/mobile`](../../packages/mobile/) for React Native / Expo apps. It provides the same messaging API with React hooks, iOS Keychain / Android Keystore secure storage, and AppState lifecycle management.
+
+```bash
+npm install @phonix/mobile
 ```

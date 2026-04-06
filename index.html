@@ -323,6 +323,15 @@
     }
     .status-pill .dot { width: 7px; height: 7px; border-radius: 50%; background: #22c55e; }
 
+    /* ── Inference demo stage buttons ───────────────────── */
+    .inf-stage-btn {
+      font-size: 0.72rem; font-weight: 700; cursor: pointer;
+      color: var(--muted); transition: color .2s;
+      font-family: 'JetBrains Mono', 'SF Mono', monospace;
+      user-select: none;
+    }
+    .inf-stage-btn.active { color: var(--accent); }
+
     /* ── Responsive nav ───────────────────────────────────── */
     @media (max-width: 600px) {
       .nav-links { display: none; }
@@ -405,40 +414,40 @@
           <a class="btn-secondary" href="https://www.npmjs.com/package/@phonixsdk/inference" target="_blank" style="font-size:0.9rem;padding:0.6rem 1.4rem;">View on npm →</a>
         </div>
       </div>
-      <div>
-        <div class="code-block">
+      <!-- ── Inference animated demo ── -->
+      <div id="inf-demo-wrap">
+        <!-- Stage indicator -->
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.6rem;">
+          <div style="display:flex;gap:0.5rem;align-items:center;" id="inf-stages">
+            <span class="inf-stage-btn active" data-stage="0">① Before</span>
+            <span style="color:var(--border);">›</span>
+            <span class="inf-stage-btn" data-stage="1">② Swap</span>
+            <span style="color:var(--border);">›</span>
+            <span class="inf-stage-btn" data-stage="2">③ Live</span>
+          </div>
+          <button id="inf-restart-btn" onclick="infRestart()" style="background:none;border:1px solid var(--border);color:var(--muted);border-radius:4px;padding:0.15rem 0.5rem;font-size:0.7rem;cursor:pointer;font-family:inherit;">↺ replay</button>
+        </div>
+
+        <!-- Code window -->
+        <div class="code-block" id="inf-code-block">
           <div class="code-header">
             <div class="code-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div>
-            <span style="color:#ef4444;font-size:0.75rem;margin-left:0.5rem;">Before — OpenAI</span>
+            <span id="inf-file-label" style="font-size:0.75rem;color:var(--muted);margin-left:0.5rem;">my-app/index.ts</span>
+            <span id="inf-status-badge" style="margin-left:auto;font-size:0.7rem;font-weight:700;padding:0.15rem 0.55rem;border-radius:100px;background:rgba(239,68,68,.12);color:#ef4444;border:1px solid rgba(239,68,68,.2);">OpenAI</span>
           </div>
-          <pre style="padding:1rem;font-family:'SF Mono','Fira Code',monospace;font-size:0.82rem;line-height:1.65;color:#c9d1d9;"><span style="color:#6272a4">// Expensive. Centralised. No control.</span>
-<span class="kw">import</span> <span class="obj">OpenAI</span> <span class="kw">from</span> <span class="str">'openai'</span>;
-
-<span class="kw">const</span> client = <span class="kw">new</span> <span class="fn">OpenAI</span>({
-  apiKey: process.env.<span class="obj">OPENAI_API_KEY</span>,
-});</pre>
+          <div id="inf-code-body" style="padding:1rem 1.25rem;font-family:'JetBrains Mono','SF Mono','Fira Code',monospace;font-size:0.82rem;line-height:1.75;min-height:200px;"></div>
         </div>
-        <div class="code-block" style="margin-top:0.75rem;border-color:rgba(249,115,22,.35);">
+
+        <!-- Response window (hidden until Act 3) -->
+        <div class="code-block" id="inf-response-block" style="margin-top:0.6rem;display:none;border-color:rgba(249,115,22,.3);">
           <div class="code-header">
             <div class="code-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div>
-            <span style="color:#22c55e;font-size:0.75rem;margin-left:0.5rem;">After — Phonix (2 lines changed)</span>
+            <span style="font-size:0.75rem;color:#22c55e;margin-left:0.5rem;">▶ streaming response</span>
           </div>
-          <pre style="padding:1rem;font-family:'SF Mono','Fira Code',monospace;font-size:0.82rem;line-height:1.65;color:#c9d1d9;"><span style="color:#6272a4">// Decentralised GPU. Private. Cheaper.</span>
-<span class="kw">import</span> <span class="obj">OpenAI</span> <span class="kw">from</span> <span class="str">'openai'</span>;
-
-<span class="kw">const</span> client = <span class="kw">new</span> <span class="fn">OpenAI</span>({
-  baseURL: <span class="str">'https://&lt;your-app&gt;.vercel.app/v1'</span>, <span style="color:#6272a4">// ← your deployed handler</span>
-  apiKey:  process.env.<span class="obj">PHONIX_SECRET_KEY</span>,           <span style="color:#6272a4">// ← new</span>
-});
-
-<span style="color:#6272a4">// Everything else is identical ↓</span>
-<span class="kw">const</span> res = <span class="kw">await</span> client.chat.completions.<span class="fn">create</span>({
-  model:    <span class="str">'phonix-llama-3-70b'</span>,
-  messages: [{ role: <span class="str">'user'</span>, content: prompt }],
-  stream:   <span class="kw">true</span>,
-});</pre>
-          <p style="font-size:0.78rem;color:var(--muted);margin:0.6rem 1rem 1rem;">→ Deploy the handler with <code style="color:var(--accent)">@phonixsdk/inference</code> — <a href="#demo">see setup guide ↓</a></p>
+          <div id="inf-response-body" style="padding:1rem 1.25rem;font-family:'JetBrains Mono','SF Mono','Fira Code',monospace;font-size:0.82rem;line-height:1.75;min-height:80px;"></div>
         </div>
+
+        <p style="font-size:0.78rem;color:var(--muted);margin-top:0.6rem;">→ Deploy the handler with <code style="color:var(--accent)">@phonixsdk/inference</code> — <a href="#demo">see setup guide ↓</a></p>
       </div>
     </div>
   </div>
@@ -1056,6 +1065,273 @@ router.health().forEach(h =&gt; {
 </footer>
 
 <script>
+  /* ── Inference animated demo ───────────────────────────────────────────── */
+  (function() {
+    const IC = { kw:'#ff79c6', str:'#f1fa8c', obj:'#8be9fd', fn:'#50fa7b', cm:'#6272a4', txt:'#c9d1d9', acc:'#f97316', grn:'#22c55e', red:'#ef4444', mut:'#64748b', cyn:'#38bdf8', pur:'#bd93f9' };
+
+    function hl(color, text) { return `<span style="color:${color}">${text}</span>`; }
+
+    // ── Code snapshots ──────────────────────────────────────────────────────
+
+    const ACT1_LINES = [
+      hl(IC.cm,  '// Your existing OpenAI integration'),
+      hl(IC.kw,  'import') + ' ' + hl(IC.obj,'OpenAI') + ' ' + hl(IC.kw,'from') + ' ' + hl(IC.str,"'openai'") + ';',
+      '',
+      hl(IC.kw,  'const') + ' client = ' + hl(IC.kw,'new') + ' ' + hl(IC.fn,'OpenAI') + '({',
+      '  apiKey: process.env.' + hl(IC.obj,'OPENAI_API_KEY') + ',',
+      '});',
+      '',
+      hl(IC.kw,  'const') + ' res = ' + hl(IC.kw,'await') + ' client.chat.completions.' + hl(IC.fn,'create') + '({',
+      '  model:    ' + hl(IC.str,"'gpt-4o'") + ',',
+      '  messages: [{ role: ' + hl(IC.str,"'user'") + ', content: prompt }],',
+      '  stream:   ' + hl(IC.kw,'true') + ',',
+      '});',
+    ];
+
+    // Act 2 — same code but lines 4-5 get replaced (diff animation)
+    const ACT2_BEFORE_SWAP = [
+      hl(IC.cm,  '// Two lines. That\'s the entire migration.'),
+      hl(IC.kw,  'import') + ' ' + hl(IC.obj,'OpenAI') + ' ' + hl(IC.kw,'from') + ' ' + hl(IC.str,"'openai'") + ';',
+      '',
+      hl(IC.kw,  'const') + ' client = ' + hl(IC.kw,'new') + ' ' + hl(IC.fn,'OpenAI') + '({',
+      // lines 4-5 will animate
+      null, // placeholder — baseURL typed in
+      null, // placeholder — apiKey typed in
+      '});',
+      '',
+      hl(IC.kw,  'const') + ' res = ' + hl(IC.kw,'await') + ' client.chat.completions.' + hl(IC.fn,'create') + '({',
+      '  model:    ' + hl(IC.str,"'phonix-llama-3-70b'") + ',',
+      '  messages: [{ role: ' + hl(IC.str,"'user'") + ', content: prompt }],',
+      '  stream:   ' + hl(IC.kw,'true') + ',',
+      '});',
+    ];
+
+    const SWAP_LINE_BASE_URL  = '  baseURL: ' + hl(IC.str,"'https://\\u003cyour-app\\u003e.vercel.app/v1'") + ', ' + hl(IC.cm,'// ← your handler');
+    const SWAP_LINE_API_KEY   = '  apiKey:  process.env.' + hl(IC.obj,'PHONIX_SECRET_KEY') + ',         ' + hl(IC.cm,'// ← new');
+
+    const STREAM_TOKENS = [
+      'Edge AI ', 'routes ', 'your ', 'inference ', 'requests ',
+      'to the ', 'fastest,\n  cheapest ', 'decentralised ', 'GPU —\n  ',
+      'automatically. ', 'Zero ', 'code ', 'changes\n  to ', 'your ',
+      'existing ', 'OpenAI ', 'integration.',
+    ];
+
+    // ── Helpers ─────────────────────────────────────────────────────────────
+
+    let infTimer = null;
+    let infStage = 0;
+
+    function setStage(n) {
+      infStage = n;
+      document.querySelectorAll('.inf-stage-btn').forEach((b, i) => {
+        b.classList.toggle('active', i === n);
+      });
+    }
+
+    function setBadge(text, color, bg, border) {
+      const b = document.getElementById('inf-status-badge');
+      if (!b) return;
+      b.textContent = text;
+      b.style.color = color;
+      b.style.background = bg;
+      b.style.borderColor = border;
+    }
+
+    function renderLines(lines) {
+      const body = document.getElementById('inf-code-body');
+      if (!body) return;
+      body.innerHTML = lines
+        .map(l => `<div style="white-space:pre;">${l === '' ? '&nbsp;' : (l || '&nbsp;')}</div>`)
+        .join('');
+    }
+
+    function delay(ms) { return new Promise(r => { infTimer = setTimeout(r, ms); }); }
+
+    function typeLineInto(containerEl, html_prefix, plain_suffix, color, speed) {
+      return new Promise(resolve => {
+        const lineEl = document.createElement('div');
+        lineEl.style.whiteSpace = 'pre';
+        lineEl.innerHTML = html_prefix;
+        const typed = document.createElement('span');
+        typed.style.color = color;
+        const cur = document.createElement('span');
+        cur.textContent = '▋';
+        cur.style.cssText = `color:${IC.acc};animation:termBlink 1s step-end infinite;`;
+        lineEl.appendChild(typed);
+        lineEl.appendChild(cur);
+        containerEl.appendChild(lineEl);
+
+        let i = 0;
+        function tick() {
+          if (i < plain_suffix.length) {
+            typed.textContent += plain_suffix[i++];
+            infTimer = setTimeout(tick, speed + (Math.random() * speed * 0.5 - speed * 0.25));
+          } else {
+            cur.remove();
+            infTimer = setTimeout(resolve, 80);
+          }
+        }
+        tick();
+      });
+    }
+
+    // ── Acts ─────────────────────────────────────────────────────────────────
+
+    async function act1() {
+      setStage(0);
+      setBadge('OpenAI', IC.red, 'rgba(239,68,68,.12)', 'rgba(239,68,68,.2)');
+      document.getElementById('inf-file-label').textContent = 'my-app/index.ts';
+      document.getElementById('inf-response-block').style.display = 'none';
+      document.getElementById('inf-code-block').style.borderColor = '';
+
+      renderLines(ACT1_LINES);
+      await delay(3200);
+    }
+
+    async function act2() {
+      setStage(1);
+      setBadge('2 lines', IC.acc, 'rgba(249,115,22,.12)', 'rgba(249,115,22,.2)');
+      document.getElementById('inf-code-block').style.borderColor = 'rgba(249,115,22,.4)';
+
+      // Render all lines except the two swap lines (null = blank placeholder)
+      const body = document.getElementById('inf-code-body');
+      body.innerHTML = '';
+
+      for (const line of ACT2_BEFORE_SWAP) {
+        if (line !== null) {
+          const d = document.createElement('div');
+          d.style.whiteSpace = 'pre';
+          d.innerHTML = line === '' ? '&nbsp;' : line;
+          body.appendChild(d);
+        } else {
+          // placeholder — will be filled by typeLineInto below
+          const d = document.createElement('div');
+          d.style.whiteSpace = 'pre';
+          d.innerHTML = '&nbsp;';
+          d.className = 'inf-swap-placeholder';
+          body.appendChild(d);
+        }
+      }
+
+      await delay(600);
+
+      // Animate the two swap lines into the placeholders
+      const placeholders = body.querySelectorAll('.inf-swap-placeholder');
+
+      // Remove placeholder 0, insert typed baseURL line
+      const ph0 = placeholders[0];
+      ph0.innerHTML = '';
+      await typeLineInto(ph0, '  baseURL: ', "https://<your-app>.vercel.app/v1', // ← your handler", IC.str, 34);
+      // Re-render as proper highlighted version
+      ph0.innerHTML = SWAP_LINE_BASE_URL;
+
+      await delay(200);
+
+      const ph1 = placeholders[1];
+      ph1.innerHTML = '';
+      await typeLineInto(ph1, '  apiKey:  process.env.', 'PHONIX_SECRET_KEY,         // ← new', IC.obj, 40);
+      ph1.innerHTML = SWAP_LINE_API_KEY;
+
+      await delay(2200);
+    }
+
+    async function act3() {
+      setStage(2);
+      setBadge('Phonix ✔', IC.grn, 'rgba(34,197,94,.12)', 'rgba(34,197,94,.2)');
+      document.getElementById('inf-file-label').textContent = 'streaming response';
+
+      // Collapse code block to show just the call
+      renderLines([
+        hl(IC.cm, '// Running — routed to io.net...'),
+        '',
+        hl(IC.kw,'const') + ' res = ' + hl(IC.kw,'await') + ' client.chat.completions.' + hl(IC.fn,'create') + '({',
+        '  model:    ' + hl(IC.str,"'phonix-llama-3-70b'") + ',',
+        '  messages: [{ role: ' + hl(IC.str,"'user'") + ', content: prompt }],',
+        '  stream:   ' + hl(IC.kw,'true') + ',',
+        '});',
+      ]);
+
+      // Show response block
+      const respBlock = document.getElementById('inf-response-block');
+      const respBody  = document.getElementById('inf-response-body');
+      respBlock.style.display = 'block';
+      respBody.innerHTML = '';
+
+      // Routing info lines
+      const meta = [
+        { text: '  X-Phonix-Provider: io.net · gpu-cluster-us-west-1', color: IC.mut },
+        { text: '  Latency: 138ms', color: IC.mut },
+        { text: '', color: IC.mut },
+      ];
+      for (const m of meta) {
+        const d = document.createElement('div');
+        d.style.cssText = `white-space:pre;color:${m.color};`;
+        d.textContent = m.text || ' ';
+        respBody.appendChild(d);
+        await delay(120);
+      }
+
+      // Token streaming
+      const streamLine = document.createElement('div');
+      streamLine.style.cssText = `white-space:pre-wrap;color:${IC.txt};`;
+      streamLine.innerHTML = hl(IC.mut, '  "');
+      respBody.appendChild(streamLine);
+
+      const cur = document.createElement('span');
+      cur.textContent = '▋';
+      cur.style.cssText = `color:${IC.acc};animation:termBlink 0.8s step-end infinite;`;
+      streamLine.appendChild(cur);
+
+      for (const token of STREAM_TOKENS) {
+        await delay(60 + Math.random() * 60);
+        cur.insertAdjacentText('beforebegin', token);
+      }
+      cur.remove();
+      streamLine.appendChild(document.createTextNode('  "'));
+
+      await delay(3000);
+    }
+
+    async function runInfDemo() {
+      const wrap = document.getElementById('inf-demo-wrap');
+      if (!wrap) return;
+      try {
+        await act1();
+        await act2();
+        await act3();
+        // loop
+        infTimer = setTimeout(runInfDemo, 1200);
+      } catch(e) { /* restarted */ }
+    }
+
+    window.infRestart = function() {
+      clearTimeout(infTimer);
+      runInfDemo();
+    };
+
+    // Manual stage click
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.inf-stage-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          clearTimeout(infTimer);
+          const stage = parseInt(btn.dataset.stage);
+          if (stage === 0) { runInfDemo(); }
+          else if (stage === 1) { act2().then(() => act3()).then(() => { infTimer = setTimeout(runInfDemo, 1200); }); }
+          else { act3().then(() => { infTimer = setTimeout(runInfDemo, 1200); }); }
+        });
+      });
+    });
+
+    // Start on scroll into view
+    const wrap = document.getElementById('inf-demo-wrap');
+    if (wrap) {
+      const obs = new IntersectionObserver(entries => {
+        if (entries[0].isIntersecting) { obs.disconnect(); runInfDemo(); }
+      }, { threshold: 0.25 });
+      obs.observe(wrap);
+    }
+  })();
+
   /* ── Animated terminal ─────────────────────────────────────────────────── */
   const TERM_STEPS = [
     // phonix init

@@ -613,30 +613,18 @@ client.<span class="fn">onMessage</span>((msg) => {
 
 client.<span class="fn">disconnect</span>();</pre>
         </div>
-        <div class="code-block" style="margin-top:1rem">
+        <!-- ── Animated terminal ── -->
+        <div class="code-block" style="margin-top:1rem" id="anim-terminal-wrap">
           <div class="code-header">
             <div class="code-dots">
               <span class="dot-red"></span>
               <span class="dot-yellow"></span>
               <span class="dot-green"></span>
             </div>
-            terminal
+            <span style="flex:1">terminal</span>
+            <button id="anim-restart-btn" onclick="terminalRestart()" style="background:none;border:1px solid var(--border);color:var(--muted);border-radius:4px;padding:0.15rem 0.5rem;font-size:0.7rem;cursor:pointer;font-family:inherit;" title="Replay">↺ replay</button>
           </div>
-          <pre><span class="cm"># Initialise project</span>
-<span class="fn">phonix</span> init
-
-<span class="cm"># Set up credentials interactively</span>
-<span class="fn">phonix</span> auth
-
-<span class="cm"># Test without deploying</span>
-<span class="fn">phonix</span> run-local
-
-<span class="cm"># Deploy to the network</span>
-<span class="fn">phonix</span> deploy
-
-<span class="cm"># ✔ Deployment live!</span>
-<span class="cm"># Processors: 3 matched</span>
-<span class="cm">#   • 0xproc1...</span></pre>
+          <div id="anim-terminal" style="padding:1.1rem 1.25rem;font-family:'JetBrains Mono','SF Mono','Fira Code',monospace;font-size:0.82rem;line-height:1.75;min-height:260px;overflow:hidden;"></div>
         </div>
       </div>
     </div>
@@ -1068,6 +1056,199 @@ router.health().forEach(h =&gt; {
 </footer>
 
 <script>
+  /* ── Animated terminal ─────────────────────────────────────────────────── */
+  const TERM_STEPS = [
+    // phonix init
+    { kind: 'cmd',     text: 'phonix init' },
+    { kind: 'gap' },
+    { kind: 'prompt',  text: '?', label: ' Project name ', answer: 'my-edge-ai' },
+    { kind: 'prompt',  text: '?', label: ' Provider      ', answer: 'ionet  (GPU · ~$0.40/hr A100)' },
+    { kind: 'prompt',  text: '?', label: ' Template      ', answer: 'inference' },
+    { kind: 'gap' },
+    { kind: 'success', text: '✔ Created phonix.json' },
+    { kind: 'success', text: '✔ Created src/index.ts' },
+    { kind: 'success', text: '✔ Created .env.example' },
+    { kind: 'gap' },
+
+    // phonix auth
+    { kind: 'cmd',     text: 'phonix auth' },
+    { kind: 'gap' },
+    { kind: 'info',    text: '  Configuring io.net credentials...' },
+    { kind: 'prompt',  text: '?', label: ' IONET_API_KEY ', answer: '••••••••••••••••' },
+    { kind: 'gap' },
+    { kind: 'success', text: '✔ API key saved' },
+    { kind: 'success', text: '✔ Cluster selected  gpu-cluster-us-west-1' },
+    { kind: 'success', text: '✔ .env locked (chmod 600)' },
+    { kind: 'gap' },
+
+    // phonix deploy
+    { kind: 'cmd',     text: 'phonix deploy' },
+    { kind: 'gap' },
+    { kind: 'spin',    text: 'Bundling with esbuild',    resolve: '✔ Bundle ready  (38 kB)' },
+    { kind: 'spin',    text: 'Uploading to IPFS',        resolve: '✔ CID: QmX7k9mN2pR4sT8uV1wY3zA5bC6dE7fG8hI9jK0lM' },
+    { kind: 'spin',    text: 'Submitting job to io.net', resolve: '✔ Job accepted' },
+    { kind: 'spin',    text: 'Waiting for processors',   resolve: '✔ 3 processors matched' },
+    { kind: 'gap' },
+    { kind: 'done' },
+  ];
+
+  const SPIN_FRAMES = ['⠋','⠙','⠹','⠸','⠼','⠴','⠦','⠧','⠇','⠏'];
+  const C = { acc: '#f97316', grn: '#22c55e', mut: '#64748b', txt: '#e2e8f0', cyn: '#38bdf8' };
+
+  function span(color, text) {
+    return `<span style="color:${color}">${text}</span>`;
+  }
+
+  let termTimer = null;
+
+  function terminalRestart() {
+    clearTimeout(termTimer);
+    document.getElementById('anim-terminal').innerHTML = '';
+    runTerminal();
+  }
+
+  function runTerminal() {
+    const el = document.getElementById('anim-terminal');
+    if (!el) return;
+    el.innerHTML = '';
+    let stepIdx = 0;
+    let cursor = null;
+
+    function addLine(html) {
+      const line = document.createElement('div');
+      line.innerHTML = html;
+      el.appendChild(line);
+      return line;
+    }
+
+    function removeCursor() {
+      if (cursor) { cursor.remove(); cursor = null; }
+    }
+
+    function blinkCursor(afterEl) {
+      removeCursor();
+      cursor = document.createElement('span');
+      cursor.innerHTML = '▋';
+      cursor.style.cssText = `color:${C.acc};animation:termBlink 1s step-end infinite;`;
+      afterEl.appendChild(cursor);
+    }
+
+    function typeInto(line, prefix, text, color, speed, done) {
+      line.innerHTML = prefix;
+      let i = 0;
+      const span = document.createElement('span');
+      span.style.color = color;
+      line.appendChild(span);
+      blinkCursor(line);
+      function tick() {
+        if (i < text.length) {
+          span.textContent += text[i++];
+          termTimer = setTimeout(tick, speed + (Math.random() * speed * 0.4 - speed * 0.2));
+        } else {
+          removeCursor();
+          if (done) termTimer = setTimeout(done, 120);
+        }
+      }
+      tick();
+    }
+
+    function nextStep() {
+      if (stepIdx >= TERM_STEPS.length) {
+        // Pause then loop
+        termTimer = setTimeout(terminalRestart, 3500);
+        return;
+      }
+      const step = TERM_STEPS[stepIdx++];
+
+      if (step.kind === 'gap') {
+        addLine('&nbsp;');
+        termTimer = setTimeout(nextStep, 80);
+
+      } else if (step.kind === 'cmd') {
+        const line = addLine(span(C.acc, '$ '));
+        typeInto(line, span(C.acc, '$ '), step.text, C.txt, 52, nextStep);
+
+      } else if (step.kind === 'prompt') {
+        const prefix = span(C.cyn, step.text) + span(C.mut, step.label) + span(C.mut, '› ');
+        const line = addLine(prefix);
+        typeInto(line, prefix, step.answer, C.txt, 38, nextStep);
+
+      } else if (step.kind === 'success') {
+        addLine(span(C.grn, step.text));
+        termTimer = setTimeout(nextStep, 90);
+
+      } else if (step.kind === 'info') {
+        addLine(span(C.mut, step.text));
+        termTimer = setTimeout(nextStep, 60);
+
+      } else if (step.kind === 'spin') {
+        const line = addLine('');
+        let frame = 0;
+        let ticks = 0;
+        const duration = 900 + Math.random() * 600;
+        const interval = 80;
+        const max = Math.floor(duration / interval);
+        function spin() {
+          line.innerHTML = span(C.acc, SPIN_FRAMES[frame % SPIN_FRAMES.length]) + span(C.mut, '  ' + step.text + '...');
+          frame++;
+          ticks++;
+          if (ticks < max) {
+            termTimer = setTimeout(spin, interval);
+          } else {
+            line.innerHTML = span(C.grn, step.resolve);
+            termTimer = setTimeout(nextStep, 100);
+          }
+        }
+        spin();
+
+      } else if (step.kind === 'done') {
+        addLine('');
+        addLine(span(C.grn, '✔ Deployment live!'));
+        termTimer = setTimeout(() => {
+          addLine(span(C.mut, '  Deployment ID  ') + span(C.txt, '0x3f8a...c4d2'));
+          termTimer = setTimeout(() => {
+            addLine(span(C.mut, '  Processors     ') + span(C.grn, '3 matched'));
+            termTimer = setTimeout(() => {
+              addLine(span(C.mut, '    • ') + span(C.cyn, 'gpu-worker-0x1a2b3c'));
+              termTimer = setTimeout(() => {
+                addLine(span(C.mut, '    • ') + span(C.cyn, 'gpu-worker-0x4d5e6f'));
+                termTimer = setTimeout(() => {
+                  addLine(span(C.mut, '    • ') + span(C.cyn, 'gpu-worker-0x7g8h9i'));
+                  // final blinking cursor on empty last line
+                  const lastLine = addLine(span(C.acc, '$ '));
+                  blinkCursor(lastLine);
+                  termTimer = setTimeout(terminalRestart, 4500);
+                }, 120);
+              }, 120);
+            }, 120);
+          }, 200);
+        }, 200);
+      }
+    }
+
+    nextStep();
+  }
+
+  // Inject blink keyframe once
+  (function() {
+    const s = document.createElement('style');
+    s.textContent = '@keyframes termBlink { 0%,100%{opacity:1} 50%{opacity:0} }';
+    document.head.appendChild(s);
+  })();
+
+  // Start when the section scrolls into view (IntersectionObserver)
+  (function() {
+    const wrap = document.getElementById('anim-terminal-wrap');
+    if (!wrap) return;
+    const obs = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        obs.disconnect();
+        runTerminal();
+      }
+    }, { threshold: 0.3 });
+    obs.observe(wrap);
+  })();
+
   function copyInstall() {
     navigator.clipboard.writeText('npm install @phonixsdk/inference').then(() => {
       const btn = document.querySelector('.copy-btn');

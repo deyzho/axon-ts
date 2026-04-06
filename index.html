@@ -396,7 +396,7 @@
 <!-- ── OpenAI hook (above the fold) ──────────────────────────────────────── -->
 <section style="background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:3.5rem 2rem;" id="inference">
   <div class="section-inner">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;" class="inference-hook-grid">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start;" class="inference-hook-grid">
       <div>
         <div class="section-label">OpenAI-compatible · @phonixsdk/inference</div>
         <h2 class="section-title" style="margin-bottom:0.75rem;">Switch to decentralised GPU<br/>in two lines</h2>
@@ -435,16 +435,16 @@
             <span id="inf-file-label" style="font-size:0.75rem;color:var(--muted);margin-left:0.5rem;">my-app/index.ts</span>
             <span id="inf-status-badge" style="margin-left:auto;font-size:0.7rem;font-weight:700;padding:0.15rem 0.55rem;border-radius:100px;background:rgba(239,68,68,.12);color:#ef4444;border:1px solid rgba(239,68,68,.2);">OpenAI</span>
           </div>
-          <div id="inf-code-body" style="padding:1rem 1.25rem;font-family:'JetBrains Mono','SF Mono','Fira Code',monospace;font-size:0.82rem;line-height:1.75;min-height:200px;"></div>
+          <div id="inf-code-body" style="padding:1rem 1.25rem;font-family:'JetBrains Mono','SF Mono','Fira Code',monospace;font-size:0.82rem;line-height:1.75;height:264px;overflow:hidden;"></div>
         </div>
 
-        <!-- Response window (hidden until Act 3) -->
-        <div class="code-block" id="inf-response-block" style="margin-top:0.6rem;display:none;border-color:rgba(249,115,22,.3);">
+        <!-- Response window — always in DOM, fades in during Act 3 -->
+        <div class="code-block" id="inf-response-block" style="margin-top:0.6rem;border-color:rgba(249,115,22,.3);opacity:0;transition:opacity 0.4s ease;pointer-events:none;">
           <div class="code-header">
             <div class="code-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div>
             <span style="font-size:0.75rem;color:#22c55e;margin-left:0.5rem;">▶ streaming response</span>
           </div>
-          <div id="inf-response-body" style="padding:1rem 1.25rem;font-family:'JetBrains Mono','SF Mono','Fira Code',monospace;font-size:0.82rem;line-height:1.75;min-height:80px;"></div>
+          <div id="inf-response-body" style="padding:1rem 1.25rem;font-family:'JetBrains Mono','SF Mono','Fira Code',monospace;font-size:0.82rem;line-height:1.75;height:120px;overflow:hidden;"></div>
         </div>
 
         <p style="font-size:0.78rem;color:var(--muted);margin-top:0.6rem;">→ Deploy the handler with <code style="color:var(--accent)">@phonixsdk/inference</code> — <a href="#demo">see setup guide ↓</a></p>
@@ -1181,7 +1181,9 @@ router.health().forEach(h =&gt; {
       setStage(0);
       setBadge('OpenAI', IC.red, 'rgba(239,68,68,.12)', 'rgba(239,68,68,.2)');
       document.getElementById('inf-file-label').textContent = 'my-app/index.ts';
-      document.getElementById('inf-response-block').style.display = 'none';
+      const rb = document.getElementById('inf-response-block');
+      rb.style.opacity = '0';
+      rb.style.pointerEvents = 'none';
       document.getElementById('inf-code-block').style.borderColor = '';
 
       renderLines(ACT1_LINES);
@@ -1251,11 +1253,12 @@ router.health().forEach(h =&gt; {
         '});',
       ]);
 
-      // Show response block
+      // Show response block (fade in — already in DOM, just opacity)
       const respBlock = document.getElementById('inf-response-block');
       const respBody  = document.getElementById('inf-response-body');
-      respBlock.style.display = 'block';
       respBody.innerHTML = '';
+      respBlock.style.opacity = '1';
+      respBlock.style.pointerEvents = 'auto';
 
       // Routing info lines
       const meta = [

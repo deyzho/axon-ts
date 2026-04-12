@@ -1,6 +1,6 @@
 {
   "name": "@axonsdk/mobile",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "React Native / Expo SDK for calling Axon edge processors from iOS and Android apps.",
   "private": false,
   "type": "module",

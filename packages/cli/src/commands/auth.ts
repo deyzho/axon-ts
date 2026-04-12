@@ -98,6 +98,13 @@ async function updateEnv(
   }
 
   await writeFile(envPath, newLines.join('\n'), 'utf8');
+  // Restrict .env to owner read/write only — credentials stored in plain text
+  // must not be readable by other OS users on a shared machine.
+  try {
+    await chmod(envPath, 0o600);
+  } catch {
+    // chmod is a no-op on Windows; ignore the error silently
+  }
 }
 
 // ─── Acurast wizard ───────────────────────────────────────────────────────────
@@ -120,7 +127,7 @@ async function runAcurastAuth(cwd: string): Promise<void> {
     const { secretKeyHex } = generateP256KeyPair();
     updates['AXON_SECRET_KEY'] = secretKeyHex;
     spinner.succeed('P256 keypair generated');
-    console.log(chalk.gray('    AXON_SECRET_KEY=' + secretKeyHex.slice(0, 16) + '...'));
+    console.log(chalk.green('  ✓ AXON_SECRET_KEY generated and saved to .env'));
   } else {
     console.log(chalk.green('  ✓ AXON_SECRET_KEY already set'));
   }

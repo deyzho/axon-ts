@@ -1,6 +1,6 @@
 {
   "name": "@axonsdk/inference",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "OpenAI-compatible inference endpoint that routes requests through Axon's decentralised GPU and TEE compute network.",
   "type": "module",
   "main": "./dist/index.js",

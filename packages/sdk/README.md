@@ -10,7 +10,7 @@
 
 `@axonsdk/sdk` is the core library for the [Axon](https://axon.dev) platform. It gives you a single, unified interface to deploy code and exchange messages with processors running on any supported DePIN network — without changing your application logic when you switch providers.
 
-**Supported providers:** [Acurast](https://acurast.com) · [Akash Network](https://akash.network) · [Fluence](https://fluence.network) · [Koii](https://koii.network)
+**Supported providers:** [io.net](https://io.net) · [Acurast](https://acurast.com) · [Akash Network](https://akash.network) · [Fluence](https://fluence.network) · [Koii](https://koii.network)
 
 ## Installation
 
@@ -26,7 +26,7 @@ Requires **Node.js ≥ 20**.
 import { AxonClient } from '@axonsdk/sdk';
 
 const client = new AxonClient({
-  provider: 'akash',            // 'acurast' | 'fluence' | 'koii' | 'akash'
+  provider: 'akash',            // 'ionet' | 'acurast' | 'fluence' | 'koii' | 'akash'
   secretKey: process.env.AXON_SECRET_KEY,
 });
 

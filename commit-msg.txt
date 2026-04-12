@@ -1,0 +1,10 @@
+fix: complete Axon rename in TS source and fix TypeScript 6 build
+
+- Replace remaining Phonix-prefixed symbols across 19 source files
+- Remove 32 stale pre-built .d.ts artifacts from src/
+- Add @ts-ignore on optional dynamic imports (fluencelabs, koii)
+- Add types:[node] to sdk and cli tsconfigs; lib:DOM to inference
+- Add declarations.d.ts shim in cli for inquirer and update-notifier
+- Update @types/node to v20 in sdk and cli devDependencies
+
+Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>

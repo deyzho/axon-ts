@@ -280,8 +280,11 @@ export function useSend(client: MobileAxonClient | null): UseSendResult {
   const [sending, setSending] = useState(false);
   const [sendError, setSendError] = useState<Error | null>(null);
 
+  // useCallback's generic inference in @types/react 18.3 requires an explicit
+  // type parameter or cast when the callback has specific (non-unknown) args.
   const send = useCallback(
-    async (endpoint: string, payload: unknown): Promise<void> => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async (endpoint: any, payload: unknown): Promise<void> => {
       if (!client) {
         setSendError(new Error('Client is not connected.'));
         return;
@@ -289,7 +292,7 @@ export function useSend(client: MobileAxonClient | null): UseSendResult {
       setSending(true);
       setSendError(null);
       try {
-        await client.send(endpoint, payload);
+        await client.send(endpoint as string, payload);
       } catch (err) {
         setSendError(err instanceof Error ? err : new Error(String(err)));
       } finally {
@@ -297,7 +300,7 @@ export function useSend(client: MobileAxonClient | null): UseSendResult {
       }
     },
     [client]
-  );
+  ) as (endpoint: string, payload: unknown) => Promise<void>;
 
   return { send, sending, sendError };
 }

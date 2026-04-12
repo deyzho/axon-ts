@@ -50,9 +50,10 @@ axon send <deployment-id> '{"prompt":"Hello"}'
 
 | Provider | Auth command | Requires |
 |---|---|---|
+| **io.net** | `axon auth ionet` | io.net API key |
 | **Acurast** | `axon auth acurast` | Polkadot wallet mnemonic, IPFS endpoint |
 | **Akash Network** | `axon auth akash` | Cosmos wallet mnemonic |
-| **Fluence** | `axon auth fluence` | Fluence wallet |
+| **Fluence** | `axon auth fluence` | Fluence hex private key |
 | **Koii** | `axon auth koii` | Koii wallet keypair |
 
 ## Documentation

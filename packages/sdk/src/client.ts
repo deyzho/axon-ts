@@ -152,6 +152,21 @@ export class AxonClient {
    * @param payload     — any JSON-serialisable data
    */
   async send(processorId: string, payload: unknown): Promise<void> {
+    // Validate processorId format: hex string (public key) or domain-safe identifier.
+    // Rejects path traversal sequences, null bytes, and shell-special characters
+    // that could be used for injection if the id is later embedded in a URL or command.
+    if (!processorId || typeof processorId !== 'string') {
+      throw new AxonError('processorId must be a non-empty string.');
+    }
+    if (processorId.length > 512) {
+      throw new AxonError('processorId exceeds maximum length of 512 characters.');
+    }
+    if (/[\x00-\x1f\x7f]|\.\.[\\/]|[\\/]/.test(processorId)) {
+      throw new AxonError(
+        `Invalid processorId: must not contain control characters, null bytes, or path traversal sequences.`
+      );
+    }
+
     const serialised =
       typeof payload === 'string' ? payload : JSON.stringify(payload);
     const byteLength = Buffer.byteLength(serialised, 'utf8');

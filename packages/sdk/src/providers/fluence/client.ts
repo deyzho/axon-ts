@@ -108,7 +108,7 @@ export class FluenceMessagingClient {
     try {
       result = await callFunction({
         peer: this.peer,
-        // Standard Phonix spell function definition
+        // Standard Axon spell function definition
         funcDef: {
           name: 'handleMessage',
           arrow: {

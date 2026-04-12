@@ -28,7 +28,7 @@
  */
 
 import { createContext, useContext } from 'react';
-import type { PropsWithChildren } from 'react';
+import type { PropsWithChildren, ReactNode } from 'react';
 import { useAxon } from './hooks.js';
 import type { UseAxonOptions, UseAxonResult } from './hooks.js';
 
@@ -44,12 +44,20 @@ export type AxonProviderProps = PropsWithChildren<UseAxonOptions>;
  * Provides a MobileAxonClient to the entire React tree.
  * The client is created once and shared across all consumers.
  */
-export function AxonProvider({ children, ...options }: AxonProviderProps) {
+export function AxonProvider({ children, ...options }: AxonProviderProps): ReactNode {
   const axon = useAxon(options);
+  // @types/react 18.3 changed ComponentType's return to ReactElement | null
+  // which no longer satisfies JSX ReactNode. Cast to suppress the false positive;
+  // runtime behaviour is correct.
+  const Provider = AxonContext.Provider as (p: {
+    value: UseAxonResult | null;
+    children?: ReactNode;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  }) => any;
   return (
-    <AxonContext.Provider value={axon}>
+    <Provider value={axon}>
       {children}
-    </AxonContext.Provider>
+    </Provider>
   );
 }
 

@@ -1,6 +1,6 @@
 {
   "name": "@axonsdk/sdk",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Provider-abstracted SDK for deploying and calling confidential edge applications across DePIN compute networks (Acurast, Akash, Fluence, Koii).",
   "type": "module",
   "main": "./dist/index.js",
@@ -61,7 +61,8 @@
   "devDependencies": {
     "@types/node": "^20.19.39",
     "typescript": "^5.9.3",
-    "vitest": "^1.4.0"
+    "vite": "^8.0.8",
+    "vitest": "^4.1.4"
   },
   "files": [
     "dist",

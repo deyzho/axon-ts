@@ -1,7 +1,7 @@
 /**
- * React hooks for the Phonix mobile SDK.
+ * React hooks for the Axon mobile SDK.
  *
- * usePhonix  — manages MobilePhonixClient lifecycle (connect / disconnect /
+ * useAxon  — manages MobileAxonClient lifecycle (connect / disconnect /
  *              AppState transitions) and exposes the client to your component.
  *
  * useMessages — subscribes to incoming messages from processors and returns
@@ -10,9 +10,9 @@
  * Example (Expo / React Native):
  *
  *   function ProcessorScreen() {
- *     const { client, connected, connect, disconnect, error } = usePhonix({
+ *     const { client, connected, connect, disconnect, error } = useAxon({
  *       provider: 'akash',
- *       secretKey: PHONIX_SECRET_KEY,
+ *       secretKey: AXON_SECRET_KEY,
  *     });
  *     const messages = useMessages(client);
  *
@@ -31,15 +31,15 @@
  */
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import type { Message } from '@phonixsdk/sdk';
-import { MobilePhonixClient } from './client.js';
-import type { MobilePhonixClientOptions } from './client.js';
-import { MobilePhonixRouter } from './router.js';
+import type { Message } from '@axonsdk/sdk';
+import { MobileAxonClient } from './client.js';
+import type { MobileAxonClientOptions } from './client.js';
+import { MobileAxonRouter } from './router.js';
 import type { MobileRouterConfig, MobileProviderName, MobileRouteHealth } from './router.js';
 
-// ─── usePhonix ────────────────────────────────────────────────────────────────
+// ─── useAxon ────────────────────────────────────────────────────────────────
 
-export interface UsePhonixOptions extends MobilePhonixClientOptions {
+export interface UseAxonOptions extends MobileAxonClientOptions {
   /**
    * If true, automatically call connect() when the hook mounts.
    * Default: false — you control when to connect.
@@ -47,9 +47,9 @@ export interface UsePhonixOptions extends MobilePhonixClientOptions {
   autoConnect?: boolean;
 }
 
-export interface UsePhonixResult {
-  /** The MobilePhonixClient instance. Null until first connect() resolves. */
-  client: MobilePhonixClient | null;
+export interface UseAxonResult {
+  /** The MobileAxonClient instance. Null until first connect() resolves. */
+  client: MobileAxonClient | null;
   /** Whether the client is currently connected. */
   connected: boolean;
   /** Whether a connect() call is in progress. */
@@ -63,19 +63,19 @@ export interface UsePhonixResult {
 }
 
 /**
- * Manage the full lifecycle of a MobilePhonixClient in a React Native component.
+ * Manage the full lifecycle of a MobileAxonClient in a React Native component.
  *
  * The client is created once per hook instance and disposed automatically when
  * the component unmounts. AppState listeners are attached after a successful
  * connect() so the client pauses/resumes with the app's background state.
  */
-export function usePhonix(options: UsePhonixOptions): UsePhonixResult {
+export function useAxon(options: UseAxonOptions): UseAxonResult {
   const [connected, setConnected] = useState(false);
   const [connecting, setConnecting] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
   // Stable ref — recreated only when provider or secretKey changes
-  const clientRef = useRef<MobilePhonixClient | null>(null);
+  const clientRef = useRef<MobileAxonClient | null>(null);
   const optionsRef = useRef(options);
   optionsRef.current = options;
 
@@ -85,7 +85,7 @@ export function usePhonix(options: UsePhonixOptions): UsePhonixResult {
 
   if (clientKey !== clientKeyRef.current) {
     clientRef.current?.dispose();
-    clientRef.current = new MobilePhonixClient({
+    clientRef.current = new MobileAxonClient({
       provider: options.provider,
       secretKey: options.secretKey,
       wsUrl: options.wsUrl,
@@ -157,14 +157,14 @@ export interface UseMessagesOptions {
 }
 
 /**
- * Subscribe to incoming messages from a MobilePhonixClient.
+ * Subscribe to incoming messages from a MobileAxonClient.
  * Returns a reactive array of messages; newest first.
  *
  * The subscription is set up when `client` becomes non-null and torn down
  * when `client` changes or the component unmounts.
  */
 export function useMessages(
-  client: MobilePhonixClient | null,
+  client: MobileAxonClient | null,
   options: UseMessagesOptions = {}
 ): Message[] {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -199,10 +199,10 @@ export interface UseSendResult {
   sendError: Error | null;
 }
 
-// ─── usePhonixRouter ──────────────────────────────────────────────────────────
+// ─── useAxonRouter ──────────────────────────────────────────────────────────
 
-export interface UsePhonixRouterResult {
-  router: MobilePhonixRouter | null;
+export interface UseAxonRouterResult {
+  router: MobileAxonRouter | null;
   connected: boolean;
   connecting: boolean;
   error: Error | null;
@@ -212,20 +212,20 @@ export interface UsePhonixRouterResult {
 }
 
 /**
- * Manage the full lifecycle of a MobilePhonixRouter in a React Native component.
+ * Manage the full lifecycle of a MobileAxonRouter in a React Native component.
  * Automatically connects on mount when autoConnect is true.
  */
-export function usePhonixRouter(
+export function useAxonRouter(
   config: MobileRouterConfig & { autoConnect?: boolean }
-): UsePhonixRouterResult {
+): UseAxonRouterResult {
   const [connected, setConnected] = useState(false);
   const [connecting, setConnecting] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const [health, setHealth] = useState<MobileRouteHealth[]>([]);
-  const routerRef = useRef<MobilePhonixRouter | null>(null);
+  const routerRef = useRef<MobileAxonRouter | null>(null);
 
   if (!routerRef.current) {
-    routerRef.current = new MobilePhonixRouter(config);
+    routerRef.current = new MobileAxonRouter(config);
   }
 
   const connect = useCallback(async (): Promise<void> => {
@@ -276,7 +276,7 @@ export function usePhonixRouter(
 /**
  * Convenience hook wrapping client.send() with loading / error state.
  */
-export function useSend(client: MobilePhonixClient | null): UseSendResult {
+export function useSend(client: MobileAxonClient | null): UseSendResult {
   const [sending, setSending] = useState(false);
   const [sendError, setSendError] = useState<Error | null>(null);
 

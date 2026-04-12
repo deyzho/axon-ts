@@ -1,5 +1,5 @@
 {
-  "name": "@phonixsdk/sdk",
+  "name": "@axonsdk/sdk",
   "version": "0.2.0",
   "description": "Provider-abstracted SDK for deploying and calling confidential edge applications across DePIN compute networks (Acurast, Akash, Fluence, Koii).",
   "type": "module",
@@ -34,16 +34,16 @@
     "routing",
     "confidential-computing"
   ],
-  "author": "Phonix <hello@phonix.dev>",
+  "author": "Axon <hello@axon.dev>",
   "license": "Apache-2.0",
-  "homepage": "https://phonix.dev",
+  "homepage": "https://axon.dev",
   "repository": {
     "type": "git",
-    "url": "https://github.com/deyzho/phonixsdk.git",
+    "url": "https://github.com/deyzho/axonsdk.git",
     "directory": "packages/sdk"
   },
   "bugs": {
-    "url": "https://github.com/deyzho/phonixsdk/issues"
+    "url": "https://github.com/deyzho/axonsdk/issues"
   },
   "engines": {
     "node": ">=20.0.0"

@@ -1,12 +1,12 @@
 /**
- * IPhonixRuntime — provider-agnostic runtime interface for deployment scripts.
+ * IAxonRuntime — provider-agnostic runtime interface for deployment scripts.
  *
- * Templates use `phonix.http.GET(...)` and `phonix.ws.open(...)` instead of
+ * Templates use `axon.http.GET(...)` and `axon.ws.open(...)` instead of
  * provider-specific globals like `_STD_`. At bundle time, the deployer prepends
- * a runtime bootstrap that maps `phonix` to the correct provider API.
+ * a runtime bootstrap that maps `axon` to the correct provider API.
  */
 
-export interface PhonixRuntimeHttp {
+export interface AxonRuntimeHttp {
   /**
    * Make an HTTP GET request.
    * @param url       - The URL to fetch
@@ -34,7 +34,7 @@ export interface PhonixRuntimeHttp {
   ): void;
 }
 
-export interface PhonixRuntimeWs {
+export interface AxonRuntimeWs {
   /**
    * Open a WebSocket connection.
    * @param url       - WebSocket URL (wss://)
@@ -59,18 +59,18 @@ export interface PhonixRuntimeWs {
 }
 
 /**
- * The complete Phonix runtime interface available to deployment scripts via
- * the `phonix` global.
+ * The complete Axon runtime interface available to deployment scripts via
+ * the `axon` global.
  */
-export interface IPhonixRuntime {
+export interface IAxonRuntime {
   /** The name of the provider this runtime is running on. */
   readonly providerName: string;
 
   /** HTTP primitives for making outbound requests from the deployment script. */
-  http: PhonixRuntimeHttp;
+  http: AxonRuntimeHttp;
 
   /** WebSocket primitives for bidirectional messaging with your dApp. */
-  ws: PhonixRuntimeWs;
+  ws: AxonRuntimeWs;
 
   /**
    * Fulfill the current job with a result (on-chain push).

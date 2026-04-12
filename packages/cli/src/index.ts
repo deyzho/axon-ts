@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * @phonixsdk/cli — entry point
+ * @axonsdk/cli — entry point
  *
  * Registers all commands and handles global flags.
  */
@@ -15,7 +15,7 @@ import { readFileSync } from 'node:fs';
 function readVersion(): string {
   try {
     const requireFromHere = createRequire(import.meta.url);
-    const pkgPath = requireFromHere.resolve('@phonixsdk/cli/package.json');
+    const pkgPath = requireFromHere.resolve('@axonsdk/cli/package.json');
     const pkg = JSON.parse(readFileSync(pkgPath, 'utf8')) as { version: string };
     return pkg.version;
   } catch {
@@ -40,7 +40,7 @@ async function checkForUpdates(): Promise<void> {
     const { default: updateNotifier } = await import('update-notifier');
     const { createRequire } = await import('node:module');
     const requireFromHere = createRequire(import.meta.url);
-    const pkg = requireFromHere('@phonixsdk/cli/package.json') as {
+    const pkg = requireFromHere('@axonsdk/cli/package.json') as {
       name: string;
       version: string;
     };
@@ -54,20 +54,20 @@ async function checkForUpdates(): Promise<void> {
 // ─── Command registration ─────────────────────────────────────────────────────
 
 program
-  .name('phonix')
+  .name('axon')
   .description('Build edge dApps once. Run them confidentially on millions of smartphones.')
   .version(VERSION, '-v, --version', 'Print version and check for updates');
 
-// phonix init
+// axon init
 program
   .command('init')
-  .description('Interactive setup: create phonix.json, .env, and template files')
+  .description('Interactive setup: create axon.json, .env, and template files')
   .action(async () => {
     const { runInit } = await import('./commands/init.js');
     await runInit(process.cwd());
   });
 
-// phonix deploy [template]
+// axon deploy [template]
 program
   .command('deploy [template]')
   .description('Bundle, upload to IPFS, and register a deployment on the provider network')
@@ -76,7 +76,7 @@ program
     await runDeploy(template, process.cwd());
   });
 
-// phonix status
+// axon status
 program
   .command('status')
   .description('List deployments and their current status')
@@ -85,7 +85,7 @@ program
     await runStatus(process.cwd());
   });
 
-// phonix send <pubkey> <message>
+// axon send <pubkey> <message>
 program
   .command('send <pubkey> <message>')
   .description('Send a test message to a processor node')
@@ -94,7 +94,7 @@ program
     await runSend(pubkey, message, process.cwd());
   });
 
-// phonix template
+// axon template
 const templateCmd = program
   .command('template')
   .description('Manage built-in templates');
@@ -107,7 +107,7 @@ templateCmd
     await runTemplateList();
   });
 
-// phonix run-local [template]
+// axon run-local [template]
 program
   .command('run-local [template]')
   .description('Run a deployment script locally using a mock _STD_ environment')
@@ -116,7 +116,7 @@ program
     await runLocal(template, process.cwd());
   });
 
-// phonix auth [provider]
+// axon auth [provider]
 program
   .command('auth [provider]')
   .description('Set up credentials for a provider (acurast | fluence | koii | akash)')

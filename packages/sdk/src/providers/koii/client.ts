@@ -18,7 +18,7 @@
  */
 
 import type { Message } from '../../types.js';
-import { PhonixError } from '../../types.js';
+import { AxonError } from '../../types.js';
 
 const DEFAULT_KOII_RPC = 'https://mainnet.koii.network';
 
@@ -31,7 +31,7 @@ function assertSafeKoiiEndpoint(endpoint: string): void {
   try {
     parsed = new URL(endpoint);
   } catch {
-    throw new PhonixError('koii', `Invalid node endpoint URL: "${endpoint}"`);
+    throw new AxonError('koii',`Invalid node endpoint URL: "${endpoint}"`);
   }
   if (parsed.protocol !== 'https:') {
     throw new PhonixError(
@@ -62,7 +62,7 @@ export class KoiiMessagingClient {
   async connect(secretKey: string, taskId?: string): Promise<void> {
     // Validate the secret key by attempting to derive the public key
     if (!secretKey || secretKey.trim() === '') {
-      throw new PhonixError('koii', 'A non-empty secret key is required to connect.');
+      throw new AxonError('koii','A non-empty secret key is required to connect.');
     }
 
     // Try to load @_koii/web3.js for key validation (optional)
@@ -72,12 +72,12 @@ export class KoiiMessagingClient {
       };
       const keyBytes = base58OrHexToUint8Array(secretKey);
       const kp = Keypair.fromSecretKey(keyBytes);
-      console.debug('[phonix:koii] Connected with public key:', kp.publicKey.toBase58());
+      console.debug('[axon:koii] Connected with public key:', kp.publicKey.toBase58());
     } catch (err) {
       if ((err as NodeJS.ErrnoException).code === 'ERR_MODULE_NOT_FOUND') {
         // @_koii/web3.js not installed — warn but continue
         console.warn(
-          '[phonix:koii] @_koii/web3.js not installed. ' +
+          '[axon:koii] @_koii/web3.js not installed. ' +
             'Install it for full key validation: npm install @_koii/web3.js'
         );
       }
@@ -95,7 +95,7 @@ export class KoiiMessagingClient {
 
   async send(nodeEndpoint: string, payload: unknown): Promise<void> {
     if (!this.connected) {
-      throw new PhonixError('koii', 'Not connected. Call connect() first.');
+      throw new AxonError('koii','Not connected. Call connect() first.');
     }
 
     // Validate endpoint before any network access — prevents SSRF via
@@ -217,7 +217,7 @@ function base58OrHexToUint8Array(input: string): Uint8Array {
       throw new PhonixError(
         'koii',
         `Hex key must decode to exactly 32 or 64 bytes. Got ${byteLen} bytes.\n` +
-          'Run: phonix auth koii  to generate a valid key.'
+          'Run: axon auth koii  to generate a valid key.'
       );
     }
     const bytes = new Uint8Array(byteLen);

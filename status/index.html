@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Phonix Network Status</title>
-  <meta name="description" content="Real-time health, latency, and cost index for all Phonix DePIN providers." />
+  <title>Axon Network Status</title>
+  <meta name="description" content="Real-time health, latency, and cost index for all Axon DePIN providers." />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔥</text></svg>" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -137,13 +137,13 @@
 <body>
 
 <nav>
-  <div class="nav-logo">🔥 <span>Phonix</span> Status</div>
-  <a class="nav-back" href="https://phonixsdk.dev">← phonixsdk.dev</a>
+  <div class="nav-logo">🔥 <span>Axon</span> Status</div>
+  <a class="nav-back" href="https://axonsdk.dev">← axonsdk.dev</a>
 </nav>
 
 <div class="hero">
   <h1>Network Status</h1>
-  <p>Real-time health scores for all Phonix DePIN providers. Updated every 5 minutes.</p>
+  <p>Real-time health scores for all Axon DePIN providers. Updated every 5 minutes.</p>
   <div class="last-updated">Last updated: <span id="last-updated">—</span></div>
 </div>
 
@@ -166,9 +166,9 @@
 
 <footer>
   <p>
-    <a href="https://phonixsdk.dev">phonixsdk.dev</a> ·
-    <a href="https://github.com/deyzho/phonixsdk">GitHub</a> ·
-    <a href="https://www.npmjs.com/package/@phonixsdk/sdk">npm</a>
+    <a href="https://axonsdk.dev">axonsdk.dev</a> ·
+    <a href="https://github.com/deyzho/axonsdk">GitHub</a> ·
+    <a href="https://www.npmjs.com/package/@axonsdk/sdk">npm</a>
   </p>
   <p style="margin-top:.5rem;">Status data is sampled every 5 minutes from live provider endpoints.</p>
 </footer>
@@ -217,7 +217,7 @@ const PROVIDERS = [
   },
 ];
 
-// Simulated metrics — replace with live API calls when status.phonixsdk.dev backend is live
+// Simulated metrics — replace with live API calls when status.axonsdk.dev backend is live
 function generateMetrics(providerId) {
   const seed = providerId.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
   const rand = (min, max, offset = 0) => {

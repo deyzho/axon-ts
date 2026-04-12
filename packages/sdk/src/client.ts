@@ -1,18 +1,18 @@
 /**
- * PhonixClient — the main user-facing class.
+ * AxonClient — the main user-facing class.
  *
  * Selects a provider based on `options.provider` (default: acurast) and
- * proxies all calls through the IPhonixProvider interface.
+ * proxies all calls through the IAxonProvider interface.
  *
  * Example:
- *   const client = new PhonixClient({ provider: 'acurast', secretKey: process.env.PHONIX_SECRET_KEY });
+ *   const client = new AxonClient({ provider: 'acurast', secretKey: process.env.AXON_SECRET_KEY });
  *   await client.connect();
  *   const deployment = await client.deploy({ runtime: 'nodejs', code: './src/index.ts', ... });
  *   await client.send(deployment.processorIds[0], { prompt: 'Hello' });
  *   client.onMessage((msg) => console.log(msg.payload));
  */
 
-import type { IPhonixProvider } from './providers/base.js';
+import type { IAxonProvider } from './providers/base.js';
 import type {
   DeploymentConfig,
   Deployment,
@@ -20,17 +20,17 @@ import type {
   Message,
   ProviderName,
 } from './types.js';
-import { PhonixError } from './types.js';
+import { AxonError } from './types.js';
 import { AcurastProvider } from './providers/acurast/index.js';
 import { FluenceProvider } from './providers/fluence/index.js';
 import { KoiiProvider } from './providers/koii/index.js';
 import { AkashProvider } from './providers/akash/index.js';
 import { IoNetProvider } from './providers/ionet/index.js';
 
-export interface PhonixClientOptions {
+export interface AxonClientOptions {
   /** Provider to use. Defaults to 'acurast'. */
   provider?: ProviderName;
-  /** P256 private key hex string. Falls back to PHONIX_SECRET_KEY env var. */
+  /** P256 private key hex string. Falls back to AXON_SECRET_KEY env var. */
   secretKey?: string;
   /** Override the WebSocket URL (advanced, Acurast only). Must be wss://. */
   wsUrl?: string;
@@ -49,28 +49,28 @@ export interface PhonixClientOptions {
 
 const DEFAULT_MAX_PAYLOAD_BYTES = 1 * 1024 * 1024; // 1 MiB
 
-export class PhonixClient {
-  private provider: IPhonixProvider;
+export class AxonClient {
+  private provider: IAxonProvider;
   private secretKey: string;
   private connected: boolean = false;
   private trustedProcessorIds: Set<string> | null;
   private maxPayloadBytes: number;
 
-  constructor(options: PhonixClientOptions = {}) {
+  constructor(options: AxonClientOptions = {}) {
     const providerName: ProviderName = options.provider ?? 'acurast';
     this.secretKey =
-      options.secretKey ?? process.env['PHONIX_SECRET_KEY'] ?? '';
+      options.secretKey ?? process.env['AXON_SECRET_KEY'] ?? '';
     this.trustedProcessorIds = options.trustedProcessorIds
       ? new Set(options.trustedProcessorIds)
       : null;
     this.maxPayloadBytes = options.maxPayloadBytes ?? DEFAULT_MAX_PAYLOAD_BYTES;
-    this.provider = PhonixClient.createProvider(providerName, options.wsUrl);
+    this.provider = AxonClient.createProvider(providerName, options.wsUrl);
   }
 
   private static createProvider(
     name: ProviderName,
     wsUrl?: string
-  ): IPhonixProvider {
+  ): IAxonProvider {
     switch (name) {
       case 'acurast':
         return new AcurastProvider(wsUrl);
@@ -85,7 +85,7 @@ export class PhonixClient {
       default: {
         // TypeScript exhaustiveness check
         const _exhaustive: never = name;
-        throw new PhonixError(`Unknown provider: ${String(_exhaustive)}`);
+        throw new AxonError(`Unknown provider: ${String(_exhaustive)}`);
       }
     }
   }
@@ -103,8 +103,8 @@ export class PhonixClient {
    */
   async connect(): Promise<void> {
     if (!this.secretKey) {
-      throw new PhonixError(
-        'No secret key provided. Set PHONIX_SECRET_KEY in your .env or pass secretKey to PhonixClient.'
+      throw new AxonError(
+        'No secret key provided. Set AXON_SECRET_KEY in your .env or pass secretKey to AxonClient.'
       );
     }
     await this.provider.connect(this.secretKey);
@@ -156,9 +156,9 @@ export class PhonixClient {
       typeof payload === 'string' ? payload : JSON.stringify(payload);
     const byteLength = Buffer.byteLength(serialised, 'utf8');
     if (byteLength > this.maxPayloadBytes) {
-      throw new PhonixError(
+      throw new AxonError(
         `Payload size ${byteLength} bytes exceeds the limit of ${this.maxPayloadBytes} bytes. ` +
-          `Adjust maxPayloadBytes in PhonixClientOptions if intentional.`
+          `Adjust maxPayloadBytes in AxonClientOptions if intentional.`
       );
     }
     return this.provider.send(processorId, payload);
@@ -200,7 +200,7 @@ export class PhonixClient {
    */
   async inference(options: { model?: string; prompt: string }): Promise<string> {
     if (!this.connected) {
-      throw new PhonixError('Call connect() before using inference()');
+      throw new AxonError('Call connect() before using inference()');
     }
 
     // Deploy the inference template
@@ -212,7 +212,7 @@ export class PhonixClient {
     });
 
     if (deployment.processorIds.length === 0) {
-      throw new PhonixError(
+      throw new AxonError(
         'No processors were assigned to the deployment. ' +
           'Check ACURAST_MNEMONIC and ensure your wallet has enough ACU.'
       );
@@ -224,7 +224,7 @@ export class PhonixClient {
 
       const timeout = setTimeout(() => {
         unsubscribe?.();
-        reject(new PhonixError('inference() timed out after 30 seconds'));
+        reject(new AxonError('inference() timed out after 30 seconds'));
       }, 30_000);
 
       unsubscribe = this.onMessage((msg) => {

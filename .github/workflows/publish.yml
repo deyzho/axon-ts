@@ -30,25 +30,25 @@ jobs:
       - name: Install root dependencies
         run: npm install --legacy-peer-deps
 
-      # ── @phonixsdk/sdk ────────────────────────────────────────────────────
+      # ── @axonsdk/sdk ────────────────────────────────────────────────────
       - name: Build SDK
         working-directory: packages/sdk
         run: npm run build
 
-      - name: Publish @phonixsdk/sdk
+      - name: Publish @axonsdk/sdk
         working-directory: packages/sdk
         run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      # ── @phonixsdk/mobile ─────────────────────────────────────────────────
-      - name: Publish @phonixsdk/mobile
+      # ── @axonsdk/mobile ─────────────────────────────────────────────────
+      - name: Publish @axonsdk/mobile
         working-directory: packages/mobile
         run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      # ── @phonixsdk/cli ────────────────────────────────────────────────────
+      # ── @axonsdk/cli ────────────────────────────────────────────────────
       - name: Install CLI dependencies
         working-directory: packages/cli
         run: npm install --legacy-peer-deps
@@ -57,7 +57,7 @@ jobs:
         working-directory: packages/cli
         run: npm run build
 
-      - name: Publish @phonixsdk/cli
+      - name: Publish @axonsdk/cli
         working-directory: packages/cli
         run: npm publish --access public
         env:

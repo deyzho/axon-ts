@@ -1,15 +1,15 @@
 /**
- * @phonixsdk/sdk — public API surface
+ * @axonsdk/sdk — public API surface
  *
  * Export everything a consumer of the SDK might need.
  */
 
 // Main client
-export { PhonixClient } from './client.js';
-export type { PhonixClientOptions } from './client.js';
+export { AxonClient } from './client.js';
+export type { AxonClientOptions } from './client.js';
 
 // Provider interface
-export type { IPhonixProvider } from './providers/base.js';
+export type { IAxonProvider } from './providers/base.js';
 
 // Provider implementations
 export { AcurastProvider } from './providers/acurast/index.js';
@@ -22,7 +22,7 @@ export { IoNetProvider } from './providers/ionet/index.js';
 export type {
   ProviderName,
   RuntimeType,
-  PhonixConfig,
+  AxonConfig,
   ScheduleConfig,
   DeploymentConfig,
   Deployment,
@@ -31,7 +31,7 @@ export type {
 } from './types.js';
 
 // Error classes
-export { PhonixError, ProviderNotImplementedError, ConfigValidationError } from './types.js';
+export { AxonError, ProviderNotImplementedError, ConfigValidationError } from './types.js';
 
 // Config utilities
 export { loadConfig, generateConfig, generateEnv } from './config.js';
@@ -42,10 +42,10 @@ export { generateP256KeyPair } from './providers/acurast/client.js';
 
 // Runtime abstraction — for advanced use (provider deploy functions use this internally)
 export { generateRuntimeBootstrap } from './runtime/index.js';
-export type { IPhonixRuntime, PhonixRuntimeHttp, PhonixRuntimeWs, RuntimeTarget } from './runtime/index.js';
+export type { IAxonRuntime, AxonRuntimeHttp, AxonRuntimeWs, RuntimeTarget } from './runtime/index.js';
 
 // Router — multi-provider routing with circuit breaking and health monitoring
-export { PhonixRouter } from './router/index.js';
+export { AxonRouter } from './router/index.js';
 export type {
   RouterConfig,
   RouterDeployment,

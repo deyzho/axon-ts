@@ -1,15 +1,15 @@
 /**
- * Config loader and generator for phonix.json.
+ * Config loader and generator for axon.json.
  *
  * Exports:
- *  - loadConfig(cwd)  — read + validate phonix.json from a directory
- *  - generateConfig() — produce a phonix.json string from options
+ *  - loadConfig(cwd)  — read + validate axon.json from a directory
+ *  - generateConfig() — produce a axon.json string from options
  *  - generateEnv()    — produce a .env stub with inline comments
  */
 
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import type { PhonixConfig, ProviderName, RuntimeType } from './types.js';
+import type { AxonConfig, ProviderName, RuntimeType } from './types.js';
 import { ConfigValidationError } from './types.js';
 
 // ─── Validation helpers ──────────────────────────────────────────────────────
@@ -50,18 +50,18 @@ function assertRuntime(value: unknown, field: string): RuntimeType {
 // ─── loadConfig ──────────────────────────────────────────────────────────────
 
 /**
- * Read and validate `phonix.json` from `cwd`.
+ * Read and validate `axon.json` from `cwd`.
  * Throws ConfigValidationError if the file is invalid.
  */
-export async function loadConfig(cwd: string): Promise<PhonixConfig> {
-  const configPath = join(cwd, 'phonix.json');
+export async function loadConfig(cwd: string): Promise<AxonConfig> {
+  const configPath = join(cwd, 'axon.json');
   let raw: string;
   try {
     raw = await readFile(configPath, 'utf8');
   } catch {
     throw new Error(
-      `phonix.json not found in ${cwd}.\n` +
-        'Run \`phonix init\` to create one.'
+      `axon.json not found in ${cwd}.\n` +
+        'Run \`axon init\` to create one.'
     );
   }
 
@@ -69,11 +69,11 @@ export async function loadConfig(cwd: string): Promise<PhonixConfig> {
   try {
     parsed = JSON.parse(raw);
   } catch {
-    throw new ConfigValidationError('(root)', 'phonix.json is not valid JSON');
+    throw new ConfigValidationError('(root)', 'axon.json is not valid JSON');
   }
 
   if (typeof parsed !== 'object' || parsed === null) {
-    throw new ConfigValidationError('(root)', 'phonix.json must be a JSON object');
+    throw new ConfigValidationError('(root)', 'axon.json must be a JSON object');
   }
 
   const obj = parsed as Record<string, unknown>;
@@ -95,13 +95,13 @@ export async function loadConfig(cwd: string): Promise<PhonixConfig> {
     );
   }
 
-  const config: PhonixConfig = {
+  const config: AxonConfig = {
     projectName,
     provider,
     runtime,
     entryFile,
     schedule: {
-      type: sched['type'] as PhonixConfig['schedule']['type'],
+      type: sched['type'] as AxonConfig['schedule']['type'],
       intervalMs:
         typeof sched['intervalMs'] === 'number' ? sched['intervalMs'] : undefined,
       durationMs:
@@ -114,7 +114,7 @@ export async function loadConfig(cwd: string): Promise<PhonixConfig> {
     config.maxCostPerExecution = obj['maxCostPerExecution'];
   if (typeof obj['environment'] === 'object' && obj['environment'] !== null) {
     // Build a null-prototype map to prevent prototype pollution.
-    // A phonix.json with {"environment": {"__proto__": {...}}} would otherwise
+    // An axon.json with {"environment": {"__proto__": {...}}} would otherwise
     // poison Object.prototype when the map is later spread or Object.assign'd.
     const envMap = Object.create(null) as Record<string, string>;
     const BLOCKED_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
@@ -142,16 +142,16 @@ export interface GenerateConfigOptions {
   provider?: ProviderName;
   runtime?: RuntimeType;
   entryFile?: string;
-  scheduleType?: PhonixConfig['schedule']['type'];
+  scheduleType?: AxonConfig['schedule']['type'];
   durationMs?: number;
   replicas?: number;
 }
 
 /**
- * Generate the content of a `phonix.json` file as a formatted JSON string.
+ * Generate the content of a `axon.json` file as a formatted JSON string.
  */
 export function generateConfig(options: GenerateConfigOptions): string {
-  const config: PhonixConfig = {
+  const config: AxonConfig = {
     projectName: options.projectName,
     provider: options.provider ?? 'acurast',
     runtime: options.runtime ?? 'nodejs',
@@ -177,11 +177,11 @@ export function generateConfig(options: GenerateConfigOptions): string {
  */
 export function generateEnv(provider: ProviderName = 'acurast'): string {
   const common = [
-    '# ─── Phonix environment variables ────────────────────────────────────────────',
-    '# Run: phonix auth  to fill these in interactively.',
+    '# ─── Axon environment variables ────────────────────────────────────────────',
+    '# Run: axon auth  to fill these in interactively.',
     '#',
     '# P256 private key — used for authentication with the provider network',
-    'PHONIX_SECRET_KEY=',
+    'AXON_SECRET_KEY=',
     '',
   ];
 
@@ -200,7 +200,7 @@ export function generateEnv(provider: ProviderName = 'acurast'): string {
     ],
     fluence: [
       '# Fluence EVM-compatible private key (hex, 0x-prefixed)',
-      '# Run: phonix auth fluence  to generate one',
+      '# Run: axon auth fluence  to generate one',
       'FLUENCE_PRIVATE_KEY=',
       '',
       '# Fluence relay node multiaddr (uses kras-00 default if empty)',
@@ -212,7 +212,7 @@ export function generateEnv(provider: ProviderName = 'acurast'): string {
     ],
     koii: [
       '# Koii Solana-compatible private key (base58)',
-      '# Run: phonix auth koii  to generate one',
+      '# Run: axon auth koii  to generate one',
       'KOII_PRIVATE_KEY=',
       '',
       '# IPFS endpoint for uploading task bundles',
@@ -227,7 +227,7 @@ export function generateEnv(provider: ProviderName = 'acurast'): string {
     ],
     akash: [
       '# Akash wallet mnemonic (12 or 24 words, BIP-39)',
-      '# Run: phonix auth akash  to import or generate one',
+      '# Run: axon auth akash  to import or generate one',
       'AKASH_MNEMONIC=',
       '',
       '# IPFS API endpoint for uploading deployment bundles',
@@ -242,13 +242,13 @@ export function generateEnv(provider: ProviderName = 'acurast'): string {
       '# Akash chain ID (default: akashnet-2)',
       'AKASH_CHAIN_ID=akashnet-2',
       '',
-      '# Key name in provider-services keyring (default: phonix)',
-      'AKASH_KEY_NAME=phonix',
+      '# Key name in provider-services keyring (default: axon)',
+      'AKASH_KEY_NAME=axon',
       '',
     ],
     ionet: [
       '# io.net API key — get one at https://cloud.io.net',
-      '# Run: phonix auth ionet  to save interactively',
+      '# Run: axon auth ionet  to save interactively',
       'IONET_API_KEY=',
       '',
       '# io.net cluster ID to target (leave blank to auto-select cheapest)',

@@ -1,8 +1,8 @@
 /**
- * phonix send <pubkey> <message> — send a test message to a processor.
+ * axon send <pubkey> <message> — send a test message to a processor.
  */
 
-import { loadConfig, PhonixClient } from '@phonixsdk/sdk';
+import { loadConfig, AxonClient } from '@axonsdk/sdk';
 import { config as loadDotenv } from '../utils/env.js';
 
 async function getChalk() {
@@ -26,7 +26,7 @@ export async function runSend(
   loadDotenv(cwd);
 
   if (!pubkey || !message) {
-    console.error(chalk.red('  Usage: phonix send <pubkey> <message>'));
+    console.error(chalk.red('  Usage: axon send <pubkey> <message>'));
     process.exit(1);
   }
 
@@ -38,17 +38,17 @@ export async function runSend(
     payload = message;
   }
 
-  let phonixConfig;
+  let axonConfig;
   try {
-    phonixConfig = await loadConfig(cwd);
+    axonConfig = await loadConfig(cwd);
   } catch (err) {
     console.error(chalk.red(`  Error: ${(err as Error).message}`));
     process.exit(1);
   }
 
-  const client = new PhonixClient({
-    provider: phonixConfig.provider,
-    secretKey: process.env['PHONIX_SECRET_KEY'],
+  const client = new AxonClient({
+    provider: axonConfig.provider,
+    secretKey: process.env['AXON_SECRET_KEY'],
   });
 
   const spinner = ora('Connecting...').start();

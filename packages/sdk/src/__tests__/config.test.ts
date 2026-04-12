@@ -44,9 +44,9 @@ describe('generateConfig', () => {
 });
 
 describe('generateEnv', () => {
-  it('should produce a string with PHONIX_SECRET_KEY', () => {
+  it('should produce a string with AXON_SECRET_KEY', () => {
     const env = generateEnv();
-    expect(env).toContain('PHONIX_SECRET_KEY');
+    expect(env).toContain('AXON_SECRET_KEY');
   });
 
   it('should produce a string with ACURAST_MNEMONIC', () => {
@@ -69,14 +69,14 @@ describe('loadConfig', () => {
   let tmpDir: string;
 
   beforeEach(async () => {
-    tmpDir = await mkdtemp(join(tmpdir(), 'phonix-test-'));
+    tmpDir = await mkdtemp(join(tmpdir(), 'axon-test-'));
   });
 
   afterEach(async () => {
     await rm(tmpDir, { recursive: true, force: true });
   });
 
-  it('should load a valid phonix.json', async () => {
+  it('should load a valid axon.json', async () => {
     const config = {
       projectName: 'test-project',
       provider: 'acurast',
@@ -85,7 +85,7 @@ describe('loadConfig', () => {
       schedule: { type: 'on-demand', durationMs: 86400000 },
       replicas: 3,
     };
-    await writeFile(join(tmpDir, 'phonix.json'), JSON.stringify(config));
+    await writeFile(join(tmpDir, 'axon.json'), JSON.stringify(config));
 
     const loaded = await loadConfig(tmpDir);
     expect(loaded.projectName).toBe('test-project');
@@ -95,8 +95,8 @@ describe('loadConfig', () => {
     expect(loaded.replicas).toBe(3);
   });
 
-  it('should throw if phonix.json does not exist', async () => {
-    await expect(loadConfig(tmpDir)).rejects.toThrow('phonix.json not found');
+  it('should throw if axon.json does not exist', async () => {
+    await expect(loadConfig(tmpDir)).rejects.toThrow('axon.json not found');
   });
 
   it('should throw ConfigValidationError for invalid provider', async () => {
@@ -107,7 +107,7 @@ describe('loadConfig', () => {
       entryFile: 'src/index.ts',
       schedule: { type: 'on-demand' },
     };
-    await writeFile(join(tmpDir, 'phonix.json'), JSON.stringify(config));
+    await writeFile(join(tmpDir, 'axon.json'), JSON.stringify(config));
 
     await expect(loadConfig(tmpDir)).rejects.toBeInstanceOf(ConfigValidationError);
   });
@@ -120,7 +120,7 @@ describe('loadConfig', () => {
       entryFile: 'src/index.ts',
       schedule: { type: 'on-demand' },
     };
-    await writeFile(join(tmpDir, 'phonix.json'), JSON.stringify(config));
+    await writeFile(join(tmpDir, 'axon.json'), JSON.stringify(config));
 
     await expect(loadConfig(tmpDir)).rejects.toBeInstanceOf(ConfigValidationError);
   });
@@ -132,13 +132,13 @@ describe('loadConfig', () => {
       entryFile: 'src/index.ts',
       schedule: { type: 'on-demand' },
     };
-    await writeFile(join(tmpDir, 'phonix.json'), JSON.stringify(config));
+    await writeFile(join(tmpDir, 'axon.json'), JSON.stringify(config));
 
     await expect(loadConfig(tmpDir)).rejects.toBeInstanceOf(ConfigValidationError);
   });
 
   it('should throw on invalid JSON', async () => {
-    await writeFile(join(tmpDir, 'phonix.json'), '{ invalid json }');
+    await writeFile(join(tmpDir, 'axon.json'), '{ invalid json }');
     await expect(loadConfig(tmpDir)).rejects.toBeInstanceOf(ConfigValidationError);
   });
 
@@ -154,7 +154,7 @@ describe('loadConfig', () => {
       environment: { API_KEY: 'secret' },
       destinations: ['0xabc'],
     };
-    await writeFile(join(tmpDir, 'phonix.json'), JSON.stringify(config));
+    await writeFile(join(tmpDir, 'axon.json'), JSON.stringify(config));
 
     const loaded = await loadConfig(tmpDir);
     expect(loaded.replicas).toBe(5);

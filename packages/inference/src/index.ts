@@ -1,8 +1,8 @@
 /**
- * @phonixsdk/inference — OpenAI-compatible inference endpoint handler.
+ * @axonsdk/inference — OpenAI-compatible inference endpoint handler.
  *
  * Drop-in replacement for the OpenAI API that routes requests through
- * Phonix's decentralised compute network (io.net, Akash, Acurast).
+ * Axon's decentralised compute network (io.net, Akash, Acurast).
  *
  * Usage:
  *   // Before — locked to OpenAI
@@ -10,14 +10,14 @@
  *
  *   // After — routes to cheapest/fastest decentralised compute
  *   const openai = new OpenAI({
- *     baseURL: 'https://api.phonixsdk.dev/v1',
- *     apiKey: process.env.PHONIX_SECRET_KEY,
+ *     baseURL: 'https://api.axonsdk.dev/v1',
+ *     apiKey: process.env.AXON_SECRET_KEY,
  *   });
  *
  *   // Everything else stays identical
  *   const completion = await openai.chat.completions.create({ ... });
  */
 
-export { PhonixInferenceHandler } from './handler.js';
-export { PhonixInferenceRouter } from './router.js';
+export { AxonInferenceHandler } from './handler.js';
+export { AxonInferenceRouter } from './router.js';
 export type { InferenceRequest, InferenceResponse, InferenceStreamChunk, ModelInfo } from './types.js';

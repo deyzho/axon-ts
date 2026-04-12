@@ -1,5 +1,5 @@
 /**
- * PhonixInferenceRouter — selects the best provider for each inference request.
+ * AxonInferenceRouter — selects the best provider for each inference request.
  *
  * Scoring priority (cost strategy):
  *  1. io.net  — GPU, cheapest for large models (~$0.40/hr A100 spot)
@@ -7,7 +7,7 @@
  *  3. Acurast — TEE smartphone, private, lowest cost for small models
  */
 
-import type { PhonixInferenceConfig } from './types.js';
+import type { AxonInferenceConfig } from './types.js';
 
 export type InferenceProvider = 'ionet' | 'akash' | 'acurast';
 
@@ -20,11 +20,11 @@ interface ProviderRoute {
 
 const EMA_α = 0.2;
 
-export class PhonixInferenceRouter {
+export class AxonInferenceRouter {
   private routes: ProviderRoute[] = [];
   private readonly strategy: string;
 
-  constructor(config: PhonixInferenceConfig) {
+  constructor(config: AxonInferenceConfig) {
     this.strategy = config.strategy ?? 'cost';
 
     if (config.ionetEndpoint) {

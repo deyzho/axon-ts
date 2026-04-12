@@ -1,5 +1,5 @@
 /**
- * PhonixInferenceHandler — OpenAI-compatible HTTP handler.
+ * AxonInferenceHandler — OpenAI-compatible HTTP handler.
  *
  * Implements the OpenAI Chat Completions API surface:
  *   POST /v1/chat/completions   — chat completion (streaming + non-streaming)
@@ -10,33 +10,33 @@
  *
  * Example (Next.js App Router):
  *   // app/api/v1/chat/completions/route.ts
- *   import { PhonixInferenceHandler } from '@phonixsdk/inference';
- *   const handler = new PhonixInferenceHandler({ apiKey: process.env.PHONIX_SECRET_KEY, ... });
+ *   import { AxonInferenceHandler } from '@axonsdk/inference';
+ *   const handler = new AxonInferenceHandler({ apiKey: process.env.AXON_SECRET_KEY, ... });
  *   export const POST = (req: Request) => handler.handleRequest(req);
  */
 
-import { PhonixInferenceRouter } from './router.js';
-import type { PhonixInferenceConfig, InferenceRequest, InferenceResponse, ModelInfo } from './types.js';
+import { AxonInferenceRouter } from './router.js';
+import type { AxonInferenceConfig, InferenceRequest, InferenceResponse, ModelInfo } from './types.js';
 
 const SUPPORTED_MODELS: ModelInfo[] = [
-  { id: 'phonix-llama-3-70b',      object: 'model', created: 1700000000, owned_by: 'phonixsdk', provider: 'ionet' },
-  { id: 'phonix-mistral-7b',       object: 'model', created: 1700000000, owned_by: 'phonixsdk', provider: 'ionet' },
-  { id: 'phonix-llama-3-8b',       object: 'model', created: 1700000000, owned_by: 'phonixsdk', provider: 'akash' },
-  { id: 'phonix-tee-phi-3-mini',   object: 'model', created: 1700000000, owned_by: 'phonixsdk', provider: 'acurast' },
+  { id: 'axon-llama-3-70b',      object: 'model', created: 1700000000, owned_by: 'axonsdk', provider: 'ionet' },
+  { id: 'axon-mistral-7b',       object: 'model', created: 1700000000, owned_by: 'axonsdk', provider: 'ionet' },
+  { id: 'axon-llama-3-8b',       object: 'model', created: 1700000000, owned_by: 'axonsdk', provider: 'akash' },
+  { id: 'axon-tee-phi-3-mini',   object: 'model', created: 1700000000, owned_by: 'axonsdk', provider: 'acurast' },
 ];
 
-export class PhonixInferenceHandler {
-  private router: PhonixInferenceRouter;
+export class AxonInferenceHandler {
+  private router: AxonInferenceRouter;
   private apiKey: string;
 
-  constructor(config: PhonixInferenceConfig) {
+  constructor(config: AxonInferenceConfig) {
     this.apiKey = config.apiKey;
-    this.router = new PhonixInferenceRouter(config);
+    this.router = new AxonInferenceRouter(config);
   }
 
   /**
    * Main entry point — routes incoming OpenAI-compatible requests to the
-   * appropriate Phonix provider.
+   * appropriate Axon provider.
    */
   async handleRequest(req: Request): Promise<Response> {
     // Auth check
@@ -100,7 +100,7 @@ export class PhonixInferenceHandler {
           headers: {
             'Content-Type': 'text/event-stream',
             'Cache-Control': 'no-cache',
-            'X-Phonix-Provider': route.provider,
+            'X-Axon-Provider': route.provider,
           },
         });
       }
@@ -111,7 +111,7 @@ export class PhonixInferenceHandler {
       return new Response(JSON.stringify(data), {
         headers: {
           'Content-Type': 'application/json',
-          'X-Phonix-Provider': route.provider,
+          'X-Axon-Provider': route.provider,
         },
       });
 

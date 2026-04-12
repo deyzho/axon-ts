@@ -1,20 +1,20 @@
 /**
- * phonix auth [provider] — credential setup wizard.
+ * axon auth [provider] — credential setup wizard.
  *
  * Guides the developer through generating and configuring credentials for a
  * specific provider. Reads and writes the project's .env file.
  *
  * Usage:
- *   phonix auth           — prompts for provider, then runs that wizard
- *   phonix auth acurast   — Acurast wallet + IPFS setup
- *   phonix auth fluence   — Fluence EVM wallet setup
- *   phonix auth koii      — Koii Solana-compatible wallet setup
+ *   axon auth           — prompts for provider, then runs that wizard
+ *   axon auth acurast   — Acurast wallet + IPFS setup
+ *   axon auth fluence   — Fluence EVM wallet setup
+ *   axon auth koii      — Koii Solana-compatible wallet setup
  */
 
 import { readFile, writeFile, access, chmod } from 'node:fs/promises';
 import { join } from 'node:path';
-import { generateP256KeyPair } from '@phonixsdk/sdk';
-import type { ProviderName } from '@phonixsdk/sdk';
+import { generateP256KeyPair } from '@axonsdk/sdk';
+import type { ProviderName } from '@axonsdk/sdk';
 
 async function getChalk() {
   return (await import('chalk')).default;
@@ -115,14 +115,14 @@ async function runAcurastAuth(cwd: string): Promise<void> {
   const updates: Record<string, string> = {};
 
   // ── 1. P256 secret key ────────────────────────────────────────────────────
-  if (!existing['PHONIX_SECRET_KEY']) {
+  if (!existing['AXON_SECRET_KEY']) {
     const spinner = ora('Generating P256 keypair...').start();
     const { secretKeyHex } = generateP256KeyPair();
-    updates['PHONIX_SECRET_KEY'] = secretKeyHex;
+    updates['AXON_SECRET_KEY'] = secretKeyHex;
     spinner.succeed('P256 keypair generated');
-    console.log(chalk.gray('    PHONIX_SECRET_KEY=' + secretKeyHex.slice(0, 16) + '...'));
+    console.log(chalk.gray('    AXON_SECRET_KEY=' + secretKeyHex.slice(0, 16) + '...'));
   } else {
-    console.log(chalk.green('  ✓ PHONIX_SECRET_KEY already set'));
+    console.log(chalk.green('  ✓ AXON_SECRET_KEY already set'));
   }
 
   // ── 2. Acurast mnemonic ───────────────────────────────────────────────────
@@ -153,7 +153,7 @@ async function runAcurastAuth(cwd: string): Promise<void> {
       const wordCount = mnemonic.trim().split(/\s+/).length;
       if (wordCount !== 12 && wordCount !== 24) {
         console.log(chalk.red(`  Error: a BIP-39 mnemonic must be exactly 12 or 24 words (got ${wordCount}).`));
-        console.log(chalk.gray('  Re-run \`phonix auth acurast\` and paste the correct mnemonic.'));
+        console.log(chalk.gray('  Re-run \`axon auth acurast\` and paste the correct mnemonic.'));
         return;
       }
       updates['ACURAST_MNEMONIC'] = mnemonic.trim();
@@ -168,7 +168,7 @@ async function runAcurastAuth(cwd: string): Promise<void> {
   if (!existing['ACURAST_IPFS_URL']) {
     console.log();
     console.log(chalk.bold('  IPFS endpoint'));
-    console.log(chalk.gray('  Phonix uploads your deployment bundle to IPFS before registering on-chain.'));
+    console.log(chalk.gray('  Axon uploads your deployment bundle to IPFS before registering on-chain.'));
     console.log();
     console.log(chalk.cyan('  Options:'));
     console.log('   a) Infura (free tier available):');
@@ -214,7 +214,7 @@ async function runAcurastAuth(cwd: string): Promise<void> {
 
   console.log();
   console.log(chalk.bold.green('  Acurast credentials configured.'));
-  console.log(chalk.gray('  Run: phonix deploy'));
+  console.log(chalk.gray('  Run: axon deploy'));
   console.log();
 }
 
@@ -231,14 +231,14 @@ async function runFluenceAuth(cwd: string): Promise<void> {
   const existing = await readEnv(cwd);
   const updates: Record<string, string> = {};
 
-  // Generate or detect PHONIX_SECRET_KEY
-  if (!existing['PHONIX_SECRET_KEY']) {
+  // Generate or detect AXON_SECRET_KEY
+  if (!existing['AXON_SECRET_KEY']) {
     const spinner = ora('Generating P256 keypair...').start();
     const { secretKeyHex } = generateP256KeyPair();
-    updates['PHONIX_SECRET_KEY'] = secretKeyHex;
+    updates['AXON_SECRET_KEY'] = secretKeyHex;
     spinner.succeed('P256 keypair generated');
   } else {
-    console.log(chalk.green('  ✓ PHONIX_SECRET_KEY already set'));
+    console.log(chalk.green('  ✓ AXON_SECRET_KEY already set'));
   }
 
   // Generate Fluence EVM private key
@@ -293,7 +293,7 @@ async function runFluenceAuth(cwd: string): Promise<void> {
 
   console.log();
   console.log(chalk.bold.green('  Fluence credentials configured.'));
-  console.log(chalk.gray('  Run: phonix deploy'));
+  console.log(chalk.gray('  Run: axon deploy'));
   console.log();
 }
 
@@ -311,14 +311,14 @@ async function runKoiiAuth(cwd: string): Promise<void> {
   const existing = await readEnv(cwd);
   const updates: Record<string, string> = {};
 
-  // Generate or detect PHONIX_SECRET_KEY
-  if (!existing['PHONIX_SECRET_KEY']) {
+  // Generate or detect AXON_SECRET_KEY
+  if (!existing['AXON_SECRET_KEY']) {
     const spinner = ora('Generating P256 keypair...').start();
     const { secretKeyHex } = generateP256KeyPair();
-    updates['PHONIX_SECRET_KEY'] = secretKeyHex;
+    updates['AXON_SECRET_KEY'] = secretKeyHex;
     spinner.succeed('P256 keypair generated');
   } else {
-    console.log(chalk.green('  ✓ PHONIX_SECRET_KEY already set'));
+    console.log(chalk.green('  ✓ AXON_SECRET_KEY already set'));
   }
 
   // Generate Koii Solana-compatible keypair
@@ -388,7 +388,7 @@ async function runKoiiAuth(cwd: string): Promise<void> {
 
   console.log();
   console.log(chalk.bold.green('  Koii credentials configured.'));
-  console.log(chalk.gray('  Run: phonix deploy'));
+  console.log(chalk.gray('  Run: axon deploy'));
   console.log();
 }
 
@@ -413,7 +413,7 @@ async function runAkashAuth(cwd: string): Promise<void> {
     console.log();
     console.log(chalk.cyan('  Options:'));
     console.log('   a) Create a new wallet with the Akash CLI:');
-    console.log(chalk.white('      provider-services keys add phonix'));
+    console.log(chalk.white('      provider-services keys add axon'));
     console.log('   b) Import an existing mnemonic from Keplr or another Cosmos wallet.');
     console.log('   c) Fund testnet wallet (AKT) at:');
     console.log(chalk.white('      https://faucet.sandbox-01.aksh.pw'));
@@ -432,7 +432,7 @@ async function runAkashAuth(cwd: string): Promise<void> {
       const wordCount = mnemonic.trim().split(/\s+/).length;
       if (wordCount !== 12 && wordCount !== 24) {
         console.log(chalk.red(`  Error: a BIP-39 mnemonic must be exactly 12 or 24 words (got ${wordCount}).`));
-        console.log(chalk.gray('  Re-run \`phonix auth akash\` and paste the correct mnemonic.'));
+        console.log(chalk.gray('  Re-run \`axon auth akash\` and paste the correct mnemonic.'));
         return;
       }
       updates['AKASH_MNEMONIC'] = mnemonic.trim();
@@ -447,7 +447,7 @@ async function runAkashAuth(cwd: string): Promise<void> {
   if (!existing['AKASH_IPFS_URL'] && !existing['ACURAST_IPFS_URL']) {
     console.log();
     console.log(chalk.bold('  IPFS endpoint'));
-    console.log(chalk.gray('  Phonix uploads your bundle to IPFS; the Akash container fetches it at startup.'));
+    console.log(chalk.gray('  Axon uploads your bundle to IPFS; the Akash container fetches it at startup.'));
     console.log();
     console.log(chalk.cyan('  Options:'));
     console.log('   a) Infura (free tier): https://app.infura.io  →  IPFS section');
@@ -483,8 +483,8 @@ async function runAkashAuth(cwd: string): Promise<void> {
   if (!existing['AKASH_NODE']) {
     updates['AKASH_NODE'] = 'https://rpc.akashnet.net:443';
     updates['AKASH_CHAIN_ID'] = 'akashnet-2';
-    updates['AKASH_KEY_NAME'] = 'phonix';
-    console.log(chalk.gray('  Defaults set: AKASH_NODE=https://rpc.akashnet.net:443, AKASH_KEY_NAME=phonix'));
+    updates['AKASH_KEY_NAME'] = 'axon';
+    console.log(chalk.gray('  Defaults set: AKASH_NODE=https://rpc.akashnet.net:443, AKASH_KEY_NAME=axon'));
   }
 
   if (Object.keys(updates).length > 0) {
@@ -499,7 +499,7 @@ async function runAkashAuth(cwd: string): Promise<void> {
   console.log(chalk.bold.green('  Akash credentials configured.'));
   console.log(chalk.gray('  Make sure provider-services CLI is installed:'));
   console.log(chalk.white('    https://docs.akash.network/guides/cli/akash-provider-services'));
-  console.log(chalk.gray('  Then run: phonix deploy'));
+  console.log(chalk.gray('  Then run: axon deploy'));
   console.log();
 }
 
@@ -541,7 +541,7 @@ export async function runAuth(
   try {
     await access(join(cwd, '.env'));
   } catch {
-    await writeFile(join(cwd, '.env'), '# Phonix environment variables\n', 'utf8');
+    await writeFile(join(cwd, '.env'), '# Axon environment variables\n', 'utf8');
   }
 
   switch (resolvedProvider) {
@@ -575,7 +575,7 @@ async function enforceGitignore(cwd: string, chalk: Awaited<ReturnType<typeof ge
     content = await readFile(gitignorePath, 'utf8');
   } catch {
     // .gitignore doesn't exist yet — create it with .env entry
-    await writeFile(gitignorePath, '# Phonix secrets — never commit!\n.env\n', 'utf8');
+    await writeFile(gitignorePath, '# Axon secrets — never commit!\n.env\n', 'utf8');
     console.log(chalk.green('  ✓ Created .gitignore with .env entry'));
     return;
   }
@@ -583,7 +583,7 @@ async function enforceGitignore(cwd: string, chalk: Awaited<ReturnType<typeof ge
   const lines = content.split('\n').map((l) => l.trim());
   const alreadyIgnored = lines.some((l) => l === '.env' || l === '**/.env');
   if (!alreadyIgnored) {
-    const newContent = content.trimEnd() + '\n\n# Phonix secrets — never commit!\n.env\n';
+    const newContent = content.trimEnd() + '\n\n# Axon secrets — never commit!\n.env\n';
     await writeFile(gitignorePath, newContent, 'utf8');
     console.log(chalk.green('  ✓ Added .env to .gitignore'));
   }

@@ -1,52 +1,101 @@
-# Phonix SDK
+# Axon SDK
 
 **Deploy AI to the edge. Any network, any device, one SDK.**
 
-Phonix is the deployment layer for edge AI. Run inference on decentralised compute networks — automatically routed to the fastest, cheapest option. One SDK. Zero lock-in.
+Axon is the deployment layer for edge AI. Run inference on decentralised compute networks — automatically routed to the fastest, cheapest option. One SDK. Zero lock-in.
 
-Tired of OpenAI pricing? Need private inference? Building a dApp that requires reliable compute without AWS dependency? Phonix routes your AI workloads to the best available edge compute — GPU clusters, TEE smartphones, container clouds — with a single interface across [io.net](https://io.net), [Akash Network](https://akash.network), [Acurast](https://acurast.com), [Fluence](https://fluence.network), and [Koii](https://koii.network).
+Tired of OpenAI pricing? Need private inference? Building a dApp that requires reliable compute without AWS dependency? Axon routes your AI workloads to the best available edge compute — GPU clusters, TEE smartphones, container clouds — with a single interface across [io.net](https://io.net), [Akash Network](https://akash.network), [Acurast](https://acurast.com), [Fluence](https://fluence.network), and [Koii](https://koii.network).
 
-Drop in the OpenAI-compatible `@phonixsdk/inference` package and your existing code routes through decentralised GPU in two lines. Call your deployed processors directly from **iOS and Android** apps with `@phonixsdk/mobile`.
+Drop in the OpenAI-compatible `@axonsdk/inference` package and your existing code routes through decentralised GPU in two lines. Call your deployed processors directly from **iOS and Android** apps with `@axonsdk/mobile`.
 
-> Phonix is to edge compute what Ethers.js is to EVM chains: **one interface, any provider**.
+> Axon is to edge compute what Ethers.js is to EVM chains: **one interface, any provider**.
 
 ---
 
 ## Supported providers
 
+### Edge & Decentralised compute
+
 | Provider | Status | Nodes | Runtime | Token |
 |---|---|---|---|---|
-| [io.net](https://io.net) | ✅ Supported | GPU clusters (A100, H100, RTX) | nodejs | IO |
-| [Akash Network](https://akash.network) | ✅ Supported | Decentralised container marketplace | nodejs | AKT |
+| [io.net](https://io.net) | ✅ Supported | GPU clusters (A100, H100, RTX) | nodejs, python | IO |
+| [Akash Network](https://akash.network) | ✅ Supported | Decentralised container marketplace | nodejs, docker | AKT |
 | [Acurast](https://acurast.com) | ✅ Supported | 237k+ smartphones (TEE) | nodejs, wasm | ACU |
 | [Fluence](https://fluence.network) | ✅ Supported | Decentralised serverless cloud | nodejs | FLT |
 | [Koii](https://koii.network) | ✅ Supported | Community compute task nodes | nodejs | KOII |
 
-> **Provider health dashboard:** Real-time status and latency for all five networks → [status.phonixsdk.dev](https://status.phonixsdk.dev)
+### Cloud providers *(coming soon)*
+
+| Provider | Status | Services | Runtime |
+|---|---|---|---|
+| [AWS](https://aws.amazon.com) | 🔜 Coming soon | Lambda, ECS / Fargate, EC2 | python, nodejs, docker |
+| [Google Cloud](https://cloud.google.com) | 🔜 Coming soon | Cloud Run, Cloud Functions | python, nodejs, docker |
+| [Azure](https://azure.microsoft.com) | 🔜 Coming soon | Container Instances, Functions | python, nodejs, docker |
+| [Cloudflare Workers](https://workers.cloudflare.com) | 🔜 Coming soon | Workers, R2, AI Gateway | nodejs, wasm |
+| [Fly.io](https://fly.io) | 🔜 Coming soon | Fly Machines | python, nodejs, docker |
+
+> **Provider health dashboard:** Real-time status and latency for all networks → [status.axonsdk.dev](https://status.axonsdk.dev)
 
 ---
 
-## Quick start
+## Python SDK
+
+Axon ships a Python-first SDK for AI/ML engineers and data scientists. It exposes the same provider interface, routing engine, and OpenAI-compatible inference handler — all in idiomatic async Python.
+
+```bash
+pip install axon              # core SDK
+pip install axon[inference]   # + FastAPI OpenAI-compatible server
+```
+
+```python
+from axon import AxonClient, AxonRouter, RoutingStrategy
+
+# Single provider
+async with AxonClient(provider="ionet", secret_key="...") as client:
+    deployment = await client.deploy(config)
+    await client.send(deployment.id, {"prompt": "Hello"})
+
+# Multi-provider with auto-routing
+async with AxonRouter(
+    providers=["ionet", "akash", "acurast"],
+    secret_key="...",
+    strategy=RoutingStrategy.LATENCY,
+) as router:
+    deployment = await router.deploy(config)
+```
+
+```bash
+axon init       # interactive project setup
+axon auth ionet # configure credentials
+axon deploy     # deploy your workload
+axon status     # list active deployments
+```
+
+> The Python SDK is the primary implementation. The TypeScript packages below are the alternative track for JavaScript/TypeScript and React Native developers.
+
+---
+
+## Quick start (TypeScript / Node.js)
 
 ### 1. Install the CLI
 
 ```bash
-npm install -g @phonixsdk/cli
+npm install -g @axonsdk/cli
 ```
 
 ### 2. Initialise a new project
 
 ```bash
 mkdir my-edge-app && cd my-edge-app
-phonix init
+axon init
 ```
 
-This will prompt you for a project name, provider, and template (inference / oracle / blank), then generate `phonix.json`, `.env`, and `src/index.ts`.
+This will prompt you for a project name, provider, and template (inference / oracle / blank), then generate `axon.json`, `.env`, and `src/index.ts`.
 
 ### 3. Configure credentials
 
 ```bash
-phonix auth
+axon auth
 ```
 
 The interactive wizard generates and stores all required keys and endpoints for your chosen provider. Your `.env` is automatically added to `.gitignore` and locked to owner-only permissions.
@@ -54,7 +103,7 @@ The interactive wizard generates and stores all required keys and endpoints for 
 ### 4. Test locally
 
 ```bash
-phonix run-local
+axon run-local
 ```
 
 Runs your script in a local mock environment — simulates WebSocket messages, real HTTPS requests, and the provider runtime API without touching the network.
@@ -62,7 +111,7 @@ Runs your script in a local mock environment — simulates WebSocket messages, r
 ### 5. Deploy
 
 ```bash
-phonix deploy
+axon deploy
 ```
 
 Bundles your script, uploads it to IPFS, and registers the deployment on-chain (or submits the SDL to Akash's marketplace).
@@ -79,11 +128,11 @@ Bundles your script, uploads it to IPFS, and registers the deployment on-chain (
 ### 6. Call from your dApp
 
 ```typescript
-import { PhonixClient } from '@phonixsdk/sdk';
+import { AxonClient } from '@axonsdk/sdk';
 
-const client = new PhonixClient({
+const client = new AxonClient({
   provider: 'ionet', // 'ionet' | 'akash' | 'acurast' | 'fluence' | 'koii'
-  secretKey: process.env.PHONIX_SECRET_KEY,
+  secretKey: process.env.AXON_SECRET_KEY,
 });
 
 await client.connect();
@@ -107,13 +156,13 @@ client.disconnect();
 
 | Command | Description |
 |---|---|
-| `phonix init` | Interactive setup — generates `phonix.json`, `.env`, and template files |
-| `phonix auth [provider]` | Credential wizard — generates and stores keys for the selected provider |
-| `phonix deploy` | Bundle, upload to IPFS, and register deployment |
-| `phonix run-local` | Run your script locally with a mock provider runtime |
-| `phonix status` | List deployments, processor IDs, and live status |
-| `phonix send <id> <msg>` | Send a test message to a processor node |
-| `phonix template list` | Show available built-in templates |
+| `axon init` | Interactive setup — generates `axon.json`, `.env`, and template files |
+| `axon auth [provider]` | Credential wizard — generates and stores keys for the selected provider |
+| `axon deploy` | Bundle, upload to IPFS, and register deployment |
+| `axon run-local` | Run your script locally with a mock provider runtime |
+| `axon status` | List deployments, processor IDs, and live status |
+| `axon send <id> <msg>` | Send a test message to a processor node |
+| `axon template list` | Show available built-in templates |
 
 Supported values for `[provider]`: `ionet`, `akash`, `acurast`, `fluence`, `koii`
 
@@ -122,12 +171,12 @@ Supported values for `[provider]`: `ionet`, `akash`, `acurast`, `fluence`, `koii
 ## SDK reference
 
 ```typescript
-import { PhonixClient } from '@phonixsdk/sdk';
-import type { DeploymentConfig } from '@phonixsdk/sdk';
+import { AxonClient } from '@axonsdk/sdk';
+import type { DeploymentConfig } from '@axonsdk/sdk';
 
-const client = new PhonixClient({
+const client = new AxonClient({
   provider: 'ionet',  // 'ionet' | 'akash' | 'acurast' | 'fluence' | 'koii'
-  secretKey: process.env.PHONIX_SECRET_KEY,
+  secretKey: process.env.AXON_SECRET_KEY,
 });
 
 await client.connect();
@@ -168,19 +217,19 @@ client.disconnect();
 
 ## OpenAI-compatible inference endpoint
 
-`@phonixsdk/inference` is a drop-in OpenAI-compatible HTTP handler that routes chat completion requests through Phonix's decentralised GPU and TEE compute network. If you're already using the `openai` npm package, switching takes two lines:
+`@axonsdk/inference` is a drop-in OpenAI-compatible HTTP handler that routes chat completion requests through Axon's decentralised GPU and TEE compute network. If you're already using the `openai` npm package, switching takes two lines:
 
 ```typescript
 import OpenAI from 'openai';
 
 const client = new OpenAI({
-  baseURL: 'https://your-api.example.com/v1', // your Phonix inference handler URL
-  apiKey:  process.env.PHONIX_SECRET_KEY,
+  baseURL: 'https://your-api.example.com/v1', // your Axon inference handler URL
+  apiKey:  process.env.AXON_SECRET_KEY,
 });
 
 // Everything else stays identical
 const response = await client.chat.completions.create({
-  model:    'phonix-llama-3-70b',
+  model:    'axon-llama-3-70b',
   messages: [{ role: 'user', content: 'Explain edge AI in one paragraph.' }],
 });
 ```
@@ -189,23 +238,23 @@ const response = await client.chat.completions.create({
 
 | Model ID | Provider | Notes |
 |---|---|---|
-| `phonix-llama-3-70b` | io.net | GPU, A100 spot — best for large context |
-| `phonix-mistral-7b`  | io.net | GPU, cost-efficient |
-| `phonix-llama-3-8b`  | Akash  | Container cloud, moderate cost |
-| `phonix-tee-phi-3-mini` | Acurast | TEE smartphone, private, lowest cost |
+| `axon-llama-3-70b` | io.net | GPU, A100 spot — best for large context |
+| `axon-mistral-7b`  | io.net | GPU, cost-efficient |
+| `axon-llama-3-8b`  | Akash  | Container cloud, moderate cost |
+| `axon-tee-phi-3-mini` | Acurast | TEE smartphone, private, lowest cost |
 
 ### Setup (Next.js App Router)
 
 ```bash
-npm install @phonixsdk/inference
+npm install @axonsdk/inference
 ```
 
 ```typescript
 // app/api/v1/chat/completions/route.ts
-import { PhonixInferenceHandler } from '@phonixsdk/inference';
+import { AxonInferenceHandler } from '@axonsdk/inference';
 
-const handler = new PhonixInferenceHandler({
-  apiKey:        process.env.PHONIX_SECRET_KEY!,
+const handler = new AxonInferenceHandler({
+  apiKey:        process.env.AXON_SECRET_KEY!,
   ionetEndpoint: process.env.IONET_ENDPOINT!,
   akashEndpoint: process.env.AKASH_ENDPOINT,
   acurastWsUrl:  process.env.ACURAST_WS_URL,
@@ -220,28 +269,28 @@ The handler implements:
 - `POST /v1/chat/completions` — streaming (SSE) and non-streaming
 - `GET  /v1/models` — returns available model list
 - Bearer auth, failover on provider error, 30-second auto-recovery
-- `X-Phonix-Provider` response header so you can see which network served each request
+- `X-Axon-Provider` response header so you can see which network served each request
 
 ---
 
 ## Provider health dashboard
 
-Real-time latency, health scores, and status for all five Phonix providers — updated every 5 minutes:
+Real-time latency, health scores, and status for all five Axon providers — updated every 5 minutes:
 
-**[status.phonixsdk.dev](https://status.phonixsdk.dev)**
+**[status.axonsdk.dev](https://status.axonsdk.dev)**
 
 ---
 
 ## Multi-provider Router
 
-`PhonixRouter` routes requests across multiple DePIN providers simultaneously, picking the best one on every call based on real-time health data.
+`AxonRouter` routes requests across multiple DePIN providers simultaneously, picking the best one on every call based on real-time health data.
 
 ```typescript
-import { PhonixRouter } from '@phonixsdk/sdk';
+import { AxonRouter } from '@axonsdk/sdk';
 
-const router = new PhonixRouter({
+const router = new AxonRouter({
   providers: ['akash', 'acurast'],
-  secretKey: process.env.PHONIX_SECRET_KEY,
+  secretKey: process.env.AXON_SECRET_KEY,
 
   // Routing strategy: 'balanced' | 'latency' | 'availability' | 'cost' | 'round-robin'
   strategy: 'latency',
@@ -314,33 +363,33 @@ router.disconnect();
 
 ## Mobile SDK (iOS & Android)
 
-`@phonixsdk/mobile` is a React Native / Expo package that lets you call your deployed Phonix processors directly from iOS and Android apps.
+`@axonsdk/mobile` is a React Native / Expo package that lets you call your deployed Axon processors directly from iOS and Android apps.
 
 ```bash
-npm install @phonixsdk/mobile
+npm install @axonsdk/mobile
 ```
 
 ### Quick start — Expo / React Native
 
 ```tsx
 // App.tsx — wrap your root once
-import { PhonixProvider } from '@phonixsdk/mobile';
+import { AxonProvider } from '@axonsdk/mobile';
 
 export default function App() {
   return (
-    <PhonixProvider provider="akash" secretKey={PHONIX_SECRET_KEY} autoConnect>
+    <AxonProvider provider="akash" secretKey={AXON_SECRET_KEY} autoConnect>
       <NavigationContainer>
         <MainStack />
       </NavigationContainer>
-    </PhonixProvider>
+    </AxonProvider>
   );
 }
 
 // AnyScreen.tsx — access from anywhere in the tree
-import { usePhonixContext, useMessages, useSend } from '@phonixsdk/mobile';
+import { useAxonContext, useMessages, useSend } from '@axonsdk/mobile';
 
 export function InferenceScreen() {
-  const { client, connected } = usePhonixContext();
+  const { client, connected } = useAxonContext();
   const messages = useMessages(client);
   const { send, sending } = useSend(client);
 
@@ -362,12 +411,12 @@ export function InferenceScreen() {
 ### Without context — standalone hooks
 
 ```tsx
-import { usePhonix, useMessages } from '@phonixsdk/mobile';
+import { useAxon, useMessages } from '@axonsdk/mobile';
 
 function Screen() {
-  const { client, connected, connect, error } = usePhonix({
+  const { client, connected, connect, error } = useAxon({
     provider: 'akash',
-    secretKey: PHONIX_SECRET_KEY,
+    secretKey: AXON_SECRET_KEY,
   });
   const messages = useMessages(client);
 
@@ -378,7 +427,7 @@ function Screen() {
 ### Secure key storage
 
 ```tsx
-import { SecureKeyStorage } from '@phonixsdk/mobile';
+import { SecureKeyStorage } from '@axonsdk/mobile';
 
 const storage = new SecureKeyStorage();
 await storage.saveSecretKey(myKey); // iOS Keychain / Android Keystore
@@ -390,10 +439,10 @@ const key = await storage.loadSecretKey();
 Route across multiple DePIN endpoints from your React Native app with the same circuit-breaker and health-scoring logic as the server SDK:
 
 ```tsx
-import { usePhonixRouter } from '@phonixsdk/mobile';
+import { useAxonRouter } from '@axonsdk/mobile';
 
 function App() {
-  const { router, connected, health } = usePhonixRouter({
+  const { router, connected, health } = useAxonRouter({
     routes: [
       { provider: 'akash',   endpoint: 'https://lease.akash.example.com', secretKey },
       { provider: 'acurast', endpoint: 'wss://proxy.acurast.com',          secretKey },
@@ -418,19 +467,19 @@ AppState listeners are attached automatically — the router pauses on backgroun
 
 | Export | Description |
 |---|---|
-| `MobilePhonixClient` | Messaging-only client (no deploy/esbuild, works in Hermes/JSC) |
-| `MobilePhonixRouter` | Multi-provider router with circuit breakers and health scoring |
-| `usePhonix(options)` | Hook — manages client lifecycle, returns `{ client, connected, connect, disconnect, error }` |
-| `usePhonixRouter(config)` | Hook — manages router lifecycle, returns `{ router, connected, health, connect, disconnect }` |
+| `MobileAxonClient` | Messaging-only client (no deploy/esbuild, works in Hermes/JSC) |
+| `MobileAxonRouter` | Multi-provider router with circuit breakers and health scoring |
+| `useAxon(options)` | Hook — manages client lifecycle, returns `{ client, connected, connect, disconnect, error }` |
+| `useAxonRouter(config)` | Hook — manages router lifecycle, returns `{ router, connected, health, connect, disconnect }` |
 | `useMessages(client)` | Hook — subscribes to messages, returns reactive `Message[]` array (newest first) |
 | `useSend(client)` | Hook — wraps `client.send()` with `sending` / `sendError` state |
-| `PhonixProvider` | React context — provides client to the full component tree |
-| `usePhonixContext()` | Consumes the PhonixProvider context |
+| `AxonProvider` | React context — provides client to the full component tree |
+| `useAxonContext()` | Consumes the AxonProvider context |
 | `SecureKeyStorage` | Persists keys via iOS Keychain / Android Keystore (`expo-secure-store`) |
 
-**Supported providers in `@phonixsdk/mobile`:** `'akash'` (HTTP), `'acurast'` (WebSocket), `'http'` (generic HTTPS)
+**Supported providers in `@axonsdk/mobile`:** `'akash'` (HTTP), `'acurast'` (WebSocket), `'http'` (generic HTTPS)
 
-> Deploy your processors with `phonix deploy` on your development machine. The mobile SDK handles calling them — not deploying.
+> Deploy your processors with `axon deploy` on your development machine. The mobile SDK handles calling them — not deploying.
 
 ---
 
@@ -439,7 +488,7 @@ AppState listeners are attached automatically — the router pauses on backgroun
 ### io.net
 
 ```bash
-phonix auth ionet
+axon auth ionet
 ```
 
 Requires an io.net API key. Get one at [cloud.io.net](https://cloud.io.net) → API Keys.
@@ -462,7 +511,7 @@ Requires an io.net API key. Get one at [cloud.io.net](https://cloud.io.net) → 
 ### Acurast
 
 ```bash
-phonix auth acurast
+axon auth acurast
 ```
 
 Requires a Polkadot-compatible wallet mnemonic (12 or 24 words) and an IPFS endpoint. Get a wallet at [console.acurast.com](https://console.acurast.com) and testnet tokens at [faucet.acurast.com](https://faucet.acurast.com).
@@ -474,7 +523,7 @@ Requires a Polkadot-compatible wallet mnemonic (12 or 24 words) and an IPFS endp
 ### Fluence
 
 ```bash
-phonix auth fluence
+axon auth fluence
 ```
 
 Requires an EVM-compatible private key (hex). The wizard generates one automatically and prints the address so you can fund it.
@@ -486,7 +535,7 @@ Requires an EVM-compatible private key (hex). The wizard generates one automatic
 ### Koii
 
 ```bash
-phonix auth koii
+axon auth koii
 ```
 
 Requires a Solana-compatible keypair (base58). The wizard generates one automatically.
@@ -498,14 +547,14 @@ Requires a Solana-compatible keypair (base58). The wizard generates one automati
 ### Akash Network
 
 ```bash
-phonix auth akash
+axon auth akash
 ```
 
 Requires a BIP-39 wallet mnemonic (12 or 24 words) and an IPFS endpoint. The wizard stores your mnemonic and configures the RPC node and chain ID automatically.
 
 **Required `.env` keys:** `AKASH_MNEMONIC`, `AKASH_IPFS_URL`
 
-**Optional `.env` keys:** `AKASH_IPFS_API_KEY`, `AKASH_NODE` (default: `https://rpc.akashnet.net:443`), `AKASH_CHAIN_ID` (default: `akashnet-2`), `AKASH_KEY_NAME` (default: `phonix`)
+**Optional `.env` keys:** `AKASH_IPFS_API_KEY`, `AKASH_NODE` (default: `https://rpc.akashnet.net:443`), `AKASH_CHAIN_ID` (default: `akashnet-2`), `AKASH_KEY_NAME` (default: `axon`)
 
 **Prerequisite:** The `provider-services` CLI must be installed:
 ```bash
@@ -533,7 +582,7 @@ Docs: [docs.akash.network/guides/cli/akash-provider-services](https://docs.akash
 
 ---
 
-## `phonix.json` reference
+## `axon.json` reference
 
 ```json
 {
@@ -573,11 +622,11 @@ Docs: [docs.akash.network/guides/cli/akash-provider-services](https://docs.akash
 ## Project structure
 
 ```
-phonix/
+axon/
 ├── packages/
-│   ├── cli/          # @phonixsdk/cli — command-line tool
-│   ├── inference/    # @phonixsdk/inference — OpenAI-compatible inference handler
-│   └── sdk/          # @phonixsdk/sdk — core library
+│   ├── cli/          # @axonsdk/cli — command-line tool
+│   ├── inference/    # @axonsdk/inference — OpenAI-compatible inference handler
+│   └── sdk/          # @axonsdk/sdk — core library
 │       └── src/
 │           ├── providers/
 │           │   ├── ionet/    # io.net GPU provider
@@ -588,7 +637,7 @@ phonix/
 │           └── runtime/
 │               └── adapters/ # Per-provider runtime bootstraps
 ├── status/
-│   └── index.html    # Provider health dashboard (status.phonixsdk.dev)
+│   └── index.html    # Provider health dashboard (status.axonsdk.dev)
 ├── templates/
 │   ├── inference/    # Confidential LLM inference
 │   └── oracle/       # Data oracle
@@ -602,8 +651,8 @@ phonix/
 
 ```bash
 # Clone
-git clone https://github.com/deyzho/phonixsdk.git
-cd phonix
+git clone https://github.com/deyzho/axonsdk.git
+cd axon
 
 # Install dependencies
 npm install
@@ -631,13 +680,13 @@ npx vitest run
 
 ## Security
 
-Phonix is designed to protect both developers and end users:
+Axon is designed to protect both developers and end users:
 
 - **Secrets never leave `.env`** — the auth wizard generates keys locally and stores them with `chmod 600`. They are never logged or transmitted.
 - **esbuild injection guard** — the deploy pipeline rejects any `environment` key that looks like a secret (`_KEY`, `_SECRET`, `_TOKEN`, `_MNEMONIC`, `_PASSWORD`) to prevent accidental bundle-time embedding of credentials.
 - **SSRF protection** — all HTTP calls (IPFS upload, Akash lease endpoints, Koii task nodes) validate URLs against a private-IP blocklist and enforce HTTPS.
 - **DNS rebinding defence** — the local mock runtime resolves hostnames to IPs via `dns.lookup()` before opening any TCP connection, then re-validates the resolved IP against the blocklist.
-- **Prototype pollution prevention** — remote JSON payloads are parsed with key blocklisting (`__proto__`, `constructor`, `prototype`) and `phonix.json` environment maps use `Object.create(null)`.
+- **Prototype pollution prevention** — remote JSON payloads are parsed with key blocklisting (`__proto__`, `constructor`, `prototype`) and `axon.json` environment maps use `Object.create(null)`.
 - **Response size caps** — all provider clients enforce a 1 MiB cap on remote responses; the mock runtime enforces a 4 MiB cap on HTTP bodies.
 - **SDL path traversal guard** — Akash deploy validates that the entry file path cannot escape the project directory before bundling.
 
@@ -665,4 +714,4 @@ MIT — see [LICENSE](./LICENSE).
 
 ---
 
-*Phonix is not affiliated with io.net, Akash Network, Acurast, Fluence, or Koii. Provider names and trademarks belong to their respective owners.*
+*Axon is not affiliated with io.net, Akash Network, Acurast, Fluence, or Koii. Provider names and trademarks belong to their respective owners.*

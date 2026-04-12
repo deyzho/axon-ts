@@ -1,14 +1,14 @@
 {
-  "name": "@phonixsdk/cli",
+  "name": "@axonsdk/cli",
   "version": "0.1.0",
-  "description": "Command-line tool for deploying and managing Phonix edge applications across DePIN networks.",
+  "description": "Command-line tool for deploying and managing Axon edge applications across DePIN networks.",
   "type": "module",
   "bin": {
-    "phonix": "./dist/index.js"
+    "axon": "./dist/index.js"
   },
   "main": "./dist/index.js",
   "keywords": [
-    "phonix",
+    "axon",
     "depin",
     "cli",
     "edge-compute",
@@ -20,16 +20,16 @@
     "tee",
     "confidential-computing"
   ],
-  "author": "Phonix <hello@phonix.dev>",
+  "author": "Axon <hello@axon.dev>",
   "license": "Apache-2.0",
-  "homepage": "https://phonix.dev",
+  "homepage": "https://axon.dev",
   "repository": {
     "type": "git",
-    "url": "https://github.com/deyzho/phonixsdk.git",
+    "url": "https://github.com/deyzho/axonsdk.git",
     "directory": "packages/cli"
   },
   "bugs": {
-    "url": "https://github.com/deyzho/phonixsdk/issues"
+    "url": "https://github.com/deyzho/axonsdk/issues"
   },
   "engines": {
     "node": ">=20.0.0"
@@ -41,7 +41,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@phonixsdk/sdk": "^0.2.0",
+    "@axonsdk/sdk": "^0.2.0",
     "chalk": "^5.0.0",
     "commander": "^12.0.0",
     "inquirer": "^8.2.6",

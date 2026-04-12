@@ -1,5 +1,5 @@
 /**
- * phonix template list — show available built-in templates.
+ * axon template list — show available built-in templates.
  */
 
 async function getChalk() {
@@ -50,7 +50,7 @@ export async function runTemplateList(): Promise<void> {
   const chalk = await getChalk();
 
   console.log();
-  console.log(chalk.bold('  Available Phonix templates:\n'));
+  console.log(chalk.bold('  Available Axon templates:\n'));
 
   const NAME_WIDTH = 10;
   const PROVIDER_WIDTH = 10;
@@ -83,12 +83,12 @@ export async function runTemplateList(): Promise<void> {
   console.log();
   console.log(
     chalk.gray('  Use a template:') +
-      chalk.white('  phonix init') +
+      chalk.white('  axon init') +
       chalk.gray('  (select at the prompt)')
   );
   console.log(
     chalk.gray('  Run locally:   ') +
-      chalk.white('  phonix run-local <template-name>')
+      chalk.white('  axon run-local <template-name>')
   );
   console.log();
 }

@@ -1,28 +1,28 @@
 /**
- * Copyright (c) 2024–present Phonix. All rights reserved.
+ * Copyright (c) 2024–present Axon. All rights reserved.
  *
  * PROPRIETARY AND CONFIDENTIAL
  *
- * This file contains trade secret algorithms that form the core of the Phonix
+ * This file contains trade secret algorithms that form the core of the Axon
  * routing engine. Unauthorized copying, distribution, modification, reverse
  * engineering, or disclosure — in whole or in part — is strictly prohibited
- * without prior written consent from Phonix.
+ * without prior written consent from Axon.
  *
- * For licensing enquiries contact: legal@phonix.dev
+ * For licensing enquiries contact: legal@axon.dev
  */
 
 /**
- * MobilePhonixRouter — multi-provider routing for React Native (iOS & Android).
+ * MobileAxonRouter — multi-provider routing for React Native (iOS & Android).
  *
  * Routes send() calls across multiple provider endpoints using the same strategy
  * engine as the server SDK: cost, latency, availability, or balanced scoring with
  * per-provider circuit breakers and health tracking.
  *
- * Deploy your processors with the Phonix CLI, then pass the endpoint URLs to this
+ * Deploy your processors with the Axon CLI, then pass the endpoint URLs to this
  * router in your mobile app so it automatically picks the best provider on each call.
  *
  * Example:
- *   const router = new MobilePhonixRouter({
+ *   const router = new MobileAxonRouter({
  *     routes: [
  *       { provider: 'akash',   endpoint: 'https://lease.akash.example.com', secretKey: '...' },
  *       { provider: 'acurast', endpoint: 'wss://proxy.acurast.com',          secretKey: '...' },
@@ -33,10 +33,10 @@
  *   await router.send({ prompt: 'Hello from my phone' });
  */
 
-import { MobilePhonixClient } from './client.js';
+import { MobileAxonClient } from './client.js';
 import type { MobileProviderName } from './client.js';
-import type { Message } from '@phonixsdk/sdk';
-import { PhonixError } from '@phonixsdk/sdk';
+import type { Message } from '@axonsdk/sdk';
+import { AxonError } from '@axonsdk/sdk';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -71,7 +71,7 @@ export interface MobileRouteHealth {
 
 interface RouteEntry {
   config: MobileRouteConfig;
-  client: MobilePhonixClient;
+  client: MobileAxonClient;
   failures: number;
   circuitOpen: boolean;
   lastOpenedAt: number;
@@ -86,7 +86,7 @@ const OPTIMISTIC_LATENCY = 500;
 
 // ─── Router ───────────────────────────────────────────────────────────────────
 
-export class MobilePhonixRouter {
+export class MobileAxonRouter {
   private routes: RouteEntry[] = [];
   private rrIndex = 0;
   private readonly strategy: MobileRoutingStrategy;
@@ -105,7 +105,7 @@ export class MobilePhonixRouter {
       retryDelayMs = 200,
     } = config;
 
-    if (routes.length === 0) throw new PhonixError('mobile', 'MobilePhonixRouter requires at least one route.');
+    if (routes.length === 0) throw new AxonError('mobile', 'MobileAxonRouter requires at least one route.');
 
     this.strategy = strategy;
     this.failureThreshold = failureThreshold;
@@ -116,7 +116,7 @@ export class MobilePhonixRouter {
     for (const r of routes) {
       this.routes.push({
         config: r,
-        client: new MobilePhonixClient({
+        client: new MobileAxonClient({
           provider: r.provider,
           secretKey: r.secretKey,
           wsUrl: r.wsUrl,
@@ -139,7 +139,7 @@ export class MobilePhonixRouter {
       this.routes.map(r => r.client.connect())
     );
     const anyOk = results.some(r => r.status === 'fulfilled');
-    if (!anyOk) throw new PhonixError('mobile', 'All routes failed to connect.');
+    if (!anyOk) throw new AxonError('mobile', 'All routes failed to connect.');
   }
 
   disconnect(): void {
@@ -159,7 +159,7 @@ export class MobilePhonixRouter {
 
   async send(payload: unknown, preferProvider?: MobileProviderName): Promise<void> {
     const ordered = this._rank(preferProvider);
-    if (ordered.length === 0) throw new PhonixError('mobile', 'No callable routes available.');
+    if (ordered.length === 0) throw new AxonError('mobile', 'No callable routes available.');
 
     let lastErr: unknown;
     for (let attempt = 0; attempt <= this.maxRetries; attempt++) {
@@ -182,7 +182,7 @@ export class MobilePhonixRouter {
       }
     }
 
-    throw lastErr ?? new PhonixError('mobile', 'send failed after retries');
+    throw lastErr ?? new AxonError('mobile', 'send failed after retries');
   }
 
   // ─── Message subscription ────────────────────────────────────────────────────

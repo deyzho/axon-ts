@@ -1,16 +1,16 @@
 'use client';
 
 /**
- * Phonix Next.js Example — Confidential Inference dApp
+ * Axon Next.js Example — Confidential Inference dApp
  *
- * The private key (PHONIX_SECRET_KEY) is held exclusively by the server.
- * This component never imports @phonixsdk/sdk — it only calls the server-side
- * API route at /api/phonix/send, which relays the message and returns the result.
+ * The private key (AXON_SECRET_KEY) is held exclusively by the server.
+ * This component never imports @axonsdk/sdk — it only calls the server-side
+ * API route at /api/axon/send, which relays the message and returns the result.
  *
  * Setup:
- *  1. Deploy the inference template: phonix deploy
+ *  1. Deploy the inference template: axon deploy
  *  2. Copy the processor ID from the deploy output
- *  3. Set PHONIX_SECRET_KEY in your .env.local  (NOT NEXT_PUBLIC_)
+ *  3. Set AXON_SECRET_KEY in your .env.local  (NOT NEXT_PUBLIC_)
  *  4. Set PROCESSOR_ID in your .env.local        (NOT NEXT_PUBLIC_)
  *  5. npm run dev
  */
@@ -35,7 +35,7 @@ function generateId(): string {
 
 // ─── Main page component ──────────────────────────────────────────────────────
 
-export default function PhonixDemoPage() {
+export default function AxonDemoPage() {
   const [prompt, setPrompt] = useState('');
   const [messages, setMessages] = useState<InferenceMessage[]>([]);
   const [sending, setSending] = useState(false);
@@ -64,7 +64,7 @@ export default function PhonixDemoPage() {
     try {
       // The private key lives only on the server — this fetch is the only
       // client→network call this page makes.
-      const res = await fetch('/api/phonix/send', {
+      const res = await fetch('/api/axon/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ processorId: processorId.trim(), prompt: trimmedPrompt, requestId }),
@@ -120,7 +120,7 @@ export default function PhonixDemoPage() {
       {/* Header */}
       <div style={{ marginBottom: '2rem' }}>
         <h1 style={{ fontSize: '1.75rem', fontWeight: 700, color: '#fff', margin: 0 }}>
-          Phonix Inference Demo
+          Axon Inference Demo
         </h1>
         <p style={{ color: '#888', marginTop: '0.5rem', fontSize: '0.95rem' }}>
           Confidential LLM inference on Acurast smartphone nodes
@@ -144,7 +144,7 @@ export default function PhonixDemoPage() {
           type="text"
           value={processorId}
           onChange={(e) => setProcessorId(e.target.value)}
-          placeholder="0xabc... (from phonix status)"
+          placeholder="0xabc... (from axon status)"
           style={{
             width: '100%',
             padding: '0.5rem 0.75rem',
@@ -311,7 +311,7 @@ export default function PhonixDemoPage() {
         <br />
         <br />
         <a
-          href="https://github.com/phonix-sdk/phonix"
+          href="https://github.com/axon-sdk/axon"
           style={{ color: '#6366f1', textDecoration: 'none' }}
           target="_blank"
           rel="noopener noreferrer"

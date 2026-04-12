@@ -1,7 +1,7 @@
 /**
- * MobilePhonixClient — messaging-only client for React Native (iOS & Android).
+ * MobileAxonClient — messaging-only client for React Native (iOS & Android).
  *
- * The full @phonixsdk/sdk PhonixClient handles deploy, estimate, and bundling via
+ * The full @axonsdk/sdk AxonClient handles deploy, estimate, and bundling via
  * esbuild and Node.js child_process — none of which exist in React Native's
  * Hermes/JSC runtimes. This client handles only the MESSAGING half of the SDK:
  * connecting, sending payloads, and receiving results.
@@ -11,7 +11,7 @@
  *  - 'acurast' — WebSocket to the Acurast proxy (WebSocket is native in RN)
  *  - 'http'    — Generic HTTPS POST for custom endpoints
  *
- * Deploy your processors with the Phonix CLI on your development machine, then
+ * Deploy your processors with the Axon CLI on your development machine, then
  * call them from your iOS/Android app using this client.
  *
  * Security:
@@ -21,14 +21,14 @@
  *  - AppState integration auto-disconnects on background, reconnects on foreground
  */
 
-import type { Message } from '@phonixsdk/sdk';
-import { PhonixError } from '@phonixsdk/sdk';
+import type { Message } from '@axonsdk/sdk';
+import { AxonError } from '@axonsdk/sdk';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 export type MobileProviderName = 'acurast' | 'akash' | 'http';
 
-export interface MobilePhonixClientOptions {
+export interface MobileAxonClientOptions {
   /**
    * The provider your processors are deployed on.
    *  - 'akash'   — uses HTTP POST to the Akash lease endpoint
@@ -69,17 +69,17 @@ function assertSafeEndpoint(endpoint: string, label = 'Endpoint'): void {
   try {
     parsed = new URL(endpoint);
   } catch {
-    throw new PhonixError('mobile', `${label} is not a valid URL: "${endpoint}"`);
+    throw new AxonError('mobile', `${label} is not a valid URL: "${endpoint}"`);
   }
   if (parsed.protocol !== 'https:' && parsed.protocol !== 'wss:') {
-    throw new PhonixError(
+    throw new AxonError(
       'mobile',
       `${label} must use https:// or wss:// (got "${parsed.protocol}"). ` +
         'Plain HTTP/WS transmits payloads in cleartext.'
     );
   }
   if (PRIVATE_HOST_RE.test(parsed.hostname)) {
-    throw new PhonixError(
+    throw new AxonError(
       'mobile',
       `${label} hostname "${parsed.hostname}" resolves to a private/internal address. ` +
         'Requests to internal infrastructure are blocked.'
@@ -99,7 +99,7 @@ function safeParseJson(str: string): unknown {
   if (parsed !== null && typeof parsed === 'object') {
     for (const key of Object.keys(parsed as object)) {
       if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
-        throw new PhonixError(
+        throw new AxonError(
           'mobile',
           `Rejected remote payload: contains prototype-polluting key "${key}".`
         );
@@ -111,17 +111,17 @@ function safeParseJson(str: string): unknown {
 
 // ─── Client ───────────────────────────────────────────────────────────────────
 
-export class MobilePhonixClient {
+export class MobileAxonClient {
   private ws: WebSocket | null = null;
   private messageHandlers: Array<(msg: Message) => void> = [];
   private _connected = false;
   private appStateSubscription: { remove(): void } | null = null;
-  private readonly options: MobilePhonixClientOptions;
+  private readonly options: MobileAxonClientOptions;
   private readonly maxResponseBytes: number;
 
-  constructor(options: MobilePhonixClientOptions) {
+  constructor(options: MobileAxonClientOptions) {
     if (!options.secretKey || options.secretKey.trim() === '') {
-      throw new PhonixError('mobile', 'secretKey is required and must not be empty.');
+      throw new AxonError('mobile', 'secretKey is required and must not be empty.');
     }
     this.options = options;
     this.maxResponseBytes = options.maxResponseBytes ?? 1 * 1024 * 1024;
@@ -154,7 +154,7 @@ export class MobilePhonixClient {
 
       const timeout = setTimeout(() => {
         ws.close();
-        reject(new PhonixError('mobile', 'Acurast WebSocket connection timed out after 15s.'));
+        reject(new AxonError('mobile', 'Acurast WebSocket connection timed out after 15s.'));
       }, 15_000);
 
       ws.onopen = () => {
@@ -166,7 +166,7 @@ export class MobilePhonixClient {
 
       ws.onerror = () => {
         clearTimeout(timeout);
-        reject(new PhonixError('mobile', 'Acurast WebSocket connection failed.'));
+        reject(new AxonError('mobile', 'Acurast WebSocket connection failed.'));
       };
 
       ws.onmessage = (event: MessageEvent) => {
@@ -260,7 +260,7 @@ export class MobilePhonixClient {
    */
   async send(endpoint: string, payload: unknown): Promise<void> {
     if (!this._connected) {
-      throw new PhonixError('mobile', 'Not connected. Call connect() first.');
+      throw new AxonError('mobile', 'Not connected. Call connect() first.');
     }
 
     if (this.options.provider === 'acurast') {
@@ -287,14 +287,14 @@ export class MobilePhonixClient {
         signal: AbortSignal.timeout(30_000),
       });
     } catch (err) {
-      throw new PhonixError(
+      throw new AxonError(
         'mobile',
         `Failed to reach endpoint ${endpoint}: ${(err as Error).message}`
       );
     }
 
     if (!response.ok) {
-      throw new PhonixError(
+      throw new AxonError(
         'mobile',
         `Endpoint returned ${response.status}: ${await response.text()}`
       );
@@ -302,7 +302,7 @@ export class MobilePhonixClient {
 
     const resultText = await response.text();
     if (resultText.length > this.maxResponseBytes) {
-      throw new PhonixError(
+      throw new AxonError(
         'mobile',
         `Response exceeded ${this.maxResponseBytes} bytes (got ${resultText.length} bytes).`
       );
@@ -320,7 +320,7 @@ export class MobilePhonixClient {
 
   private _sendAcurast(recipient: string, payload: unknown): Promise<void> {
     if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
-      throw new PhonixError('mobile', 'Acurast WebSocket is not open.');
+      throw new AxonError('mobile', 'Acurast WebSocket is not open.');
     }
     const message = JSON.stringify({ recipient, payload });
     this.ws.send(message);

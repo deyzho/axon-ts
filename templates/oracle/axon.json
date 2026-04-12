@@ -1,5 +1,5 @@
 {
-  "projectName": "phonix-oracle",
+  "projectName": "axon-oracle",
   "provider": "acurast",
   "runtime": "nodejs",
   "entryFile": "src/index.ts",

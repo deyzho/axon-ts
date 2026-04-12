@@ -1,5 +1,5 @@
 {
-  "projectName": "phonix-inference",
+  "projectName": "axon-inference",
   "provider": "acurast",
   "runtime": "nodejs",
   "entryFile": "src/index.ts",

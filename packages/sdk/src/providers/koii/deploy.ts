@@ -2,7 +2,7 @@
  * Koii deployment helpers.
  *
  * Flow:
- *  1. Bundle the entry file with esbuild (IIFE, phonix runtime prepended)
+ *  1. Bundle the entry file with esbuild (IIFE, axon runtime prepended)
  *  2. Upload the bundle to IPFS
  *  3. Register the task on the K2 chain via the Koii task creation CLI
  *  4. Return a Deployment object with the task public key
@@ -52,7 +52,7 @@ async function bundleForKoii(
     }
     if (SECRET_KEY_PATTERNS.some((re) => re.test(key))) {
       throw new Error(
-        `"${key}" looks like a secret. Do not bake credentials into the public bundle via phonix.json > environment.`
+        `"${key}" looks like a secret. Do not bake credentials into the public bundle via axon.json > environment.`
       );
     }
     if (value !== '') defines[`process.env.${key}`] = JSON.stringify(value);
@@ -65,7 +65,7 @@ async function bundleForKoii(
     format: 'iife',
     write: false,
     minify: false,
-    globalName: '__phonix_bundle',
+    globalName: '__axon_bundle',
     define: defines,
     // Koii tasks run in Node.js — keep node built-ins external
     external: ['node:*'],
@@ -220,7 +220,7 @@ export async function koiiDeploy(options: KoiiDeployOptions): Promise<Deployment
   const privateKey =
     options.secretKey ??
     process.env['KOII_PRIVATE_KEY'] ??
-    process.env['PHONIX_SECRET_KEY'] ??
+    process.env['AXON_SECRET_KEY'] ??
     '';
 
   const ipfsUrl = process.env['KOII_IPFS_URL'] ?? process.env['ACURAST_IPFS_URL'] ?? '';
@@ -229,7 +229,7 @@ export async function koiiDeploy(options: KoiiDeployOptions): Promise<Deployment
   if (!privateKey) {
     throw new Error(
       'KOII_PRIVATE_KEY is not set. Add it to your .env file.\n' +
-        'Run: phonix auth koii  to generate and configure credentials.'
+        'Run: axon auth koii  to generate and configure credentials.'
     );
   }
 
@@ -254,7 +254,7 @@ export async function koiiDeploy(options: KoiiDeployOptions): Promise<Deployment
     throw new Error(`Failed to bundle for Koii: ${(err as Error).message}`);
   }
 
-  const tmpDir = await mkdtemp(join(tmpdir(), 'phonix-koii-'));
+  const tmpDir = await mkdtemp(join(tmpdir(), 'axon-koii-'));
   const bundlePath = join(tmpDir, 'task.js');
   await writeFile(bundlePath, bundledCode, 'utf8');
 
@@ -276,10 +276,10 @@ export async function koiiDeploy(options: KoiiDeployOptions): Promise<Deployment
     // Use a sanitised alphanumeric task name derived from the entry-file path.
     // Never pass config.code (a file path) directly — it could contain path
     // traversal sequences or shell-interpretable characters that confuse the CLI.
-    const taskName = (config.code ?? 'phonix-task')
+    const taskName = (config.code ?? 'axon-task')
       .replace(/[^a-zA-Z0-9._-]/g, '-')
       .replace(/^-+|-+$/g, '')
-      .slice(0, 64) || 'phonix-task';
+      .slice(0, 64) || 'axon-task';
 
     const args = [
       '--task-name', taskName,

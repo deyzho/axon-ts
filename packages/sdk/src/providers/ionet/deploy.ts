@@ -2,7 +2,7 @@
  * io.net deployment logic.
  *
  * io.net workers are deployed as GPU-accelerated containers via the io.net
- * cluster API. Phonix handles:
+ * cluster API. Axon handles:
  *  1. Bundling the entry file with esbuild
  *  2. Uploading the bundle to IPFS
  *  3. Submitting a cluster job to the io.net API
@@ -25,7 +25,7 @@ export async function ionetDeploy(options: { config: DeploymentConfig }): Promis
   const clusterId = process.env['IONET_CLUSTER_ID'];
 
   if (!apiKey) {
-    throw new ProviderNotImplementedError('ionet', 'IONET_API_KEY env var is required. Run `phonix auth ionet`.');
+    throw new ProviderNotImplementedError('ionet', 'IONET_API_KEY env var is required. Run `axon auth ionet`.');
   }
 
   const config = options.config;

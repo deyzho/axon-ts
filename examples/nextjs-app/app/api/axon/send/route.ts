@@ -1,7 +1,7 @@
 /**
- * POST /api/phonix/send
+ * POST /api/axon/send
  *
- * Server-side proxy that holds the PHONIX_SECRET_KEY and relays messages to
+ * Server-side proxy that holds the AXON_SECRET_KEY and relays messages to
  * an Acurast processor, waiting for the matching response before returning.
  *
  * The browser never touches the private key — it only calls this endpoint.
@@ -10,7 +10,7 @@
  * Response body:         { result?: string; error?: string }
  */
 
-import { PhonixClient } from '@phonixsdk/sdk';
+import { AxonClient } from '@axonsdk/sdk';
 import { NextResponse } from 'next/server';
 
 export const runtime = 'nodejs';
@@ -18,10 +18,10 @@ export const runtime = 'nodejs';
 export const maxDuration = 35;
 
 export async function POST(request: Request): Promise<NextResponse> {
-  const secretKey = process.env['PHONIX_SECRET_KEY'];
+  const secretKey = process.env['AXON_SECRET_KEY'];
   if (!secretKey) {
     return NextResponse.json(
-      { error: 'Server is not configured (PHONIX_SECRET_KEY missing).' },
+      { error: 'Server is not configured (AXON_SECRET_KEY missing).' },
       { status: 500 }
     );
   }
@@ -45,7 +45,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     return NextResponse.json({ error: 'Missing requestId.' }, { status: 400 });
   }
 
-  const client = new PhonixClient({
+  const client = new AxonClient({
     provider: 'acurast',
     secretKey,
     trustedProcessorIds: [processorId],

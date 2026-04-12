@@ -1,11 +1,11 @@
-# Phonix × Next.js Example
+# Axon × Next.js Example
 
-A minimal Next.js App Router example showing how to call a Phonix edge processor from a web application — keeping your secret key server-side and streaming results to the browser.
+A minimal Next.js App Router example showing how to call an Axon edge processor from a web application — keeping your secret key server-side and streaming results to the browser.
 
 ## What this demonstrates
 
 - Calling a deployed Acurast or Akash processor from a Next.js API Route
-- Keeping `PHONIX_SECRET_KEY` server-side (never exposed to the browser)
+- Keeping `AXON_SECRET_KEY` server-side (never exposed to the browser)
 - Returning inference results to the client over a standard JSON response
 - Switching providers with a single config change
 
@@ -20,13 +20,13 @@ Deploy the inference template to your chosen provider:
 ```bash
 # Acurast (TEE smartphones)
 cd ../../templates/inference
-phonix auth acurast
-phonix deploy
+axon auth acurast
+axon deploy
 
 # — or — Akash (container marketplace)
-phonix auth akash
-# Edit phonix.json → "provider": "akash"
-phonix deploy
+axon auth akash
+# Edit axon.json → "provider": "akash"
+axon deploy
 ```
 
 Copy the processor ID (Acurast) or lease URL (Akash) from the output.
@@ -36,13 +36,13 @@ Copy the processor ID (Acurast) or lease URL (Akash) from the output.
 Create `.env.local` in this directory:
 
 ```bash
-# Your Phonix secret key — keep this server-side only
-PHONIX_SECRET_KEY=your_secret_key_hex
+# Your Axon secret key — keep this server-side only
+AXON_SECRET_KEY=your_secret_key_hex
 
-# For Acurast: processor public key from `phonix status`
+# For Acurast: processor public key from `axon status`
 PROCESSOR_ID=0xabc...your_processor_id
 
-# For Akash: full lease URL from `phonix status`
+# For Akash: full lease URL from `axon status`
 # PROCESSOR_ID=https://provider.akash.network:31234
 ```
 
@@ -62,34 +62,34 @@ Open [http://localhost:3000](http://localhost:3000).
 ```
 Browser (React)
     │
-    │  POST /api/phonix/send
+    │  POST /api/axon/send
     │
 Next.js API Route (server-side only)
     │
-    │  PhonixClient from '@phonixsdk/sdk'
+    │  AxonClient from '@axonsdk/sdk'
     │
     ├── Acurast: wss://ws-1.acurast.com  →  Smartphone TEE
     │
     └── Akash:   https://provider.akash.network:31234/message  →  Container
 ```
 
-The browser never sees `PHONIX_SECRET_KEY`. All provider calls happen in the API Route.
+The browser never sees `AXON_SECRET_KEY`. All provider calls happen in the API Route.
 
 ---
 
 ## API Route — Acurast
 
 ```typescript
-// app/api/phonix/send/route.ts
-import { PhonixClient } from '@phonixsdk/sdk';
+// app/api/axon/send/route.ts
+import { AxonClient } from '@axonsdk/sdk';
 import { NextResponse } from 'next/server';
 
 export async function POST(req: Request) {
   const { prompt } = await req.json() as { prompt: string };
 
-  const client = new PhonixClient({
+  const client = new AxonClient({
     provider: 'acurast',
-    secretKey: process.env.PHONIX_SECRET_KEY,
+    secretKey: process.env.AXON_SECRET_KEY,
   });
 
   await client.connect();
@@ -122,16 +122,16 @@ export async function POST(req: Request) {
 ## API Route — Akash
 
 ```typescript
-// app/api/phonix/send/route.ts  (Akash variant)
-import { PhonixClient } from '@phonixsdk/sdk';
+// app/api/axon/send/route.ts  (Akash variant)
+import { AxonClient } from '@axonsdk/sdk';
 import { NextResponse } from 'next/server';
 
 export async function POST(req: Request) {
   const { prompt } = await req.json() as { prompt: string };
 
-  const client = new PhonixClient({
+  const client = new AxonClient({
     provider: 'akash',
-    secretKey: process.env.PHONIX_SECRET_KEY,
+    secretKey: process.env.AXON_SECRET_KEY,
   });
 
   await client.connect();
@@ -168,7 +168,7 @@ export default function Page() {
   async function submit() {
     setLoading(true);
     setResult('');
-    const res = await fetch('/api/phonix/send', {
+    const res = await fetch('/api/axon/send', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ prompt }),
@@ -180,7 +180,7 @@ export default function Page() {
 
   return (
     <main style={{ maxWidth: 600, margin: '4rem auto', padding: '0 1rem' }}>
-      <h1>Phonix Inference</h1>
+      <h1>Axon Inference</h1>
       <textarea
         value={prompt}
         onChange={(e) => setPrompt(e.target.value)}
@@ -206,9 +206,9 @@ export default function Page() {
 Change a single line in your API Route:
 
 ```typescript
-const client = new PhonixClient({
+const client = new AxonClient({
   provider: 'akash',   // 'acurast' | 'fluence' | 'koii' | 'akash'
-  secretKey: process.env.PHONIX_SECRET_KEY,
+  secretKey: process.env.AXON_SECRET_KEY,
 });
 ```
 
@@ -218,16 +218,16 @@ Then update `PROCESSOR_ID` in `.env.local` to the corresponding endpoint for the
 
 ## Security notes
 
-- **Never expose `PHONIX_SECRET_KEY` to the browser** — keep all `PhonixClient` usage in API Routes, Server Components, or Server Actions
+- **Never expose `AXON_SECRET_KEY` to the browser** — keep all `AxonClient` usage in API Routes, Server Components, or Server Actions
 - The API Route validates that `prompt` is a string before forwarding it to the processor
-- For production, add rate limiting (e.g. [Upstash Rate Limit](https://github.com/upstash/ratelimit)) to the `/api/phonix/send` route
+- For production, add rate limiting (e.g. [Upstash Rate Limit](https://github.com/upstash/ratelimit)) to the `/api/axon/send` route
 
 ---
 
 ## Want to call processors from mobile?
 
-Use [`@phonixsdk/mobile`](../../packages/mobile/) for React Native / Expo apps. It provides the same messaging API with React hooks, iOS Keychain / Android Keystore secure storage, and AppState lifecycle management.
+Use [`@axonsdk/mobile`](../../packages/mobile/) for React Native / Expo apps. It provides the same messaging API with React hooks, iOS Keychain / Android Keystore secure storage, and AppState lifecycle management.
 
 ```bash
-npm install @phonixsdk/mobile
+npm install @axonsdk/mobile
 ```

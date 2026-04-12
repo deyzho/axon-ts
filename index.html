@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Phonix — Deploy AI to the edge. Any network, one SDK.</title>
+  <title>Axon — Deploy AI to the edge. Any network, one SDK.</title>
   <meta name="description" content="The deployment layer for edge AI. Run inference on decentralised GPU and TEE compute — automatically routed to the fastest, cheapest option. One SDK. Zero lock-in." />
-  <meta property="og:title" content="Phonix SDK — Deploy AI to the edge" />
+  <meta property="og:title" content="Axon SDK — Deploy AI to the edge" />
   <meta property="og:description" content="Drop in the OpenAI-compatible inference endpoint and your existing code routes through decentralised GPU in two lines." />
-  <meta property="og:url" content="https://phonix.dev" />
+  <meta property="og:url" content="https://axon.dev" />
   <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔥</text></svg>" />
@@ -342,7 +342,7 @@
 
 <!-- ── Nav ──────────────────────────────────────────────────────────────── -->
 <nav>
-  <div class="nav-logo">🔥 <span>Phonix</span></div>
+  <div class="nav-logo">🔥 <span>Axon</span></div>
   <div class="nav-links">
     <a href="#providers">Providers</a>
     <a href="#inference">Inference</a>
@@ -350,8 +350,8 @@
     <a href="#mobile">Mobile</a>
     <a href="#router">Router</a>
     <a href="#features">Features</a>
-    <a href="https://status.phonixsdk.dev" target="_blank">Status</a>
-    <a href="https://github.com/deyzho/phonixsdk" target="_blank">GitHub</a>
+    <a href="https://status.axonsdk.dev" target="_blank">Status</a>
+    <a href="https://github.com/deyzho/axonsdk" target="_blank">GitHub</a>
   </div>
   <a class="nav-cta" href="#inference">Get started →</a>
 </nav>
@@ -361,34 +361,34 @@
   <div class="badge">Open Source · v0.2.0 · GPU + TEE Compute · Now on npm</div>
   <h1>Deploy AI to the edge.<br /><em>Any network, one SDK.</em></h1>
   <p>OpenAI costs too much. You're locked into one vendor. Your prompts hit centralised servers you don't control.<br/><strong style="color:var(--text)">There's a better way.</strong></p>
-  <p style="font-size:0.9rem;color:var(--muted);margin-top:0.75rem;max-width:520px;margin-left:auto;margin-right:auto;">Phonix is to edge compute what Ethers.js is to EVM chains —<br/>one interface, any provider.</p>
+  <p style="font-size:0.9rem;color:var(--muted);margin-top:0.75rem;max-width:520px;margin-left:auto;margin-right:auto;">Axon is to edge compute what Ethers.js is to EVM chains —<br/>one interface, any provider.</p>
   <div class="hero-ctas">
     <a class="btn-primary" href="#inference">Switch from OpenAI →</a>
-    <a class="btn-secondary" href="https://github.com/deyzho/phonixsdk" target="_blank">View on GitHub</a>
+    <a class="btn-secondary" href="https://github.com/deyzho/axonsdk" target="_blank">View on GitHub</a>
   </div>
   <div class="install-strip">
     <span class="prompt">$</span>
-    <code id="install-cmd">npm install @phonixsdk/inference</code>
+    <code id="install-cmd">npm install @axonsdk/inference</code>
     <button class="copy-btn" onclick="copyInstall()">copy</button>
   </div>
   <div style="display:flex;gap:0.5rem;justify-content:center;flex-wrap:wrap;margin-top:1.5rem;">
-    <a href="https://github.com/deyzho/phonixsdk" target="_blank">
-      <img src="https://img.shields.io/github/stars/deyzho/phonixsdk?style=flat-square&color=f97316&label=stars" alt="GitHub stars" />
+    <a href="https://github.com/deyzho/axonsdk" target="_blank">
+      <img src="https://img.shields.io/github/stars/deyzho/axonsdk?style=flat-square&color=f97316&label=stars" alt="GitHub stars" />
     </a>
-    <a href="https://www.npmjs.com/package/@phonixsdk/inference" target="_blank">
-      <img src="https://img.shields.io/npm/v/@phonixsdk/inference?label=%40phonixsdk%2Finference&color=f97316&style=flat-square" alt="@phonixsdk/inference on npm" />
+    <a href="https://www.npmjs.com/package/@axonsdk/inference" target="_blank">
+      <img src="https://img.shields.io/npm/v/@axonsdk/inference?label=%40axonsdk%2Finference&color=f97316&style=flat-square" alt="@axonsdk/inference on npm" />
     </a>
-    <a href="https://www.npmjs.com/package/@phonixsdk/sdk" target="_blank">
-      <img src="https://img.shields.io/npm/v/@phonixsdk/sdk?label=%40phonixsdk%2Fsdk&color=f97316&style=flat-square" alt="@phonixsdk/sdk on npm" />
+    <a href="https://www.npmjs.com/package/@axonsdk/sdk" target="_blank">
+      <img src="https://img.shields.io/npm/v/@axonsdk/sdk?label=%40axonsdk%2Fsdk&color=f97316&style=flat-square" alt="@axonsdk/sdk on npm" />
     </a>
-    <a href="https://www.npmjs.com/package/@phonixsdk/mobile" target="_blank">
-      <img src="https://img.shields.io/npm/v/@phonixsdk/mobile?label=%40phonixsdk%2Fmobile&color=f97316&style=flat-square" alt="@phonixsdk/mobile on npm" />
+    <a href="https://www.npmjs.com/package/@axonsdk/mobile" target="_blank">
+      <img src="https://img.shields.io/npm/v/@axonsdk/mobile?label=%40axonsdk%2Fmobile&color=f97316&style=flat-square" alt="@axonsdk/mobile on npm" />
     </a>
-    <a href="https://www.npmjs.com/package/@phonixsdk/cli" target="_blank">
-      <img src="https://img.shields.io/npm/v/@phonixsdk/cli?label=%40phonixsdk%2Fcli&color=f97316&style=flat-square" alt="@phonixsdk/cli on npm" />
+    <a href="https://www.npmjs.com/package/@axonsdk/cli" target="_blank">
+      <img src="https://img.shields.io/npm/v/@axonsdk/cli?label=%40axonsdk%2Fcli&color=f97316&style=flat-square" alt="@axonsdk/cli on npm" />
     </a>
-    <a href="https://github.com/deyzho/phonixsdk" target="_blank">
-      <img src="https://img.shields.io/github/license/deyzho/phonixsdk?color=f97316&style=flat-square" alt="License" />
+    <a href="https://github.com/deyzho/axonsdk" target="_blank">
+      <img src="https://img.shields.io/github/license/deyzho/axonsdk?color=f97316&style=flat-square" alt="License" />
     </a>
   </div>
 </section>
@@ -398,7 +398,7 @@
   <div class="section-inner">
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start;" class="inference-hook-grid">
       <div>
-        <div class="section-label">OpenAI-compatible · @phonixsdk/inference</div>
+        <div class="section-label">OpenAI-compatible · @axonsdk/inference</div>
         <h2 class="section-title" style="margin-bottom:0.75rem;">Switch to decentralised GPU<br/>in two lines</h2>
         <p style="color:var(--muted);font-size:1rem;margin-bottom:1.5rem;">
           Your existing OpenAI code works unchanged. Swap <code style="color:var(--accent);font-size:.9em">baseURL</code> and <code style="color:var(--accent);font-size:.9em">apiKey</code> — that's it. Requests route automatically to the cheapest available GPU cluster across io.net, Akash, and Acurast TEE nodes.
@@ -411,7 +411,7 @@
         </ul>
         <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
           <a class="btn-primary" href="#demo" style="font-size:0.9rem;padding:0.6rem 1.4rem;">Quick start</a>
-          <a class="btn-secondary" href="https://www.npmjs.com/package/@phonixsdk/inference" target="_blank" style="font-size:0.9rem;padding:0.6rem 1.4rem;">View on npm →</a>
+          <a class="btn-secondary" href="https://www.npmjs.com/package/@axonsdk/inference" target="_blank" style="font-size:0.9rem;padding:0.6rem 1.4rem;">View on npm →</a>
         </div>
       </div>
       <!-- ── Inference animated demo ── -->
@@ -447,7 +447,7 @@
           <div id="inf-response-body" style="padding:1rem 1.25rem;font-family:'JetBrains Mono','SF Mono','Fira Code',monospace;font-size:0.82rem;line-height:1.75;height:120px;overflow:hidden;white-space:pre-wrap;word-break:break-word;"></div>
         </div>
 
-        <p style="font-size:0.78rem;color:var(--muted);margin-top:0.6rem;">→ Deploy the handler with <code style="color:var(--accent)">@phonixsdk/inference</code> — <a href="#demo">see setup guide ↓</a></p>
+        <p style="font-size:0.78rem;color:var(--muted);margin-top:0.6rem;">→ Deploy the handler with <code style="color:var(--accent)">@axonsdk/inference</code> — <a href="#demo">see setup guide ↓</a></p>
       </div>
     </div>
   </div>
@@ -474,7 +474,7 @@
           <div class="status-pill"><span class="dot"></span>Fluence</div>
           <div class="status-pill"><span class="dot"></span>Koii</div>
         </div>
-        <a href="https://status.phonixsdk.dev" target="_blank" style="font-size:0.85rem;color:var(--accent);">View dashboard →</a>
+        <a href="https://status.axonsdk.dev" target="_blank" style="font-size:0.85rem;color:var(--accent);">View dashboard →</a>
       </div>
     </div>
   </div>
@@ -484,13 +484,15 @@
 <section class="providers" id="providers">
   <div class="section-inner">
     <div class="section-label">Providers</div>
-    <h2 class="section-title">One SDK, five networks</h2>
-    <p class="section-sub">Deploy the same AI workload to any supported network without rewriting your code. Phonix automatically routes to the fastest, cheapest option.</p>
-    <div class="provider-grid">
+    <h2 class="section-title">One SDK, any network</h2>
+    <p class="section-sub">Deploy the same AI workload to edge or cloud without rewriting your code. Axon automatically routes to the fastest, cheapest option.</p>
+
+    <p style="font-weight:600;font-size:.85rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:1rem;">Edge &amp; Decentralised</p>
+    <div class="provider-grid" style="margin-bottom:2.5rem;">
       <div class="provider-card">
         <div class="provider-header">
           <div class="provider-name">io.net</div>
-          <div class="provider-badge">GPU · New</div>
+          <div class="provider-badge">GPU · Live</div>
         </div>
         <div class="provider-desc">Decentralised GPU clusters — A100, H100, RTX 4090 spot compute at a fraction of AWS pricing. The best option for large model inference.</div>
         <div class="provider-meta">
@@ -502,19 +504,19 @@
       <div class="provider-card">
         <div class="provider-header">
           <div class="provider-name">Akash</div>
-          <div class="provider-badge">Supported</div>
+          <div class="provider-badge">Live</div>
         </div>
         <div class="provider-desc">Decentralised cloud marketplace where providers bid to run containerised workloads. Deploy bundles via IPFS and pay in AKT — no lock-in, no vendor overhead.</div>
         <div class="provider-meta">
           <span>☁️ Docker containers</span>
           <span>🔑 BIP-39 mnemonic</span>
-          <span>⚡ nodejs</span>
+          <span>⚡ nodejs / docker</span>
         </div>
       </div>
       <div class="provider-card">
         <div class="provider-header">
           <div class="provider-name">Acurast</div>
-          <div class="provider-badge">TEE · Supported</div>
+          <div class="provider-badge">TEE · Live</div>
         </div>
         <div class="provider-desc">237,000+ smartphone nodes running inside hardware Trusted Execution Environments. Your code and data are private — even from device owners.</div>
         <div class="provider-meta">
@@ -526,7 +528,7 @@
       <div class="provider-card">
         <div class="provider-header">
           <div class="provider-name">Fluence</div>
-          <div class="provider-badge">Supported</div>
+          <div class="provider-badge">Live</div>
         </div>
         <div class="provider-desc">Decentralised serverless cloud built on libp2p. Deploy spells to a permissionless peer-to-peer network of compute providers.</div>
         <div class="provider-meta">
@@ -538,13 +540,77 @@
       <div class="provider-card">
         <div class="provider-header">
           <div class="provider-name">Koii</div>
-          <div class="provider-badge">Supported</div>
+          <div class="provider-badge">Live</div>
         </div>
         <div class="provider-desc">Community-owned compute network with Solana-compatible task nodes. Ideal for recurring data tasks, oracles, and agent workloads.</div>
         <div class="provider-meta">
           <span>🔗 Task nodes</span>
           <span>🔑 Solana keypair</span>
           <span>⚡ nodejs</span>
+        </div>
+      </div>
+    </div>
+
+    <p style="font-weight:600;font-size:.85rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:1rem;">Cloud Providers <span style="font-size:.75rem;background:rgba(249,115,22,.12);color:var(--accent);padding:.15rem .5rem;border-radius:4px;margin-left:.5rem;">Coming Soon</span></p>
+    <div class="provider-grid">
+      <div class="provider-card" style="opacity:.7;">
+        <div class="provider-header">
+          <div class="provider-name">AWS</div>
+          <div class="provider-badge" style="background:rgba(255,153,0,.1);color:#ff9900;">🔜 Soon</div>
+        </div>
+        <div class="provider-desc">Lambda, ECS / Fargate, and EC2 via boto3. Same Axon interface — no AWS SDK boilerplate.</div>
+        <div class="provider-meta">
+          <span>⚡ Lambda · Fargate</span>
+          <span>🔑 IAM credentials</span>
+          <span>🐍 python / nodejs</span>
+        </div>
+      </div>
+      <div class="provider-card" style="opacity:.7;">
+        <div class="provider-header">
+          <div class="provider-name">Google Cloud</div>
+          <div class="provider-badge" style="background:rgba(66,133,244,.1);color:#4285f4;">🔜 Soon</div>
+        </div>
+        <div class="provider-desc">Cloud Run and Cloud Functions via the Google Cloud Python SDK. Serverless containers in seconds.</div>
+        <div class="provider-meta">
+          <span>⚡ Cloud Run · Functions</span>
+          <span>🔑 Service account</span>
+          <span>🐍 python / nodejs</span>
+        </div>
+      </div>
+      <div class="provider-card" style="opacity:.7;">
+        <div class="provider-header">
+          <div class="provider-name">Azure</div>
+          <div class="provider-badge" style="background:rgba(0,120,212,.1);color:#0078d4;">🔜 Soon</div>
+        </div>
+        <div class="provider-desc">Container Instances and Azure Functions. Deploy Python or Node.js workloads with managed identity auth.</div>
+        <div class="provider-meta">
+          <span>⚡ ACI · Functions</span>
+          <span>🔑 Service principal</span>
+          <span>🐍 python / nodejs</span>
+        </div>
+      </div>
+      <div class="provider-card" style="opacity:.7;">
+        <div class="provider-header">
+          <div class="provider-name">Cloudflare Workers</div>
+          <div class="provider-badge" style="background:rgba(249,115,22,.1);color:var(--accent);">🔜 Soon</div>
+        </div>
+        <div class="provider-desc">Edge Workers at 300+ PoPs worldwide. Sub-millisecond cold starts, global by default.</div>
+        <div class="provider-meta">
+          <span>⚡ Workers · AI Gateway</span>
+          <span>🔑 API token</span>
+          <span>⚙️ nodejs / wasm</span>
+        </div>
+      </div>
+      <div class="provider-card" style="opacity:.7;">
+        <div class="provider-header">
+          <div class="provider-name">Fly.io</div>
+          <div class="provider-badge" style="background:rgba(124,77,255,.1);color:#7c4dff;">🔜 Soon</div>
+        </div>
+        <div class="provider-desc">Fly Machines — fast-booting Docker containers placed close to your users. Deploy globally with a single command.</div>
+        <div class="provider-meta">
+          <span>⚡ Fly Machines</span>
+          <span>🔑 fly auth token</span>
+          <span>🐍 python / docker</span>
         </div>
       </div>
     </div>
@@ -563,28 +629,28 @@
           <div class="step-num">1</div>
           <div class="step-content">
             <h4>Initialise your project</h4>
-            <p>Choose a provider and template. Phonix generates your config and entry point.</p>
+            <p>Choose a provider and template. Axon generates your config and entry point.</p>
           </div>
         </div>
         <div class="step">
           <div class="step-num">2</div>
           <div class="step-content">
             <h4>Configure credentials</h4>
-            <p>The <code style="color:var(--accent);font-size:.85em">phonix auth</code> wizard generates and stores all required keys. Your <code style="color:var(--accent);font-size:.85em">.env</code> is locked to owner-only permissions and never committed.</p>
+            <p>The <code style="color:var(--accent);font-size:.85em">axon auth</code> wizard generates and stores all required keys. Your <code style="color:var(--accent);font-size:.85em">.env</code> is locked to owner-only permissions and never committed.</p>
           </div>
         </div>
         <div class="step">
           <div class="step-num">3</div>
           <div class="step-content">
             <h4>Test locally</h4>
-            <p>Run <code style="color:var(--accent);font-size:.85em">phonix run-local</code> to simulate the full provider runtime on your machine — no network required.</p>
+            <p>Run <code style="color:var(--accent);font-size:.85em">axon run-local</code> to simulate the full provider runtime on your machine — no network required.</p>
           </div>
         </div>
         <div class="step">
           <div class="step-num">4</div>
           <div class="step-content">
             <h4>Deploy and call</h4>
-            <p>One command bundles, uploads to IPFS, and registers on-chain. Then call from any JavaScript environment with <code style="color:var(--accent);font-size:.85em">@phonixsdk/sdk</code>.</p>
+            <p>One command bundles, uploads to IPFS, and registers on-chain. Then call from any JavaScript environment with <code style="color:var(--accent);font-size:.85em">@axonsdk/sdk</code>.</p>
           </div>
         </div>
       </div>
@@ -612,11 +678,11 @@
           <!-- Tab: static sample code -->
           <div id="qs-panel-code" style="display:none;">
             <pre style="padding:1.1rem 1.25rem;font-family:'JetBrains Mono','SF Mono','Fira Code',monospace;font-size:0.82rem;line-height:1.75;min-height:340px;overflow-x:auto;"><span class="cm">// Deploy once — run on GPU edge nodes</span>
-<span class="kw">import</span> { <span class="obj">PhonixClient</span> } <span class="kw">from</span> <span class="str">'@phonixsdk/sdk'</span>;
+<span class="kw">import</span> { <span class="obj">AxonClient</span> } <span class="kw">from</span> <span class="str">'@axonsdk/sdk'</span>;
 
-<span class="kw">const</span> client = <span class="kw">new</span> <span class="fn">PhonixClient</span>({
+<span class="kw">const</span> client = <span class="kw">new</span> <span class="fn">AxonClient</span>({
   provider: <span class="str">'ionet'</span>,
-  secretKey: process.env.<span class="obj">PHONIX_SECRET_KEY</span>,
+  secretKey: process.env.<span class="obj">AXON_SECRET_KEY</span>,
 });
 
 <span class="kw">await</span> client.<span class="fn">connect</span>();
@@ -649,7 +715,7 @@ client.<span class="fn">disconnect</span>();</pre>
         <div class="section-label">Mobile SDK</div>
         <h2 class="section-title">Call your processors<br/>from iOS &amp; Android</h2>
         <p style="color:var(--muted);font-size:1.05rem;margin-bottom:1.75rem;">
-          Deploy your edge processors once with the Phonix CLI, then call them directly
+          Deploy your edge processors once with the Axon CLI, then call them directly
           from your React Native or Expo app. Real-time results, secure key storage,
           and automatic background/foreground lifecycle management — all in one package.
         </p>
@@ -659,8 +725,8 @@ client.<span class="fn">disconnect</span>();</pre>
           <div class="platform-badge"><span class="dot dot-expo"></span> Expo</div>
         </div>
         <ul class="mobile-feature-list">
-          <li><span class="check">✓</span> <span><strong style="color:var(--text)">React hooks</strong> — <code style="color:var(--accent);font-size:.85em">usePhonix</code>, <code style="color:var(--accent);font-size:.85em">useMessages</code>, <code style="color:var(--accent);font-size:.85em">useSend</code> for clean component integration</span></li>
-          <li><span class="check">✓</span> <span><strong style="color:var(--text)">Context provider</strong> — wrap your root with <code style="color:var(--accent);font-size:.85em">&lt;PhonixProvider&gt;</code> and access the client anywhere in the tree</span></li>
+          <li><span class="check">✓</span> <span><strong style="color:var(--text)">React hooks</strong> — <code style="color:var(--accent);font-size:.85em">useAxon</code>, <code style="color:var(--accent);font-size:.85em">useMessages</code>, <code style="color:var(--accent);font-size:.85em">useSend</code> for clean component integration</span></li>
+          <li><span class="check">✓</span> <span><strong style="color:var(--text)">Context provider</strong> — wrap your root with <code style="color:var(--accent);font-size:.85em">&lt;AxonProvider&gt;</code> and access the client anywhere in the tree</span></li>
           <li><span class="check">✓</span> <span><strong style="color:var(--text)">Secure key storage</strong> — iOS Keychain &amp; Android Keystore via <code style="color:var(--accent);font-size:.85em">expo-secure-store</code>, in-memory fallback for bare RN</span></li>
           <li><span class="check">✓</span> <span><strong style="color:var(--text)">AppState lifecycle</strong> — auto-disconnects when the app backgrounds, auto-reconnects on foreground</span></li>
           <li><span class="check">✓</span> <span><strong style="color:var(--text)">SSRF protection</strong> — all endpoints validated: https:// only, private IPs blocked</span></li>
@@ -668,7 +734,7 @@ client.<span class="fn">disconnect</span>();</pre>
         </ul>
         <div class="install-row">
           <span class="prompt">$</span>
-          <code>npm install @phonixsdk/mobile</code>
+          <code>npm install @axonsdk/mobile</code>
         </div>
       </div>
       <div>
@@ -689,19 +755,19 @@ client.<span class="fn">disconnect</span>();</pre>
           <!-- Tab: Context / Provider -->
           <div id="tab-context" class="tab-panel active">
             <pre><span class="cm">// Wrap your root component once</span>
-<span class="kw">import</span> { <span class="obj">PhonixProvider</span> } <span class="kw">from</span> <span class="str">'@phonixsdk/mobile'</span>;
+<span class="kw">import</span> { <span class="obj">AxonProvider</span> } <span class="kw">from</span> <span class="str">'@axonsdk/mobile'</span>;
 
 <span class="kw">export default function</span> <span class="fn">App</span>() {
   <span class="kw">return</span> (
-    &lt;<span class="obj">PhonixProvider</span>
+    &lt;<span class="obj">AxonProvider</span>
       provider=<span class="str">"akash"</span>
-      secretKey={process.env.<span class="obj">PHONIX_SECRET_KEY</span>}
+      secretKey={process.env.<span class="obj">AXON_SECRET_KEY</span>}
       autoConnect
     &gt;
       &lt;<span class="obj">NavigationContainer</span>&gt;
         &lt;<span class="obj">MainStack</span> /&gt;
       &lt;/<span class="obj">NavigationContainer</span>&gt;
-    &lt;/<span class="obj">PhonixProvider</span>&gt;
+    &lt;/<span class="obj">AxonProvider</span>&gt;
   );
 }</pre>
           </div>
@@ -710,13 +776,13 @@ client.<span class="fn">disconnect</span>();</pre>
           <div id="tab-hooks" class="tab-panel">
             <pre><span class="cm">// Access from any screen in the tree</span>
 <span class="kw">import</span> {
-  <span class="obj">usePhonixContext</span>,
+  <span class="obj">useAxonContext</span>,
   <span class="obj">useMessages</span>,
   <span class="obj">useSend</span>,
-} <span class="kw">from</span> <span class="str">'@phonixsdk/mobile'</span>;
+} <span class="kw">from</span> <span class="str">'@axonsdk/mobile'</span>;
 
 <span class="kw">export function</span> <span class="fn">ResultsScreen</span>() {
-  <span class="kw">const</span> { connected } = <span class="fn">usePhonixContext</span>();
+  <span class="kw">const</span> { connected } = <span class="fn">useAxonContext</span>();
   <span class="kw">const</span> messages = <span class="fn">useMessages</span>(client);
   <span class="kw">const</span> { send, sending } = <span class="fn">useSend</span>(client);
 
@@ -740,13 +806,13 @@ client.<span class="fn">disconnect</span>();</pre>
           <!-- Tab: Standalone (no context) -->
           <div id="tab-standalone" class="tab-panel">
             <pre><span class="cm">// Without context — manage client directly</span>
-<span class="kw">import</span> { <span class="obj">usePhonix</span>, <span class="obj">useMessages</span> } <span class="kw">from</span> <span class="str">'@phonixsdk/mobile'</span>;
+<span class="kw">import</span> { <span class="obj">useAxon</span>, <span class="obj">useMessages</span> } <span class="kw">from</span> <span class="str">'@axonsdk/mobile'</span>;
 
 <span class="kw">export function</span> <span class="fn">InferenceScreen</span>() {
   <span class="kw">const</span> { client, connected, connect, error }
-    = <span class="fn">usePhonix</span>({
+    = <span class="fn">useAxon</span>({
         provider: <span class="str">'akash'</span>,
-        secretKey: <span class="obj">PHONIX_SECRET_KEY</span>,
+        secretKey: <span class="obj">AXON_SECRET_KEY</span>,
       });
   <span class="kw">const</span> messages = <span class="fn">useMessages</span>(client);
 
@@ -778,7 +844,7 @@ client.<span class="fn">disconnect</span>();</pre>
   <div class="section-inner">
     <div class="section-label">OpenAI-compatible Inference</div>
     <h2 class="section-title">Switch to decentralised GPU<br/>in two lines</h2>
-    <p class="section-sub">Tired of OpenAI pricing? Need private inference? <code style="color:var(--accent);font-size:.9em">@phonixsdk/inference</code> is a drop-in <code style="color:var(--accent);font-size:.9em">baseURL</code> replacement — no code changes required.</p>
+    <p class="section-sub">Tired of OpenAI pricing? Need private inference? <code style="color:var(--accent);font-size:.9em">@axonsdk/inference</code> is a drop-in <code style="color:var(--accent);font-size:.9em">baseURL</code> replacement — no code changes required.</p>
     <div class="inference-grid">
       <div>
         <table class="model-table">
@@ -787,22 +853,22 @@ client.<span class="fn">disconnect</span>();</pre>
           </thead>
           <tbody>
             <tr>
-              <td><code style="color:var(--accent);font-size:.8em">phonix-llama-3-70b</code></td>
+              <td><code style="color:var(--accent);font-size:.8em">axon-llama-3-70b</code></td>
               <td><span class="provider-pill">io.net</span></td>
               <td style="color:var(--muted)">A100 spot, best for large context</td>
             </tr>
             <tr>
-              <td><code style="color:var(--accent);font-size:.8em">phonix-mistral-7b</code></td>
+              <td><code style="color:var(--accent);font-size:.8em">axon-mistral-7b</code></td>
               <td><span class="provider-pill">io.net</span></td>
               <td style="color:var(--muted)">GPU, cost-efficient</td>
             </tr>
             <tr>
-              <td><code style="color:var(--accent);font-size:.8em">phonix-llama-3-8b</code></td>
+              <td><code style="color:var(--accent);font-size:.8em">axon-llama-3-8b</code></td>
               <td><span class="provider-pill">Akash</span></td>
               <td style="color:var(--muted)">Container cloud, moderate cost</td>
             </tr>
             <tr>
-              <td><code style="color:var(--accent);font-size:.8em">phonix-tee-phi-3-mini</code></td>
+              <td><code style="color:var(--accent);font-size:.8em">axon-tee-phi-3-mini</code></td>
               <td><span class="provider-pill">Acurast</span></td>
               <td style="color:var(--muted)">TEE, private, lowest cost</td>
             </tr>
@@ -817,7 +883,7 @@ client.<span class="fn">disconnect</span>();</pre>
         </ul>
         <div class="install-row">
           <span class="prompt">$</span>
-          <code>npm install @phonixsdk/inference</code>
+          <code>npm install @axonsdk/inference</code>
         </div>
       </div>
       <div>
@@ -839,19 +905,19 @@ client.<span class="fn">disconnect</span>();</pre>
             <div class="code-dots">
               <span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span>
             </div>
-            After — Phonix (2 line change)
+            After — Axon (2 line change)
           </div>
           <pre><span class="kw">import</span> <span class="obj">OpenAI</span> <span class="kw">from</span> <span class="str">'openai'</span>;
 
 <span class="kw">const</span> client = <span class="kw">new</span> <span class="fn">OpenAI</span>({
   <span class="cm">// ← swap these two lines</span>
   baseURL: <span class="str">'https://&lt;your-app&gt;.vercel.app/v1'</span>,
-  apiKey:  process.env.<span class="obj">PHONIX_SECRET_KEY</span>,
+  apiKey:  process.env.<span class="obj">AXON_SECRET_KEY</span>,
 });
 
 <span class="cm">// All your existing code stays identical ↓</span>
 <span class="kw">const</span> res = <span class="kw">await</span> client.chat.completions.<span class="fn">create</span>({
-  model:    <span class="str">'phonix-llama-3-70b'</span>,
+  model:    <span class="str">'axon-llama-3-70b'</span>,
   messages: [{ role: <span class="str">'user'</span>, content: prompt }],
   stream:   <span class="kw">true</span>,
 });</pre>
@@ -863,10 +929,10 @@ client.<span class="fn">disconnect</span>();</pre>
             </div>
             app/api/v1/chat/completions/route.ts
           </div>
-          <pre><span class="kw">import</span> { <span class="obj">PhonixInferenceHandler</span> } <span class="kw">from</span> <span class="str">'@phonixsdk/inference'</span>;
+          <pre><span class="kw">import</span> { <span class="obj">AxonInferenceHandler</span> } <span class="kw">from</span> <span class="str">'@axonsdk/inference'</span>;
 
-<span class="kw">const</span> handler = <span class="kw">new</span> <span class="fn">PhonixInferenceHandler</span>({
-  apiKey:        process.env.<span class="obj">PHONIX_SECRET_KEY</span>,
+<span class="kw">const</span> handler = <span class="kw">new</span> <span class="fn">AxonInferenceHandler</span>({
+  apiKey:        process.env.<span class="obj">AXON_SECRET_KEY</span>,
   ionetEndpoint: process.env.<span class="obj">IONET_ENDPOINT</span>,
   akashEndpoint: process.env.<span class="obj">AKASH_ENDPOINT</span>,
   strategy:      <span class="str">'cost'</span>,
@@ -888,7 +954,7 @@ client.<span class="fn">disconnect</span>();</pre>
         <div class="section-label">Smart Routing</div>
         <h2 class="section-title">Route across DePIN networks — automatically</h2>
         <p style="color:var(--muted);font-size:1rem;margin-bottom:1.75rem;">
-          <code style="font-size:.85em;color:var(--accent)">PhonixRouter</code> manages multiple providers simultaneously.
+          <code style="font-size:.85em;color:var(--accent)">AxonRouter</code> manages multiple providers simultaneously.
           On every request it scores each provider by health, latency, cost, and availability —
           then sends to the best one. If that provider fails, it retries on the next.
           Circuit breakers prevent routing to unhealthy nodes until they recover.
@@ -906,11 +972,11 @@ client.<span class="fn">disconnect</span>();</pre>
       </div>
       <div>
         <pre class="code-block" style="font-size:0.78rem;"><code><span style="color:#64748b">// Server SDK</span>
-<span style="color:#fb923c">import</span> { PhonixRouter } <span style="color:#fb923c">from</span> <span style="color:#86efac">'@phonixsdk/sdk'</span>;
+<span style="color:#fb923c">import</span> { AxonRouter } <span style="color:#fb923c">from</span> <span style="color:#86efac">'@axonsdk/sdk'</span>;
 
-<span style="color:#fb923c">const</span> router = <span style="color:#fb923c">new</span> <span style="color:#38bdf8">PhonixRouter</span>({
+<span style="color:#fb923c">const</span> router = <span style="color:#fb923c">new</span> <span style="color:#38bdf8">AxonRouter</span>({
   providers: [<span style="color:#86efac">'akash'</span>, <span style="color:#86efac">'acurast'</span>],
-  secretKey: process.env.PHONIX_SECRET_KEY,
+  secretKey: process.env.AXON_SECRET_KEY,
   strategy: <span style="color:#86efac">'latency'</span>,
 });
 
@@ -925,9 +991,9 @@ router.health().forEach(h =&gt; {
   console.log(h.provider, h.latencyMs, h.circuitState);
 });</code></pre>
         <pre class="code-block" style="font-size:0.78rem;margin-top:1rem;"><code><span style="color:#64748b">// Mobile (React Native / Expo)</span>
-<span style="color:#fb923c">import</span> { usePhonixRouter } <span style="color:#fb923c">from</span> <span style="color:#86efac">'@phonixsdk/mobile'</span>;
+<span style="color:#fb923c">import</span> { useAxonRouter } <span style="color:#fb923c">from</span> <span style="color:#86efac">'@axonsdk/mobile'</span>;
 
-<span style="color:#fb923c">const</span> { router, connected, health } = <span style="color:#38bdf8">usePhonixRouter</span>({
+<span style="color:#fb923c">const</span> { router, connected, health } = <span style="color:#38bdf8">useAxonRouter</span>({
   routes: [
     { provider: <span style="color:#86efac">'akash'</span>,   endpoint: AKASH_URL,   secretKey },
     { provider: <span style="color:#86efac">'acurast'</span>, endpoint: ACURAST_WS, secretKey },
@@ -988,17 +1054,17 @@ router.health().forEach(h =&gt; {
       <div class="feature-card">
         <div class="feature-icon">🔌</div>
         <h3>OpenAI-compatible endpoint</h3>
-        <p>Drop <code style="font-size:.8em;color:var(--accent)">@phonixsdk/inference</code> into any Next.js, Express, or Cloudflare Worker. Change <code style="font-size:.8em;color:var(--accent)">baseURL</code> in your existing OpenAI client and you're done.</p>
+        <p>Drop <code style="font-size:.8em;color:var(--accent)">@axonsdk/inference</code> into any Next.js, Express, or Cloudflare Worker. Change <code style="font-size:.8em;color:var(--accent)">baseURL</code> in your existing OpenAI client and you're done.</p>
       </div>
       <div class="feature-card">
         <div class="feature-icon">📱</div>
         <h3>iOS &amp; Android ready</h3>
-        <p><code style="font-size:.8em;color:var(--accent)">@phonixsdk/mobile</code> brings React hooks, context, and AppState lifecycle to your React Native and Expo apps — iOS Keychain, Android Keystore, zero native modules.</p>
+        <p><code style="font-size:.8em;color:var(--accent)">@axonsdk/mobile</code> brings React hooks, context, and AppState lifecycle to your React Native and Expo apps — iOS Keychain, Android Keystore, zero native modules.</p>
       </div>
       <div class="feature-card">
         <div class="feature-icon">⚡</div>
         <h3>Intelligent multi-provider routing</h3>
-        <p><code style="font-size:.8em;color:var(--accent)">PhonixRouter</code> scores every provider on latency, availability, and cost in real time. Circuit breakers open on failure and recover automatically — zero downtime across DePIN networks.</p>
+        <p><code style="font-size:.8em;color:var(--accent)">AxonRouter</code> scores every provider on latency, availability, and cost in real time. Circuit breakers open on failure and recover automatically — zero downtime across DePIN networks.</p>
       </div>
     </div>
   </div>
@@ -1012,27 +1078,27 @@ router.health().forEach(h =&gt; {
     <p class="section-sub">The full deployment lifecycle in a single tool.</p>
     <div class="cli-grid">
       <div class="cli-row">
-        <div class="cli-cmd">phonix init</div>
-        <div class="cli-desc">Interactive setup — generates phonix.json, .env, and template files</div>
+        <div class="cli-cmd">axon init</div>
+        <div class="cli-desc">Interactive setup — generates axon.json, .env, and template files</div>
       </div>
       <div class="cli-row">
-        <div class="cli-cmd">phonix auth</div>
+        <div class="cli-cmd">axon auth</div>
         <div class="cli-desc">Credential wizard — generates and stores keys for your provider</div>
       </div>
       <div class="cli-row">
-        <div class="cli-cmd">phonix deploy</div>
+        <div class="cli-cmd">axon deploy</div>
         <div class="cli-desc">Bundle, upload to IPFS, and register deployment on-chain</div>
       </div>
       <div class="cli-row">
-        <div class="cli-cmd">phonix run-local</div>
+        <div class="cli-cmd">axon run-local</div>
         <div class="cli-desc">Run your script locally with a full mock provider runtime</div>
       </div>
       <div class="cli-row">
-        <div class="cli-cmd">phonix status</div>
+        <div class="cli-cmd">axon status</div>
         <div class="cli-desc">List deployments, processor IDs, and live status</div>
       </div>
       <div class="cli-row">
-        <div class="cli-cmd">phonix send &lt;id&gt; &lt;msg&gt;</div>
+        <div class="cli-cmd">axon send &lt;id&gt; &lt;msg&gt;</div>
         <div class="cli-desc">Send a test message directly to a processor node</div>
       </div>
     </div>
@@ -1045,8 +1111,8 @@ router.health().forEach(h =&gt; {
     <h2>Deploy AI to the edge today</h2>
     <p>Open source, Apache-2.0 licensed, and live on npm. Switch from OpenAI in two lines.</p>
     <div class="hero-ctas">
-      <a class="btn-primary" href="https://www.npmjs.com/package/@phonixsdk/inference" target="_blank">Get @phonixsdk/inference →</a>
-      <a class="btn-secondary" href="https://github.com/deyzho/phonixsdk" target="_blank">View on GitHub</a>
+      <a class="btn-primary" href="https://www.npmjs.com/package/@axonsdk/inference" target="_blank">Get @axonsdk/inference →</a>
+      <a class="btn-secondary" href="https://github.com/deyzho/axonsdk" target="_blank">View on GitHub</a>
     </div>
   </div>
 </section>
@@ -1054,15 +1120,15 @@ router.health().forEach(h =&gt; {
 <!-- ── Footer ────────────────────────────────────────────────────────────── -->
 <footer>
   <div class="footer-links">
-    <a href="https://github.com/deyzho/phonixsdk" target="_blank">GitHub</a>
-    <a href="https://github.com/deyzho/phonixsdk/blob/main/README.md" target="_blank">Docs</a>
-    <a href="https://status.phonixsdk.dev" target="_blank">Status</a>
-    <a href="https://github.com/deyzho/phonixsdk/blob/main/CONTRIBUTING.md" target="_blank">Contributing</a>
-    <a href="https://github.com/deyzho/phonixsdk/blob/main/ROADMAP.md" target="_blank">Roadmap</a>
-    <a href="https://www.npmjs.com/package/@phonixsdk/inference" target="_blank">npm</a>
-    <a href="https://github.com/deyzho/phonixsdk/blob/main/packages/sdk/LICENSE" target="_blank">Apache-2.0</a>
+    <a href="https://github.com/deyzho/axonsdk" target="_blank">GitHub</a>
+    <a href="https://github.com/deyzho/axonsdk/blob/main/README.md" target="_blank">Docs</a>
+    <a href="https://status.axonsdk.dev" target="_blank">Status</a>
+    <a href="https://github.com/deyzho/axonsdk/blob/main/CONTRIBUTING.md" target="_blank">Contributing</a>
+    <a href="https://github.com/deyzho/axonsdk/blob/main/ROADMAP.md" target="_blank">Roadmap</a>
+    <a href="https://www.npmjs.com/package/@axonsdk/inference" target="_blank">npm</a>
+    <a href="https://github.com/deyzho/axonsdk/blob/main/packages/sdk/LICENSE" target="_blank">Apache-2.0</a>
   </div>
-  <p>Phonix is not affiliated with io.net, Akash Network, Acurast, Fluence, or Koii. Provider names and trademarks belong to their respective owners.</p>
+  <p>Axon is not affiliated with io.net, Akash Network, Acurast, Fluence, or Koii. Provider names and trademarks belong to their respective owners.</p>
 </footer>
 
 <script>
@@ -1101,14 +1167,14 @@ router.health().forEach(h =&gt; {
       '});',
       '',
       hl(IC.kw,  'const') + ' res = ' + hl(IC.kw,'await') + ' client.chat.completions.' + hl(IC.fn,'create') + '({',
-      '  model:    ' + hl(IC.str,"'phonix-llama-3-70b'") + ',',
+      '  model:    ' + hl(IC.str,"'axon-llama-3-70b'") + ',',
       '  messages: [{ role: ' + hl(IC.str,"'user'") + ', content: prompt }],',
       '  stream:   ' + hl(IC.kw,'true') + ',',
       '});',
     ];
 
     const SWAP_LINE_BASE_URL  = '  baseURL: ' + hl(IC.str,"'https://&lt;your-app&gt;.vercel.app/v1'") + ', ' + hl(IC.cm,'// ← your handler');
-    const SWAP_LINE_API_KEY   = '  apiKey:  process.env.' + hl(IC.obj,'PHONIX_SECRET_KEY') + ',  ' + hl(IC.cm,'// ← new');
+    const SWAP_LINE_API_KEY   = '  apiKey:  process.env.' + hl(IC.obj,'AXON_SECRET_KEY') + ',  ' + hl(IC.cm,'// ← new');
 
     const STREAM_TOKENS = [
       'Edge AI ', 'routes ', 'your ', 'inference ', 'requests ',
@@ -1232,7 +1298,7 @@ router.health().forEach(h =&gt; {
 
       const ph1 = placeholders[1];
       ph1.innerHTML = '';
-      await typeLineInto(ph1, '  apiKey:  process.env.', 'PHONIX_SECRET_KEY,         // ← new', IC.obj, 40);
+      await typeLineInto(ph1, '  apiKey:  process.env.', 'AXON_SECRET_KEY,         // ← new', IC.obj, 40);
       ph1.innerHTML = SWAP_LINE_API_KEY;
 
       await delay(2200);
@@ -1240,7 +1306,7 @@ router.health().forEach(h =&gt; {
 
     async function act3() {
       setStage(2);
-      setBadge('Phonix ✔', IC.grn, 'rgba(34,197,94,.12)', 'rgba(34,197,94,.2)');
+      setBadge('Axon ✔', IC.grn, 'rgba(34,197,94,.12)', 'rgba(34,197,94,.2)');
       document.getElementById('inf-file-label').textContent = 'streaming response';
 
       // Collapse code block to show just the call
@@ -1248,7 +1314,7 @@ router.health().forEach(h =&gt; {
         hl(IC.cm, '// Running — routed to io.net...'),
         '',
         hl(IC.kw,'const') + ' res = ' + hl(IC.kw,'await') + ' client.chat.completions.' + hl(IC.fn,'create') + '({',
-        '  model:    ' + hl(IC.str,"'phonix-llama-3-70b'") + ',',
+        '  model:    ' + hl(IC.str,"'axon-llama-3-70b'") + ',',
         '  messages: [{ role: ' + hl(IC.str,"'user'") + ', content: prompt }],',
         '  stream:   ' + hl(IC.kw,'true') + ',',
         '});',
@@ -1263,7 +1329,7 @@ router.health().forEach(h =&gt; {
 
       // Routing info lines
       const meta = [
-        { text: '  X-Phonix-Provider: io.net · gpu-cluster-us-west-1', color: IC.mut },
+        { text: '  X-Axon-Provider: io.net · gpu-cluster-us-west-1', color: IC.mut },
         { text: '  Latency: 138ms', color: IC.mut },
         { text: '', color: IC.mut },
       ];
@@ -1338,20 +1404,20 @@ router.health().forEach(h =&gt; {
 
   /* ── Animated terminal ─────────────────────────────────────────────────── */
   const TERM_STEPS = [
-    // phonix init
-    { kind: 'cmd',     text: 'phonix init' },
+    // axon init
+    { kind: 'cmd',     text: 'axon init' },
     { kind: 'gap' },
     { kind: 'prompt',  text: '?', label: ' Project name ', answer: 'my-edge-ai' },
     { kind: 'prompt',  text: '?', label: ' Provider      ', answer: 'ionet  (GPU · ~$0.40/hr A100)' },
     { kind: 'prompt',  text: '?', label: ' Template      ', answer: 'inference' },
     { kind: 'gap' },
-    { kind: 'success', text: '✔ Created phonix.json' },
+    { kind: 'success', text: '✔ Created axon.json' },
     { kind: 'success', text: '✔ Created src/index.ts' },
     { kind: 'success', text: '✔ Created .env.example' },
     { kind: 'gap' },
 
-    // phonix auth
-    { kind: 'cmd',     text: 'phonix auth' },
+    // axon auth
+    { kind: 'cmd',     text: 'axon auth' },
     { kind: 'gap' },
     { kind: 'info',    text: '  Configuring io.net credentials...' },
     { kind: 'prompt',  text: '?', label: ' IONET_API_KEY ', answer: '••••••••••••••••' },
@@ -1361,8 +1427,8 @@ router.health().forEach(h =&gt; {
     { kind: 'success', text: '✔ .env locked (chmod 600)' },
     { kind: 'gap' },
 
-    // phonix deploy
-    { kind: 'cmd',     text: 'phonix deploy' },
+    // axon deploy
+    { kind: 'cmd',     text: 'axon deploy' },
     { kind: 'gap' },
     { kind: 'spin',    text: 'Bundling with esbuild',    resolve: '✔ Bundle ready  (38 kB)' },
     { kind: 'spin',    text: 'Uploading to IPFS',        resolve: '✔ CID: QmX7k9mN2pR4sT8uV1wY3zA5bC6dE7fG8hI9jK0lM' },
@@ -1540,7 +1606,7 @@ router.health().forEach(h =&gt; {
   }
 
   function copyInstall() {
-    navigator.clipboard.writeText('npm install @phonixsdk/inference').then(() => {
+    navigator.clipboard.writeText('npm install @axonsdk/inference').then(() => {
       const btn = document.querySelector('.copy-btn');
       btn.textContent = 'copied!';
       setTimeout(() => { btn.textContent = 'copy'; }, 2000);

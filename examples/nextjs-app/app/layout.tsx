@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Phonix Example App',
-  description: 'Example Next.js app using @phonixsdk/sdk for confidential edge inference',
+  title: 'Axon Example App',
+  description: 'Example Next.js app using @axonsdk/sdk for confidential edge inference',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

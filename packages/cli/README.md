@@ -1,14 +1,14 @@
-# @phonixsdk/cli
+# @axonsdk/cli
 
-> Command-line tool for deploying and managing Phonix edge applications across DePIN networks.
+> Command-line tool for deploying and managing Axon edge applications across DePIN networks.
 
-[![npm](https://img.shields.io/npm/v/@phonixsdk/cli)](https://www.npmjs.com/package/@phonixsdk/cli)
-[![license](https://img.shields.io/npm/l/@phonixsdk/cli)](./LICENSE)
+[![npm](https://img.shields.io/npm/v/@axonsdk/cli)](https://www.npmjs.com/package/@axonsdk/cli)
+[![license](https://img.shields.io/npm/l/@axonsdk/cli)](./LICENSE)
 
 ## Installation
 
 ```bash
-npm install -g @phonixsdk/cli
+npm install -g @axonsdk/cli
 ```
 
 Requires **Node.js ≥ 20**.
@@ -17,48 +17,48 @@ Requires **Node.js ≥ 20**.
 
 | Command | Description |
 |---|---|
-| `phonix init` | Interactive project setup — generates `phonix.json`, `.env`, and template files |
-| `phonix auth [provider]` | Credential wizard — generates and stores provider keys securely |
-| `phonix deploy` | Bundle, upload to IPFS, and register your deployment on-chain |
-| `phonix run-local` | Run your script locally with a full mock provider runtime |
-| `phonix status` | List deployments, processor IDs, and live status |
-| `phonix send <id> <msg>` | Send a test message directly to a processor node |
+| `axon init` | Interactive project setup — generates `axon.json`, `.env`, and template files |
+| `axon auth [provider]` | Credential wizard — generates and stores provider keys securely |
+| `axon deploy` | Bundle, upload to IPFS, and register your deployment on-chain |
+| `axon run-local` | Run your script locally with a full mock provider runtime |
+| `axon status` | List deployments, processor IDs, and live status |
+| `axon send <id> <msg>` | Send a test message directly to a processor node |
 
 ## Quick start
 
 ```bash
 # 1. Create a new project
-phonix init
+axon init
 
 # 2. Set up credentials for your chosen provider
-phonix auth acurast    # or: akash | fluence | koii
+axon auth acurast    # or: akash | fluence | koii
 
 # 3. Test locally before spending tokens
-phonix run-local
+axon run-local
 
 # 4. Deploy to the network
-phonix deploy
+axon deploy
 
 # 5. Check your deployment
-phonix status
+axon status
 
 # 6. Send a test message
-phonix send <deployment-id> '{"prompt":"Hello"}'
+axon send <deployment-id> '{"prompt":"Hello"}'
 ```
 
 ## Supported providers
 
 | Provider | Auth command | Requires |
 |---|---|---|
-| **Acurast** | `phonix auth acurast` | Polkadot wallet mnemonic, IPFS endpoint |
-| **Akash Network** | `phonix auth akash` | Cosmos wallet mnemonic |
-| **Fluence** | `phonix auth fluence` | Fluence wallet |
-| **Koii** | `phonix auth koii` | Koii wallet keypair |
+| **Acurast** | `axon auth acurast` | Polkadot wallet mnemonic, IPFS endpoint |
+| **Akash Network** | `axon auth akash` | Cosmos wallet mnemonic |
+| **Fluence** | `axon auth fluence` | Fluence wallet |
+| **Koii** | `axon auth koii` | Koii wallet keypair |
 
 ## Documentation
 
-Full docs at [phonix.dev](https://phonix.dev) · [GitHub](https://github.com/deyzho/phonixsdk)
+Full docs at [axon.dev](https://axon.dev) · [GitHub](https://github.com/deyzho/axonsdk)
 
 ## License
 
-Apache-2.0 © [Phonix](https://phonix.dev)
+Apache-2.0 © [Axon](https://axon.dev)

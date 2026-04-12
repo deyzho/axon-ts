@@ -1,12 +1,12 @@
 /**
- * phonix deploy [template] — bundle, upload to IPFS, register deployment.
+ * axon deploy [template] — bundle, upload to IPFS, register deployment.
  *
- * Loads phonix.json, instantiates PhonixClient, calls client.deploy(),
+ * Loads axon.json, instantiates AxonClient, calls client.deploy(),
  * and prints a friendly success message.
  */
 
-import { loadConfig, PhonixClient } from '@phonixsdk/sdk';
-import type { DeploymentConfig } from '@phonixsdk/sdk';
+import { loadConfig, AxonClient } from '@axonsdk/sdk';
+import type { DeploymentConfig } from '@axonsdk/sdk';
 import { config as loadDotenv } from '../utils/env.js';
 
 async function getChalk() {
@@ -29,11 +29,11 @@ export async function runDeploy(
   // Load .env first
   loadDotenv(cwd);
 
-  const spinner = ora('Loading phonix.json...').start();
+  const spinner = ora('Loading axon.json...').start();
 
-  let phonixConfig;
+  let axonConfig;
   try {
-    phonixConfig = await loadConfig(cwd);
+    axonConfig = await loadConfig(cwd);
     spinner.text = 'Connecting to provider...';
   } catch (err) {
     spinner.fail((err as Error).message);
@@ -41,31 +41,31 @@ export async function runDeploy(
   }
 
   // Build client from config
-  const client = new PhonixClient({
-    provider: phonixConfig.provider,
-    secretKey: process.env['PHONIX_SECRET_KEY'],
+  const client = new AxonClient({
+    provider: axonConfig.provider,
+    secretKey: process.env['AXON_SECRET_KEY'],
   });
 
   try {
     await client.connect();
   } catch (err) {
     spinner.fail(
-      `Failed to connect to ${phonixConfig.provider}: ${(err as Error).message}`
+      `Failed to connect to ${axonConfig.provider}: ${(err as Error).message}`
     );
     process.exit(1);
   }
 
   try {
-    spinner.text = `Deploying to ${chalk.cyan(phonixConfig.provider)}...`;
+    spinner.text = `Deploying to ${chalk.cyan(axonConfig.provider)}...`;
 
     const deployConfig: DeploymentConfig = {
-      runtime: phonixConfig.runtime,
-      code: phonixConfig.entryFile,
-      schedule: phonixConfig.schedule,
-      replicas: phonixConfig.replicas,
-      maxCostPerExecution: phonixConfig.maxCostPerExecution,
-      environment: phonixConfig.environment,
-      destinations: phonixConfig.destinations,
+      runtime: axonConfig.runtime,
+      code: axonConfig.entryFile,
+      schedule: axonConfig.schedule,
+      replicas: axonConfig.replicas,
+      maxCostPerExecution: axonConfig.maxCostPerExecution,
+      environment: axonConfig.environment,
+      destinations: axonConfig.destinations,
     };
 
     const deployment = await client.deploy(deployConfig);
@@ -99,7 +99,7 @@ export async function runDeploy(
     } else {
       console.log(
         chalk.yellow(
-          '\n  No processors matched yet — check back with `phonix status` in a few minutes.'
+          '\n  No processors matched yet — check back with `axon status` in a few minutes.'
         )
       );
     }
@@ -109,7 +109,7 @@ export async function runDeploy(
     const firstProcessor =
       deployment.processorIds[0] ?? '<processorId>';
     console.log(
-      chalk.white(`  phonix send ${firstProcessor} '{"prompt":"Hello world"}'`)
+      chalk.white(`  axon send ${firstProcessor} '{"prompt":"Hello world"}'`)
     );
     console.log();
   } catch (err) {

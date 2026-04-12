@@ -35,7 +35,7 @@ export interface InferenceResponse {
   model: string;
   choices: InferenceChoice[];
   usage: InferenceUsage;
-  provider: string;  // Which Phonix provider handled this request
+  provider: string;  // Which Axon provider handled this request
 }
 
 export interface InferenceStreamChunk {
@@ -58,8 +58,8 @@ export interface ModelInfo {
   provider: string;  // 'ionet' | 'akash' | 'acurast'
 }
 
-export interface PhonixInferenceConfig {
-  /** Phonix secret key — same as PHONIX_SECRET_KEY */
+export interface AxonInferenceConfig {
+  /** Axon secret key — same as AXON_SECRET_KEY */
   apiKey: string;
   /** Preferred provider for inference. Default: auto (cost-optimised) */
   preferredProvider?: 'ionet' | 'akash' | 'acurast';

@@ -1,12 +1,12 @@
 /**
- * phonix status — list deployments and their current status.
+ * axon status — list deployments and their current status.
  *
  * Prints a table of deployments with ID, status, processor pubkeys, and URL.
  */
 
-import { loadConfig, PhonixClient } from '@phonixsdk/sdk';
+import { loadConfig, AxonClient } from '@axonsdk/sdk';
 import { config as loadDotenv } from '../utils/env.js';
-import type { Deployment } from '@phonixsdk/sdk';
+import type { Deployment } from '@axonsdk/sdk';
 
 async function getChalk() {
   const mod = await import('chalk');
@@ -39,20 +39,20 @@ export async function runStatus(cwd: string = process.cwd()): Promise<void> {
 
   loadDotenv(cwd);
 
-  let phonixConfig;
+  let axonConfig;
   try {
-    phonixConfig = await loadConfig(cwd);
+    axonConfig = await loadConfig(cwd);
   } catch (err) {
     console.error(chalk.red(`  Error: ${(err as Error).message}`));
     process.exit(1);
   }
 
-  const client = new PhonixClient({
-    provider: phonixConfig.provider,
-    secretKey: process.env['PHONIX_SECRET_KEY'],
+  const client = new AxonClient({
+    provider: axonConfig.provider,
+    secretKey: process.env['AXON_SECRET_KEY'],
   });
 
-  const spinner = ora(`Fetching deployments from ${phonixConfig.provider}...`).start();
+  const spinner = ora(`Fetching deployments from ${axonConfig.provider}...`).start();
 
   let deployments: Deployment[];
   try {
@@ -67,7 +67,7 @@ export async function runStatus(cwd: string = process.cwd()): Promise<void> {
     console.log(chalk.gray('\n  No deployments found.'));
     console.log(
       chalk.gray('  Run ') +
-        chalk.white('phonix deploy') +
+        chalk.white('axon deploy') +
         chalk.gray(' to create your first deployment.\n')
     );
     return;
@@ -76,7 +76,7 @@ export async function runStatus(cwd: string = process.cwd()): Promise<void> {
   console.log();
   console.log(
     chalk.bold(
-      `  ${deployments.length} deployment${deployments.length === 1 ? '' : 's'} on ${phonixConfig.provider}:\n`
+      `  ${deployments.length} deployment${deployments.length === 1 ? '' : 's'} on ${axonConfig.provider}:\n`
     )
   );
 

@@ -1,20 +1,20 @@
-# @phonixsdk/mobile
+# @axonsdk/mobile
 
-> React Native / Expo SDK for calling Phonix edge processors from iOS and Android apps.
+> React Native / Expo SDK for calling Axon edge processors from iOS and Android apps.
 
-[![npm](https://img.shields.io/npm/v/@phonixsdk/mobile)](https://www.npmjs.com/package/@phonixsdk/mobile)
-[![license](https://img.shields.io/npm/l/@phonixsdk/mobile)](./LICENSE)
+[![npm](https://img.shields.io/npm/v/@axonsdk/mobile)](https://www.npmjs.com/package/@axonsdk/mobile)
+[![license](https://img.shields.io/npm/l/@axonsdk/mobile)](./LICENSE)
 
 ## Overview
 
-`@phonixsdk/mobile` lets you call your deployed Phonix processors directly from iOS and Android apps. Deploy your processors with the Phonix CLI on your development machine, then call them from your mobile app using React hooks or the standalone client.
+`@axonsdk/mobile` lets you call your deployed Axon processors directly from iOS and Android apps. Deploy your processors with the Axon CLI on your development machine, then call them from your mobile app using React hooks or the standalone client.
 
 **Supports:** Akash Network (HTTP) · Acurast (WebSocket) · Generic HTTPS
 
 ## Installation
 
 ```bash
-npm install @phonixsdk/mobile @phonixsdk/sdk
+npm install @axonsdk/mobile @axonsdk/sdk
 # optional: expo-secure-store for secure key storage
 expo install expo-secure-store
 ```
@@ -24,20 +24,20 @@ expo install expo-secure-store
 ### Context + hooks (recommended)
 
 ```tsx
-import { PhonixProvider, usePhonixContext, useMessages, useSend } from '@phonixsdk/mobile';
+import { AxonProvider, useAxonContext, useMessages, useSend } from '@axonsdk/mobile';
 
 // Wrap your app
 export default function App() {
   return (
-    <PhonixProvider provider="akash" secretKey={PHONIX_SECRET_KEY} autoConnect>
+    <AxonProvider provider="akash" secretKey={AXON_SECRET_KEY} autoConnect>
       <HomeScreen />
-    </PhonixProvider>
+    </AxonProvider>
   );
 }
 
 // Use in any screen
 function HomeScreen() {
-  const { client, connected } = usePhonixContext();
+  const { client, connected } = useAxonContext();
   const messages = useMessages(client);
   const { send, sending } = useSend(client);
 
@@ -61,10 +61,10 @@ function HomeScreen() {
 Route across multiple DePIN networks with automatic failover and health scoring:
 
 ```tsx
-import { usePhonixRouter } from '@phonixsdk/mobile';
+import { useAxonRouter } from '@axonsdk/mobile';
 
 function App() {
-  const { router, connected, health } = usePhonixRouter({
+  const { router, connected, health } = useAxonRouter({
     routes: [
       { provider: 'akash',   endpoint: 'https://lease.akash.example.com', secretKey },
       { provider: 'acurast', endpoint: 'wss://proxy.acurast.com',          secretKey },
@@ -88,7 +88,7 @@ AppState listeners are attached automatically — the router pauses on backgroun
 ### Secure key storage
 
 ```tsx
-import { SecureKeyStorage } from '@phonixsdk/mobile';
+import { SecureKeyStorage } from '@axonsdk/mobile';
 
 const storage = new SecureKeyStorage();
 await storage.saveSecretKey(myKey);   // iOS Keychain / Android Keystore
@@ -99,20 +99,20 @@ const key = await storage.loadSecretKey();
 
 | Export | Description |
 |---|---|
-| `MobilePhonixClient` | Messaging-only client — connect, send, onMessage |
-| `MobilePhonixRouter` | Multi-provider router with circuit breakers and health scoring |
-| `usePhonix(options)` | Hook — manages client lifecycle |
-| `usePhonixRouter(config)` | Hook — manages router lifecycle with AppState awareness |
+| `MobileAxonClient` | Messaging-only client — connect, send, onMessage |
+| `MobileAxonRouter` | Multi-provider router with circuit breakers and health scoring |
+| `useAxon(options)` | Hook — manages client lifecycle |
+| `useAxonRouter(config)` | Hook — manages router lifecycle with AppState awareness |
 | `useMessages(client)` | Hook — reactive `Message[]` array, newest first |
 | `useSend(client)` | Hook — wraps `send()` with `sending` / `sendError` state |
-| `PhonixProvider` | React context — provides client to your component tree |
-| `usePhonixContext()` | Consumes the PhonixProvider context |
+| `AxonProvider` | React context — provides client to your component tree |
+| `useAxonContext()` | Consumes the AxonProvider context |
 | `SecureKeyStorage` | iOS Keychain / Android Keystore via `expo-secure-store` |
 
 ## Documentation
 
-Full docs at [phonix.dev](https://phonix.dev) · [GitHub](https://github.com/deyzho/phonixsdk)
+Full docs at [axon.dev](https://axon.dev) · [GitHub](https://github.com/deyzho/axonsdk)
 
 ## License
 
-Apache-2.0 © [Phonix](https://phonix.dev)
+Apache-2.0 © [Axon](https://axon.dev)

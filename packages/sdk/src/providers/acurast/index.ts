@@ -1,12 +1,12 @@
 /**
- * AcurastProvider — full v0.1 implementation of IPhonixProvider.
+ * AcurastProvider — full v0.1 implementation of IAxonProvider.
  *
  * Wires together:
  *  - AcurastMessagingClient (WebSocket auth + messaging via @acurast/dapp)
  *  - acurastDeploy / acurastEstimate / acurastListDeployments (CLI shell-outs)
  */
 
-import type { IPhonixProvider } from '../base.js';
+import type { IAxonProvider } from '../base.js';
 import type {
   DeploymentConfig,
   Deployment,
@@ -20,7 +20,7 @@ import {
   acurastListDeployments,
 } from './deploy.js';
 
-export class AcurastProvider implements IPhonixProvider {
+export class AcurastProvider implements IAxonProvider {
   readonly name = 'acurast' as const;
 
   private messagingClient: AcurastMessagingClient;

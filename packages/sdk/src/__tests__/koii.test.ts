@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { KoiiProvider } from '../providers/koii/index.js';
-import { PhonixError } from '../types.js';
+import { AxonError } from '../types.js';
 
 describe('KoiiProvider construction', () => {
   it('should have name "koii"', () => {
@@ -14,9 +14,9 @@ describe('KoiiProvider construction', () => {
 });
 
 describe('KoiiProvider.connect()', () => {
-  it('should throw PhonixError if secretKey is empty', async () => {
+  it('should throw AxonError if secretKey is empty', async () => {
     const p = new KoiiProvider();
-    await expect(p.connect('')).rejects.toBeInstanceOf(PhonixError);
+    await expect(p.connect('')).rejects.toBeInstanceOf(AxonError);
   });
 
   it('should succeed with a non-empty secret key (no network call during connect)', async () => {

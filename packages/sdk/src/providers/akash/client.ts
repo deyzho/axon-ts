@@ -18,7 +18,7 @@
  */
 
 import type { Message } from '../../types.js';
-import { PhonixError } from '../../types.js';
+import { AxonError } from '../../types.js';
 
 // Block private/loopback/link-local addresses to prevent SSRF.
 const PRIVATE_HOST_RE =
@@ -29,17 +29,17 @@ function assertSafeAkashEndpoint(endpoint: string): void {
   try {
     parsed = new URL(endpoint);
   } catch {
-    throw new PhonixError('akash', `Invalid lease endpoint URL: "${endpoint}"`);
+    throw new AxonError('akash', `Invalid lease endpoint URL: "${endpoint}"`);
   }
   if (parsed.protocol !== 'https:') {
-    throw new PhonixError(
+    throw new AxonError(
       'akash',
       `Lease endpoint must use https:// (got "${parsed.protocol}"). ` +
         'Plain HTTP would transmit payloads in cleartext.'
     );
   }
   if (PRIVATE_HOST_RE.test(parsed.hostname)) {
-    throw new PhonixError(
+    throw new AxonError(
       'akash',
       `Lease endpoint hostname "${parsed.hostname}" resolves to a private/internal address. ` +
         'Requests to internal infrastructure are blocked.'
@@ -55,7 +55,7 @@ export class AkashMessagingClient {
     // Akash messaging is stateless HTTP — no persistent connection needed.
     // The secretKey is held by the provider and used for deployment signing only.
     if (!_secretKey || _secretKey.trim() === '') {
-      throw new PhonixError('akash', 'A non-empty secret key is required.');
+      throw new AxonError('akash', 'A non-empty secret key is required.');
     }
     this.connected = true;
   }
@@ -74,7 +74,7 @@ export class AkashMessagingClient {
    */
   async send(leaseEndpoint: string, payload: unknown): Promise<void> {
     if (!this.connected) {
-      throw new PhonixError('akash', 'Not connected. Call connect() first.');
+      throw new AxonError('akash', 'Not connected. Call connect() first.');
     }
 
     assertSafeAkashEndpoint(leaseEndpoint);
@@ -94,14 +94,14 @@ export class AkashMessagingClient {
         signal: AbortSignal.timeout(30_000),
       });
     } catch (err) {
-      throw new PhonixError(
+      throw new AxonError(
         'akash',
         `Failed to reach Akash container at ${leaseEndpoint}: ${(err as Error).message}`
       );
     }
 
     if (!response.ok) {
-      throw new PhonixError(
+      throw new AxonError(
         'akash',
         `Container returned ${response.status}: ${await response.text()}`
       );
@@ -110,7 +110,7 @@ export class AkashMessagingClient {
     const MAX_RESULT_BYTES = 1 * 1024 * 1024; // 1 MiB
     const resultText = await response.text();
     if (resultText.length > MAX_RESULT_BYTES) {
-      throw new PhonixError(
+      throw new AxonError(
         'akash',
         `Container response exceeded ${MAX_RESULT_BYTES} bytes (got ${resultText.length} bytes).`
       );
@@ -168,7 +168,7 @@ function safeParseJson(str: string): unknown {
   if (parsed !== null && typeof parsed === 'object') {
     for (const key of Object.keys(parsed as object)) {
       if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
-        throw new PhonixError(
+        throw new AxonError(
           'akash',
           `Rejected remote payload: contains prototype-polluting key "${key}".`
         );

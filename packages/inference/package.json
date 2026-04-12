@@ -38,11 +38,19 @@
     "url": "https://github.com/deyzho/axonsdk.git",
     "directory": "packages/inference"
   },
-  "bugs": { "url": "https://github.com/deyzho/axonsdk/issues" },
-  "engines": { "node": ">=20.0.0" },
-  "files": ["dist", "README.md", "LICENSE"],
+  "bugs": {
+    "url": "https://github.com/deyzho/axonsdk/issues"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "devDependencies": {
-    "typescript": "^5.4.0",
-    "@types/node": "^20.0.0"
+    "@types/node": "^20.19.39",
+    "typescript": "^5.4.0"
   }
 }

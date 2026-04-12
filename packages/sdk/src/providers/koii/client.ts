@@ -34,14 +34,14 @@ function assertSafeKoiiEndpoint(endpoint: string): void {
     throw new AxonError('koii',`Invalid node endpoint URL: "${endpoint}"`);
   }
   if (parsed.protocol !== 'https:') {
-    throw new PhonixError(
+    throw new AxonError(
       'koii',
       `Node endpoint must use https:// (got "${parsed.protocol}"). ` +
         'Plain HTTP would transmit payloads in cleartext.'
     );
   }
   if (PRIVATE_HOST_RE.test(parsed.hostname)) {
-    throw new PhonixError(
+    throw new AxonError(
       'koii',
       `Node endpoint hostname "${parsed.hostname}" resolves to a private/internal address. ` +
         'Requests to internal infrastructure are blocked.'
@@ -67,6 +67,8 @@ export class KoiiMessagingClient {
 
     // Try to load @_koii/web3.js for key validation (optional)
     try {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore -- optional dependency, may not be installed
       const { Keypair } = (await import('@_koii/web3.js')) as {
         Keypair: { fromSecretKey(key: Uint8Array): { publicKey: { toBase58(): string } } };
       };
@@ -116,14 +118,14 @@ export class KoiiMessagingClient {
         signal: AbortSignal.timeout(30_000),
       });
     } catch (err) {
-      throw new PhonixError(
+      throw new AxonError(
         'koii',
         `Failed to reach Koii task node at ${nodeEndpoint}: ${(err as Error).message}`
       );
     }
 
     if (!submitResponse.ok) {
-      throw new PhonixError(
+      throw new AxonError(
         'koii',
         `Task node returned ${submitResponse.status}: ${await submitResponse.text()}`
       );
@@ -136,7 +138,7 @@ export class KoiiMessagingClient {
     if (result !== null) {
       const MAX_RESULT_BYTES = 1 * 1024 * 1024; // 1 MiB
       if (result.length > MAX_RESULT_BYTES) {
-        throw new PhonixError(
+        throw new AxonError(
           'koii',
           `Task node response exceeded ${MAX_RESULT_BYTES} bytes (got ${result.length} bytes).`
         );
@@ -214,7 +216,7 @@ function base58OrHexToUint8Array(input: string): Uint8Array {
   if (/^[0-9a-fA-F]+$/.test(hex) && hex.length % 2 === 0) {
     const byteLen = hex.length / 2;
     if (!VALID_KEY_LENGTHS.has(byteLen)) {
-      throw new PhonixError(
+      throw new AxonError(
         'koii',
         `Hex key must decode to exactly 32 or 64 bytes. Got ${byteLen} bytes.\n` +
           'Run: axon auth koii  to generate a valid key.'
@@ -236,14 +238,14 @@ function base58Decode(input: string): Uint8Array {
   let n = BigInt(0);
   for (const char of input) {
     const idx = BASE58_ALPHABET.indexOf(char);
-    if (idx < 0) throw new PhonixError('koii', `Invalid base58 character in key: '${char}'`);
+    if (idx < 0) throw new AxonError('koii', `Invalid base58 character in key: '${char}'`);
     n = n * BigInt(58) + BigInt(idx);
   }
   const hex = n.toString(16);
   // Reject if the decoded value represents fewer than 32 bytes of real entropy.
   // padStart(64) would silently produce zero-prefixed weak keys — we throw instead.
   if (hex.length < 64) {
-    throw new PhonixError(
+    throw new AxonError(
       'koii',
       `Base58 key decodes to only ${Math.ceil(hex.length / 2)} bytes — expected 32 or 64.\n` +
         'The key may be truncated or invalid. Run: phonix auth koii  to generate a new key.'
@@ -251,7 +253,7 @@ function base58Decode(input: string): Uint8Array {
   }
   const byteLen = Math.ceil(hex.length / 2);
   if (!VALID_KEY_LENGTHS.has(byteLen)) {
-    throw new PhonixError(
+    throw new AxonError(
       'koii',
       `Decoded key is ${byteLen} bytes — expected exactly 32 or 64 bytes.`
     );
@@ -274,7 +276,7 @@ function safeParseJson(str: string): unknown {
   if (parsed !== null && typeof parsed === 'object') {
     for (const key of Object.keys(parsed as object)) {
       if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
-        throw new PhonixError(
+        throw new AxonError(
           'koii',
           `Rejected remote payload: contains prototype-polluting key "${key}".`
         );

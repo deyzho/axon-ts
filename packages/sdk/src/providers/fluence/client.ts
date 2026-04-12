@@ -17,7 +17,7 @@
  */
 
 import type { Message } from '../../types.js';
-import { PhonixError } from '../../types.js';
+import { AxonError } from '../../types.js';
 
 // Default Fluence Kras relay (mainnet). Override via FLUENCE_RELAY_ADDR.
 export const DEFAULT_FLUENCE_RELAY =
@@ -44,9 +44,11 @@ export class FluenceMessagingClient {
       };
     };
     try {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore -- optional dependency, may not be installed
       fluenceModule = (await import('@fluencelabs/js-client')) as typeof fluenceModule;
     } catch {
-      throw new PhonixError(
+      throw new AxonError(
         'fluence',
         '@fluencelabs/js-client is not installed.\n' +
           'Install it with: npm install @fluencelabs/js-client'
@@ -57,7 +59,7 @@ export class FluenceMessagingClient {
     // Enforce exactly 64 hex chars (32 bytes) — no silent truncation.
     const rawHex = secretKey.replace(/^0x/, '');
     if (rawHex.length !== 64) {
-      throw new PhonixError(
+      throw new AxonError(
         'fluence',
         `FLUENCE_PRIVATE_KEY must be exactly 32 bytes (64 hex chars). Got ${rawHex.length} chars.\n` +
           'Run: phonix auth fluence  to generate a valid key.'
@@ -84,17 +86,18 @@ export class FluenceMessagingClient {
 
   async send(workerId: string, payload: unknown): Promise<void> {
     if (!this.peer || !this.connected) {
-      throw new PhonixError('fluence', 'Not connected. Call connect() first.');
+      throw new AxonError('fluence', 'Not connected. Call connect() first.');
     }
 
     let callFunction: (opts: unknown) => Promise<unknown>;
     try {
+      // @ts-ignore -- optional dependency
       const mod = (await import('@fluencelabs/js-client')) as {
         callFunction: (opts: unknown) => Promise<unknown>;
       };
       callFunction = mod.callFunction;
     } catch {
-      throw new PhonixError('fluence', '@fluencelabs/js-client is not installed.');
+      throw new AxonError('fluence', '@fluencelabs/js-client is not installed.');
     }
 
     const payloadStr =
@@ -126,7 +129,7 @@ export class FluenceMessagingClient {
         },
       });
     } catch (err) {
-      throw new PhonixError(
+      throw new AxonError(
         'fluence',
         `Failed to call Fluence worker ${workerId}: ${(err as Error).message}`
       );
@@ -137,7 +140,7 @@ export class FluenceMessagingClient {
     const MAX_RESULT_BYTES = 1 * 1024 * 1024; // 1 MiB
     if (result && typeof result === 'string' && result.trim()) {
       if (result.length > MAX_RESULT_BYTES) {
-        throw new PhonixError(
+        throw new AxonError(
           'fluence',
           `Worker response exceeded maximum size of ${MAX_RESULT_BYTES} bytes (got ${result.length} bytes).`
         );
@@ -195,7 +198,7 @@ function safeParseJson(str: string): unknown {
     const keys = Object.keys(parsed as object);
     for (const key of keys) {
       if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
-        throw new PhonixError(
+        throw new AxonError(
           'fluence',
           `Rejected remote payload: contains prototype-polluting key "${key}".`
         );

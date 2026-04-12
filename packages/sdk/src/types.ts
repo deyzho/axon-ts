@@ -5,7 +5,7 @@ export type ProviderName = 'acurast' | 'fluence' | 'koii' | 'akash' | 'ionet';
 export type RuntimeType = 'nodejs' | 'python' | 'docker' | 'wasm';
 
 // Top-level project config (stored in phonix.json)
-export interface PhonixConfig {
+export interface AxonConfig {
   projectName: string;
   provider: ProviderName;
   runtime: RuntimeType;
@@ -62,16 +62,16 @@ export interface CostEstimate {
 
 // ─── Error types ────────────────────────────────────────────────────────────
 
-export class PhonixError extends Error {
+export class AxonError extends Error {
   constructor(providerOrMessage: string, message?: string) {
     super(message ? `[${providerOrMessage}] ${message}` : providerOrMessage);
-    this.name = 'PhonixError';
+    this.name = 'AxonError';
     // Maintain proper prototype chain in ES5 transpilation targets
     Object.setPrototypeOf(this, new.target.prototype);
   }
 }
 
-export class ProviderNotImplementedError extends PhonixError {
+export class ProviderNotImplementedError extends AxonError {
   constructor(provider: ProviderName, method: string) {
     super(
       `Provider '${provider}' has not implemented '${method}' yet. Coming in v0.2.`
@@ -81,7 +81,7 @@ export class ProviderNotImplementedError extends PhonixError {
   }
 }
 
-export class ConfigValidationError extends PhonixError {
+export class ConfigValidationError extends AxonError {
   constructor(field: string, reason: string) {
     super(`Invalid phonix.json — field '${field}': ${reason}`);
     this.name = 'ConfigValidationError';

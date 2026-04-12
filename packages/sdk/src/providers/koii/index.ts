@@ -12,14 +12,14 @@
  *   KOII_TASK_ID       — Task public key, set automatically after first deploy
  */
 
-import type { IPhonixProvider } from '../base.js';
+import type { IAxonProvider } from '../base.js';
 import type { DeploymentConfig, Deployment, CostEstimate, Message } from '../../types.js';
 import { KoiiMessagingClient } from './client.js';
 import { koiiDeploy, koiiEstimate, koiiListDeployments } from './deploy.js';
 
 const DEFAULT_KOII_RPC = 'https://mainnet.koii.network';
 
-export class KoiiProvider implements IPhonixProvider {
+export class KoiiProvider implements IAxonProvider {
   readonly name = 'koii' as const;
 
   private client: KoiiMessagingClient;

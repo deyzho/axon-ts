@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { AkashProvider } from '../providers/akash/index.js';
 import { AkashMessagingClient } from '../providers/akash/client.js';
 import { generateAkashSdl } from '../providers/akash/deploy.js';
-import { PhonixError } from '../types.js';
+import { AxonError } from '../types.js';
 
 // ─── AkashProvider ────────────────────────────────────────────────────────────
 
@@ -74,12 +74,12 @@ describe('AkashMessagingClient', () => {
 
   it('connect() should reject an empty secret key', async () => {
     const client = new AkashMessagingClient();
-    await expect(client.connect('')).rejects.toBeInstanceOf(PhonixError);
+    await expect(client.connect('')).rejects.toBeInstanceOf(AxonError);
   });
 
   it('connect() should reject a whitespace-only secret key', async () => {
     const client = new AkashMessagingClient();
-    await expect(client.connect('   ')).rejects.toBeInstanceOf(PhonixError);
+    await expect(client.connect('   ')).rejects.toBeInstanceOf(AxonError);
   });
 
   it('disconnect() should set isConnected to false and clear handlers', async () => {
@@ -94,7 +94,7 @@ describe('AkashMessagingClient', () => {
     const client = new AkashMessagingClient();
     await expect(
       client.send('https://provider.example.com', { test: true })
-    ).rejects.toBeInstanceOf(PhonixError);
+    ).rejects.toBeInstanceOf(AxonError);
   });
 
   it('send() should reject non-https endpoints', async () => {
@@ -102,7 +102,7 @@ describe('AkashMessagingClient', () => {
     await client.connect('key');
     await expect(
       client.send('http://provider.example.com', {})
-    ).rejects.toBeInstanceOf(PhonixError);
+    ).rejects.toBeInstanceOf(AxonError);
   });
 
   it('send() should reject private IP endpoints (SSRF protection)', async () => {
@@ -110,7 +110,7 @@ describe('AkashMessagingClient', () => {
     await client.connect('key');
     await expect(
       client.send('https://192.168.1.1:31234', {})
-    ).rejects.toBeInstanceOf(PhonixError);
+    ).rejects.toBeInstanceOf(AxonError);
   });
 
   it('send() should reject localhost endpoints', async () => {
@@ -118,7 +118,7 @@ describe('AkashMessagingClient', () => {
     await client.connect('key');
     await expect(
       client.send('https://localhost:3000', {})
-    ).rejects.toBeInstanceOf(PhonixError);
+    ).rejects.toBeInstanceOf(AxonError);
   });
 
   it('send() should reject 127.x.x.x endpoints', async () => {
@@ -126,7 +126,7 @@ describe('AkashMessagingClient', () => {
     await client.connect('key');
     await expect(
       client.send('https://127.0.0.1:3000', {})
-    ).rejects.toBeInstanceOf(PhonixError);
+    ).rejects.toBeInstanceOf(AxonError);
   });
 
   it('onMessage() should register a handler and return an unsubscribe fn', async () => {

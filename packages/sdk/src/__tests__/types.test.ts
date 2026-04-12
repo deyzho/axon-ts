@@ -1,35 +1,35 @@
 import { describe, it, expect } from 'vitest';
 import {
-  PhonixError,
+  AxonError,
   ProviderNotImplementedError,
   ConfigValidationError,
 } from '../types.js';
 
-describe('PhonixError', () => {
+describe('AxonError', () => {
   it('should be an instance of Error', () => {
-    const err = new PhonixError('test error');
+    const err = new AxonError('test error');
     expect(err).toBeInstanceOf(Error);
-    expect(err).toBeInstanceOf(PhonixError);
+    expect(err).toBeInstanceOf(AxonError);
   });
 
   it('should have the correct name and message', () => {
-    const err = new PhonixError('something went wrong');
-    expect(err.name).toBe('PhonixError');
+    const err = new AxonError('something went wrong');
+    expect(err.name).toBe('AxonError');
     expect(err.message).toBe('something went wrong');
   });
 
   it('should be catchable as Error', () => {
     expect(() => {
-      throw new PhonixError('thrown');
+      throw new AxonError('thrown');
     }).toThrow(Error);
   });
 });
 
 describe('ProviderNotImplementedError', () => {
-  it('should be an instance of PhonixError and Error', () => {
+  it('should be an instance of AxonError and Error', () => {
     const err = new ProviderNotImplementedError('fluence', 'deploy');
     expect(err).toBeInstanceOf(Error);
-    expect(err).toBeInstanceOf(PhonixError);
+    expect(err).toBeInstanceOf(AxonError);
     expect(err).toBeInstanceOf(ProviderNotImplementedError);
   });
 
@@ -60,9 +60,9 @@ describe('ProviderNotImplementedError', () => {
 });
 
 describe('ConfigValidationError', () => {
-  it('should be an instance of PhonixError', () => {
+  it('should be an instance of AxonError', () => {
     const err = new ConfigValidationError('provider', 'must be a string');
-    expect(err).toBeInstanceOf(PhonixError);
+    expect(err).toBeInstanceOf(AxonError);
     expect(err).toBeInstanceOf(ConfigValidationError);
   });
 

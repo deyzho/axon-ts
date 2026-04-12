@@ -50,4 +50,4 @@ export function generateRuntimeBootstrap(target: RuntimeTarget): string {
   }
 }
 
-export type { IPhonixRuntime, PhonixRuntimeHttp, PhonixRuntimeWs } from './types.js';
+export type { IAxonRuntime, AxonRuntimeHttp, AxonRuntimeWs } from './types.js';

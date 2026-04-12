@@ -11,9 +11,9 @@
  * For licensing enquiries contact: legal@phonix.dev
  */
 
-import type { IPhonixProvider } from '../providers/base.js';
+import type { IAxonProvider } from '../providers/base.js';
 import type { DeploymentConfig, Message, ProviderName } from '../types.js';
-import { PhonixError } from '../types.js';
+import { AxonError } from '../types.js';
 import { AcurastProvider } from '../providers/acurast/index.js';
 import { FluenceProvider } from '../providers/fluence/index.js';
 import { KoiiProvider } from '../providers/koii/index.js';
@@ -33,25 +33,25 @@ import type {
 } from './types.js';
 
 interface ProviderEntry {
-  provider: IPhonixProvider;
+  provider: IAxonProvider;
   circuit: CircuitBreaker;
   health: ProviderHealthMonitor;
   selector: ProcessorSelector;
   processorIds: string[];
 }
 
-function createProvider(name: ProviderName, wsUrl?: string): IPhonixProvider {
+function createProvider(name: ProviderName, wsUrl?: string): IAxonProvider {
   switch (name) {
     case 'acurast': return new AcurastProvider(wsUrl);
     case 'fluence': return new FluenceProvider();
     case 'koii':    return new KoiiProvider();
     case 'akash':   return new AkashProvider();
     case 'ionet':   return new IoNetProvider();
-    default: throw new PhonixError(`Unknown provider: ${String(name)}`);
+    default: throw new AxonError(`Unknown provider: ${String(name)}`);
   }
 }
 
-export class PhonixRouter {
+export class AxonRouter {
   private entries: Map<ProviderName, ProviderEntry> = new Map();
   private rrOrder: ProviderName[] = [];
   private rrProviderIndex = 0;
@@ -97,7 +97,7 @@ export class PhonixRouter {
     for (const r of results) {
       if (r.status === 'fulfilled') anyOk = true;
     }
-    if (!anyOk) throw new PhonixError('All providers failed to connect');
+    if (!anyOk) throw new AxonError('All providers failed to connect');
   }
 
   disconnect(): void {
@@ -129,7 +129,7 @@ export class PhonixRouter {
       }
     }
 
-    if (providers.length === 0) throw new PhonixError('All providers failed to deploy');
+    if (providers.length === 0) throw new AxonError('All providers failed to deploy');
 
     return { providers, processorCount, failedProviders };
   }
@@ -138,7 +138,7 @@ export class PhonixRouter {
 
   async send(payload: unknown, options: RouterSendOptions = {}): Promise<void> {
     const ordered = this._rankProviders(options.preferProvider);
-    if (ordered.length === 0) throw new PhonixError('No callable providers available');
+    if (ordered.length === 0) throw new AxonError('No callable providers available');
 
     let lastErr: unknown;
     for (let attempt = 0; attempt <= this.cfg.maxRetries; attempt++) {
@@ -187,7 +187,7 @@ export class PhonixRouter {
       }
     }
 
-    throw lastErr ?? new PhonixError('send failed after retries');
+    throw lastErr ?? new AxonError('send failed after retries');
   }
 
   // ─── Message subscription ───────────────────────────────────────────────────

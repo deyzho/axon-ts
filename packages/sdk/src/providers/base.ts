@@ -16,7 +16,7 @@ import type {
  *   Message → send() / onMessage()
  *   Pay    → estimate()
  */
-export interface IPhonixProvider {
+export interface IAxonProvider {
   readonly name: ProviderName;
 
   /**

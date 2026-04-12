@@ -10,12 +10,12 @@
  *   FLUENCE_NETWORK      — 'testnet' | 'mainnet' (optional, default: 'testnet')
  */
 
-import type { IPhonixProvider } from '../base.js';
+import type { IAxonProvider } from '../base.js';
 import type { DeploymentConfig, Deployment, CostEstimate, Message } from '../../types.js';
 import { FluenceMessagingClient, DEFAULT_FLUENCE_RELAY } from './client.js';
 import { fluenceDeploy, fluenceEstimate, fluenceListDeployments } from './deploy.js';
 
-export class FluenceProvider implements IPhonixProvider {
+export class FluenceProvider implements IAxonProvider {
   readonly name = 'fluence' as const;
 
   private client: FluenceMessagingClient;

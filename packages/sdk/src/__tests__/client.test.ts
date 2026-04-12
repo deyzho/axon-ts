@@ -1,29 +1,29 @@
 import { describe, it, expect } from 'vitest';
-import { PhonixClient } from '../client.js';
-import { PhonixError } from '../types.js';
+import { AxonClient } from '../client.js';
+import { AxonError } from '../types.js';
 import { AcurastProvider } from '../providers/acurast/index.js';
 import { FluenceProvider } from '../providers/fluence/index.js';
 import { KoiiProvider } from '../providers/koii/index.js';
 import { AkashProvider } from '../providers/akash/index.js';
 
-describe('PhonixClient constructor', () => {
+describe('AxonClient constructor', () => {
   it('should default to the acurast provider', () => {
-    const client = new PhonixClient({ secretKey: 'dummy' });
+    const client = new AxonClient({ secretKey: 'dummy' });
     expect(client.providerName).toBe('acurast');
   });
 
   it('should select fluence provider when specified', () => {
-    const client = new PhonixClient({ provider: 'fluence', secretKey: 'dummy' });
+    const client = new AxonClient({ provider: 'fluence', secretKey: 'dummy' });
     expect(client.providerName).toBe('fluence');
   });
 
   it('should select koii provider when specified', () => {
-    const client = new PhonixClient({ provider: 'koii', secretKey: 'dummy' });
+    const client = new AxonClient({ provider: 'koii', secretKey: 'dummy' });
     expect(client.providerName).toBe('koii');
   });
 
   it('should select akash provider when specified', () => {
-    const client = new PhonixClient({ provider: 'akash', secretKey: 'dummy' });
+    const client = new AxonClient({ provider: 'akash', secretKey: 'dummy' });
     expect(client.providerName).toBe('akash');
   });
 
@@ -31,7 +31,7 @@ describe('PhonixClient constructor', () => {
     const original = process.env['PHONIX_SECRET_KEY'];
     process.env['PHONIX_SECRET_KEY'] = 'env-secret-key';
     try {
-      const client = new PhonixClient();
+      const client = new AxonClient();
       expect(client.providerName).toBe('acurast'); // just checking it constructs
     } finally {
       if (original === undefined) {
@@ -43,13 +43,13 @@ describe('PhonixClient constructor', () => {
   });
 });
 
-describe('PhonixClient.connect()', () => {
-  it('should throw PhonixError if no secret key is available', async () => {
+describe('AxonClient.connect()', () => {
+  it('should throw AxonError if no secret key is available', async () => {
     const original = process.env['PHONIX_SECRET_KEY'];
     delete process.env['PHONIX_SECRET_KEY'];
     try {
-      const client = new PhonixClient({ secretKey: '' });
-      await expect(client.connect()).rejects.toBeInstanceOf(PhonixError);
+      const client = new AxonClient({ secretKey: '' });
+      await expect(client.connect()).rejects.toBeInstanceOf(AxonError);
     } finally {
       if (original !== undefined) {
         process.env['PHONIX_SECRET_KEY'] = original;
@@ -136,24 +136,24 @@ describe('Provider implementations are real (not stubs)', () => {
   });
 });
 
-describe('PhonixClient.disconnect()', () => {
+describe('AxonClient.disconnect()', () => {
   it('should not throw if not connected', () => {
-    const client = new PhonixClient({ secretKey: 'dummy' });
+    const client = new AxonClient({ secretKey: 'dummy' });
     expect(() => client.disconnect()).not.toThrow();
   });
 
   it('should not throw for fluence client if not connected', () => {
-    const client = new PhonixClient({ provider: 'fluence', secretKey: 'dummy' });
+    const client = new AxonClient({ provider: 'fluence', secretKey: 'dummy' });
     expect(() => client.disconnect()).not.toThrow();
   });
 
   it('should not throw for koii client if not connected', () => {
-    const client = new PhonixClient({ provider: 'koii', secretKey: 'dummy' });
+    const client = new AxonClient({ provider: 'koii', secretKey: 'dummy' });
     expect(() => client.disconnect()).not.toThrow();
   });
 
   it('should not throw for akash client if not connected', () => {
-    const client = new PhonixClient({ provider: 'akash', secretKey: 'dummy' });
+    const client = new AxonClient({ provider: 'akash', secretKey: 'dummy' });
     expect(() => client.disconnect()).not.toThrow();
   });
 });

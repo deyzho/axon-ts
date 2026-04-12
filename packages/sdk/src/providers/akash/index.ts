@@ -1,5 +1,5 @@
 /**
- * AkashProvider — full implementation of IPhonixProvider for the Akash Network.
+ * AkashProvider — full implementation of IAxonProvider for the Akash Network.
  *
  * Akash is a decentralised cloud computing marketplace where providers bid to
  * run containerised workloads. Phonix wraps the full deployment lifecycle:
@@ -18,12 +18,12 @@
  *   AKASH_NET            — mainnet | testnet (default: mainnet)
  */
 
-import type { IPhonixProvider } from '../base.js';
+import type { IAxonProvider } from '../base.js';
 import type { DeploymentConfig, Deployment, CostEstimate, Message } from '../../types.js';
 import { AkashMessagingClient } from './client.js';
 import { akashDeploy, akashEstimate, akashListDeployments } from './deploy.js';
 
-export class AkashProvider implements IPhonixProvider {
+export class AkashProvider implements IAxonProvider {
   readonly name = 'akash' as const;
 
   private client: AkashMessagingClient;

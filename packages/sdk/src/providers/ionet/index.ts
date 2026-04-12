@@ -8,7 +8,7 @@
  *  - TEE smartphone compute (Acurast) — private, low-cost, always-on
  *  - GPU cloud compute (io.net, Akash) — fast, scalable, inference-optimised
  *
- * The PhonixRouter can automatically select between TEE and GPU compute
+ * The AxonRouter can automatically select between TEE and GPU compute
  * depending on workload requirements using the 'latency' or 'cost' strategy.
  *
  * Required credentials (run `phonix auth ionet`):
@@ -16,12 +16,12 @@
  *   IONET_CLUSTER_ID — target cluster ID (optional — auto-selected if omitted)
  */
 
-import type { IPhonixProvider } from '../base.js';
+import type { IAxonProvider } from '../base.js';
 import type { DeploymentConfig, Deployment, CostEstimate, Message } from '../../types.js';
 import { IoNetMessagingClient } from './client.js';
 import { ionetDeploy, ionetEstimate, ionetListDeployments } from './deploy.js';
 
-export class IoNetProvider implements IPhonixProvider {
+export class IoNetProvider implements IAxonProvider {
   readonly name = 'ionet' as const;
 
   private client: IoNetMessagingClient;

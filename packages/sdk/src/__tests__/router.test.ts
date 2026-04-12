@@ -3,7 +3,7 @@ import { CircuitBreaker } from '../router/circuit-breaker.js';
 import { ProviderHealthMonitor } from '../router/health-monitor.js';
 import { ProcessorSelector } from '../router/processor-selector.js';
 import { score } from '../router/strategy.js';
-import { PhonixRouter } from '../router/index.js';
+import { AxonRouter } from '../router/index.js';
 import type { RouterConfig } from '../router/types.js';
 
 // ─── CircuitBreaker ───────────────────────────────────────────────────────────
@@ -203,7 +203,7 @@ describe('score()', () => {
   });
 });
 
-// ─── PhonixRouter ─────────────────────────────────────────────────────────────
+// ─── AxonRouter ─────────────────────────────────────────────────────────────
 
 function makeConfig(overrides: Partial<RouterConfig> = {}): RouterConfig {
   return {
@@ -215,9 +215,9 @@ function makeConfig(overrides: Partial<RouterConfig> = {}): RouterConfig {
   };
 }
 
-describe('PhonixRouter', () => {
+describe('AxonRouter', () => {
   it('constructs with multiple providers', () => {
-    const router = new PhonixRouter(makeConfig());
+    const router = new AxonRouter(makeConfig());
     const h = router.health();
     expect(h).toHaveLength(2);
     expect(h.map(x => x.provider)).toContain('acurast');
@@ -225,7 +225,7 @@ describe('PhonixRouter', () => {
   });
 
   it('health() returns valid snapshots', () => {
-    const router = new PhonixRouter(makeConfig());
+    const router = new AxonRouter(makeConfig());
     for (const snap of router.health()) {
       expect(snap.circuitState).toBe('closed');
       expect(snap.successRate).toBe(1);
@@ -234,7 +234,7 @@ describe('PhonixRouter', () => {
   });
 
   it('emits provider:selected event on successful send', async () => {
-    const router = new PhonixRouter(makeConfig({ providers: ['acurast'] }));
+    const router = new AxonRouter(makeConfig({ providers: ['acurast'] }));
     // Mock provider send
     const entry = (router as unknown as { entries: Map<string, { provider: { connect: () => Promise<void>; send: () => Promise<void> } }> }).entries.get('acurast')!;
     entry.provider.connect = vi.fn().mockResolvedValue(undefined);
@@ -250,7 +250,7 @@ describe('PhonixRouter', () => {
   });
 
   it('failover to next provider when first fails', async () => {
-    const router = new PhonixRouter(makeConfig({ providers: ['acurast', 'akash'], maxRetries: 2 }));
+    const router = new AxonRouter(makeConfig({ providers: ['acurast', 'akash'], maxRetries: 2 }));
 
     const entryA = (router as unknown as { entries: Map<string, { provider: { connect: () => Promise<void>; send: () => Promise<void> }; processorIds: string[] }> }).entries.get('acurast')!;
     const entryB = (router as unknown as { entries: Map<string, { provider: { connect: () => Promise<void>; send: () => Promise<void> }; processorIds: string[] }> }).entries.get('akash')!;
@@ -271,7 +271,7 @@ describe('PhonixRouter', () => {
   });
 
   it('reset() clears circuit and health state', () => {
-    const router = new PhonixRouter(makeConfig());
+    const router = new AxonRouter(makeConfig());
     const entry = (router as unknown as { entries: Map<string, { circuit: CircuitBreaker }> }).entries.get('acurast')!;
     entry.circuit.forceState('open');
     router.reset();
@@ -279,7 +279,7 @@ describe('PhonixRouter', () => {
   });
 
   it('onEvent returns an unsubscribe function', () => {
-    const router = new PhonixRouter(makeConfig());
+    const router = new AxonRouter(makeConfig());
     const events: string[] = [];
     const unsub = router.onEvent(e => events.push(e.type));
     unsub();

@@ -49,8 +49,8 @@
     "update-notifier": "^7.0.0"
   },
   "devDependencies": {
-    "@types/inquirer": "^8.2.10",
-    "@types/node": "^20.0.0",
+    "@types/inquirer": "^8.2.12",
+    "@types/node": "^20.19.39",
     "@types/update-notifier": "^6.0.0",
     "typescript": "^5.4.0"
   },

@@ -53,15 +53,15 @@
     "esbuild": "^0.20.0"
   },
   "optionalDependencies": {
-    "@fluencelabs/js-client": "^0.15.0",
+    "@_koii/web3.js": "npm:null@^1.0.0",
     "@fluencelabs/cli": "^0.15.0",
-    "@_koii/web3.js": "^1.0.0",
+    "@fluencelabs/js-client": "npm:null@^0.15.0",
     "ethers": "^6.0.0"
   },
   "devDependencies": {
-    "typescript": "^5.4.0",
-    "vitest": "^1.4.0",
-    "@types/node": "^20.0.0"
+    "@types/node": "^20.19.39",
+    "typescript": "^5.9.3",
+    "vitest": "^1.4.0"
   },
   "files": [
     "dist",

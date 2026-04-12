@@ -17,7 +17,7 @@
  */
 
 import type { Message } from '../../types.js';
-import { PhonixError } from '../../types.js';
+import { AxonError } from '../../types.js';
 
 const PRIVATE_HOST_RE =
   /^(localhost|127\.\d+\.\d+\.\d+|10\.\d+\.\d+\.\d+|172\.(1[6-9]|2\d|3[01])\.\d+\.\d+|192\.168\.\d+\.\d+|169\.254\.\d+\.\d+|\[?::1\]?|0\.0\.0\.0)$/i;
@@ -30,13 +30,13 @@ function assertSafeEndpoint(endpoint: string): void {
   try {
     parsed = new URL(endpoint);
   } catch {
-    throw new PhonixError('ionet', `Invalid endpoint URL: "${endpoint}"`);
+    throw new AxonError('ionet', `Invalid endpoint URL: "${endpoint}"`);
   }
   if (parsed.protocol !== 'https:') {
-    throw new PhonixError('ionet', `Endpoint must use https:// (got "${parsed.protocol}").`);
+    throw new AxonError('ionet', `Endpoint must use https:// (got "${parsed.protocol}").`);
   }
   if (PRIVATE_HOST_RE.test(parsed.hostname)) {
-    throw new PhonixError('ionet', `Endpoint hostname "${parsed.hostname}" is a private/internal address.`);
+    throw new AxonError('ionet', `Endpoint hostname "${parsed.hostname}" is a private/internal address.`);
   }
 }
 
@@ -50,7 +50,7 @@ function safeParseJson(str: string): unknown {
   if (parsed !== null && typeof parsed === 'object') {
     for (const key of Object.keys(parsed as object)) {
       if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
-        throw new PhonixError('ionet', `Rejected payload: prototype-polluting key "${key}".`);
+        throw new AxonError('ionet', `Rejected payload: prototype-polluting key "${key}".`);
       }
     }
   }
@@ -64,7 +64,7 @@ export class IoNetMessagingClient {
 
   async connect(secretKey: string): Promise<void> {
     if (!secretKey || secretKey.trim() === '') {
-      throw new PhonixError('ionet', 'A non-empty API key is required.');
+      throw new AxonError('ionet', 'A non-empty API key is required.');
     }
     this.apiKey = secretKey;
     this.connected = true;
@@ -78,7 +78,7 @@ export class IoNetMessagingClient {
 
   async send(workerEndpoint: string, payload: unknown): Promise<void> {
     if (!this.connected) {
-      throw new PhonixError('ionet', 'Not connected. Call connect() first.');
+      throw new AxonError('ionet', 'Not connected. Call connect() first.');
     }
 
     assertSafeEndpoint(workerEndpoint);
@@ -99,16 +99,16 @@ export class IoNetMessagingClient {
         signal: AbortSignal.timeout(60_000), // longer timeout for GPU inference
       });
     } catch (err) {
-      throw new PhonixError('ionet', `Failed to reach io.net worker at ${workerEndpoint}: ${(err as Error).message}`);
+      throw new AxonError('ionet', `Failed to reach io.net worker at ${workerEndpoint}: ${(err as Error).message}`);
     }
 
     if (!response.ok) {
-      throw new PhonixError('ionet', `Worker returned ${response.status}: ${await response.text()}`);
+      throw new AxonError('ionet', `Worker returned ${response.status}: ${await response.text()}`);
     }
 
     const resultText = await response.text();
     if (resultText.length > MAX_RESULT_BYTES) {
-      throw new PhonixError('ionet', `Worker response exceeded ${MAX_RESULT_BYTES} bytes.`);
+      throw new AxonError('ionet', `Worker response exceeded ${MAX_RESULT_BYTES} bytes.`);
     }
 
     if (resultText?.trim()) {
@@ -143,7 +143,7 @@ export class IoNetMessagingClient {
 
   /** List available GPU clusters from the io.net API. */
   async listClusters(): Promise<Array<{ id: string; gpuType: string; available: boolean }>> {
-    if (!this.connected) throw new PhonixError('ionet', 'Not connected.');
+    if (!this.connected) throw new AxonError('ionet', 'Not connected.');
     try {
       const res = await fetch(`${IONET_API_BASE}/clusters`, {
         headers: { 'Authorization': `Bearer ${this.apiKey}` },

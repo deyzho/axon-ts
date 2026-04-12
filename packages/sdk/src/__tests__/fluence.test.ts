@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { FluenceProvider } from '../providers/fluence/index.js';
-import { PhonixError } from '../types.js';
+import { AxonError } from '../types.js';
 
 describe('FluenceProvider construction', () => {
   it('should have name "fluence"', () => {
@@ -15,7 +15,7 @@ describe('FluenceProvider construction', () => {
 });
 
 describe('FluenceProvider.connect()', () => {
-  it('should throw PhonixError if @fluencelabs/js-client is not installed', async () => {
+  it('should throw AxonError if @fluencelabs/js-client is not installed', async () => {
     // Mock the dynamic import to simulate the package not being installed
     const p = new FluenceProvider();
 
@@ -24,7 +24,7 @@ describe('FluenceProvider.connect()', () => {
     // fail at the import stage in real environments
     await expect(p.connect('deadbeef'.repeat(4))).rejects.toSatisfy(
       (err: unknown) =>
-        err instanceof PhonixError ||
+        err instanceof AxonError ||
         err instanceof Error
     );
   });

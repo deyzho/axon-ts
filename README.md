@@ -26,11 +26,11 @@ Drop in the OpenAI-compatible `@axonsdk/inference` package and your existing cod
 
 | Provider | Status | Services | Runtime |
 |---|---|---|---|
-| [AWS](https://aws.amazon.com) | 🔜 Coming soon | Lambda, ECS / Fargate, EC2 | python, nodejs, docker |
-| [Google Cloud](https://cloud.google.com) | 🔜 Coming soon | Cloud Run, Cloud Functions | python, nodejs, docker |
-| [Azure](https://azure.microsoft.com) | 🔜 Coming soon | Container Instances, Functions | python, nodejs, docker |
-| [Cloudflare Workers](https://workers.cloudflare.com) | 🔜 Coming soon | Workers, R2, AI Gateway | nodejs, wasm |
-| [Fly.io](https://fly.io) | 🔜 Coming soon | Fly Machines | python, nodejs, docker |
+| [AWS](https://aws.amazon.com) | ✅ Live | Lambda, ECS / Fargate, EC2 | python, nodejs, docker |
+| [Google Cloud](https://cloud.google.com) | ✅ Live | Cloud Run, Cloud Functions | python, nodejs, docker |
+| [Azure](https://azure.microsoft.com) | ✅ Live | Container Instances, Functions | python, nodejs, docker |
+| [Cloudflare Workers](https://workers.cloudflare.com) | ✅ Live | Workers, R2, AI Gateway | nodejs, wasm |
+| [Fly.io](https://fly.io) | ✅ Live | Fly Machines | python, nodejs, docker |
 
 > **Provider health dashboard:** Real-time status and latency for all networks → [status.axonsdk.dev](https://status.axonsdk.dev)
 
@@ -129,7 +129,7 @@ Bundles your script, uploads it, and registers the deployment.
 import { AxonClient } from '@axonsdk/sdk';
 
 const client = new AxonClient({
-  provider: 'ionet', // 'ionet' | 'akash' | 'acurast' | 'fluence' | 'koii'
+  provider: 'ionet', // 'ionet' | 'akash' | 'acurast' | 'fluence' | 'koii' | 'aws' | 'gcp' | 'azure' | 'cloudflare' | 'flyio'
   secretKey: process.env.AXON_SECRET_KEY,
 });
 
@@ -157,9 +157,10 @@ client.disconnect();
 | `axon run-local` | Run locally with a mock provider runtime |
 | `axon status` | List deployments, processor IDs, and live status |
 | `axon send <id> <msg>` | Send a test message to a processor node |
+| `axon teardown <id>` | Delete a deployment and free provider resources |
 | `axon template list` | Show available built-in templates |
 
-Supported providers: `ionet`, `akash`, `acurast`, `fluence`, `koii`
+Supported providers: `ionet`, `akash`, `acurast`, `fluence`, `koii`, `aws`, `gcp`, `azure`, `cloudflare`, `flyio`
 
 ---
 
@@ -386,11 +387,16 @@ axon/
 │   └── sdk/          # @axonsdk/sdk — core library
 │       └── src/
 │           ├── providers/
-│           │   ├── ionet/    # io.net GPU provider
-│           │   ├── akash/    # Akash Network provider
-│           │   ├── acurast/  # Acurast TEE provider
-│           │   ├── fluence/  # Fluence serverless provider
-│           │   └── koii/     # Koii task node provider
+│           │   ├── ionet/      # io.net GPU provider
+│           │   ├── akash/      # Akash Network provider
+│           │   ├── acurast/    # Acurast TEE provider
+│           │   ├── fluence/    # Fluence serverless provider
+│           │   ├── koii/       # Koii task node provider
+│           │   ├── aws/        # AWS Lambda provider
+│           │   ├── gcp/        # Google Cloud Run provider
+│           │   ├── azure/      # Azure Container Instances provider
+│           │   ├── cloudflare/ # Cloudflare Workers provider
+│           │   └── flyio/      # Fly.io Machines provider
 │           └── runtime/
 │               └── adapters/ # Per-provider runtime bootstraps
 ├── status/           # Provider health dashboard

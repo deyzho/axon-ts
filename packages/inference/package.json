@@ -35,11 +35,11 @@
   "homepage": "https://axonsdk.dev",
   "repository": {
     "type": "git",
-    "url": "https://github.com/deyzho/axonsdk.git",
+    "url": "https://github.com/deyzho/phonixsdk.git",
     "directory": "packages/inference"
   },
   "bugs": {
-    "url": "https://github.com/deyzho/axonsdk/issues"
+    "url": "https://github.com/deyzho/phonixsdk/issues"
   },
   "engines": {
     "node": ">=20.0.0"

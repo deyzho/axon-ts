@@ -1,17 +1,45 @@
-name: Publish to npm
+name: Test & Publish to npm
 
-# Triggers on version tags: v0.2.1, v1.0.0, etc.
-# To release:
-#   1. Bump versions in package.json files
-#   2. git tag v0.2.1 && git push origin v0.2.1
 on:
   push:
-    tags:
-      - 'v*'
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+    branches: [main]
 
 jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps
+
+      - name: Build SDK
+        working-directory: packages/sdk
+        run: npm run build
+
+      - name: Run SDK tests
+        working-directory: packages/sdk
+        run: npm test
+
+      - name: Run mobile tests
+        working-directory: packages/mobile
+        run: npm test
+
   publish:
     name: Build & Publish
+    needs: test
+    if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -30,7 +58,6 @@ jobs:
       - name: Install root dependencies
         run: npm install --legacy-peer-deps
 
-      # ── @axonsdk/sdk ────────────────────────────────────────────────────
       - name: Build SDK
         working-directory: packages/sdk
         run: npm run build
@@ -41,14 +68,22 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      # ── @axonsdk/mobile ─────────────────────────────────────────────────
+      - name: Build Inference
+        working-directory: packages/inference
+        run: npm run build
+
+      - name: Publish @axonsdk/inference
+        working-directory: packages/inference
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
       - name: Publish @axonsdk/mobile
         working-directory: packages/mobile
         run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      # ── @axonsdk/cli ────────────────────────────────────────────────────
       - name: Install CLI dependencies
         working-directory: packages/cli
         run: npm install --legacy-peer-deps
@@ -63,9 +98,8 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-  # ── Post-publish notification ─────────────────────────────────────────────
-  notify:
-    name: Tag release
+  release:
+    name: Create GitHub Release
     needs: publish
     runs-on: ubuntu-latest
     permissions:

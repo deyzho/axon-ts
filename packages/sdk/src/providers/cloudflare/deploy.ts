@@ -141,6 +141,25 @@ export async function cloudflareEstimate(config: DeploymentConfig): Promise<Cost
   };
 }
 
+export async function cloudflareTeardown(scriptName: string): Promise<void> {
+  const apiToken = process.env['CF_API_TOKEN'];
+  const accountId = process.env['CF_ACCOUNT_ID'];
+  if (!apiToken || !accountId) return;
+
+  try {
+    const res = await fetch(`${CF_API}/accounts/${accountId}/workers/scripts/${scriptName}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${apiToken}` },
+      signal: AbortSignal.timeout(15_000),
+    });
+    if (!res.ok && res.status !== 404) {
+      throw new Error(`Cloudflare delete failed: ${res.status}`);
+    }
+  } catch {
+    // Best effort
+  }
+}
+
 export async function cloudflareListDeployments(): Promise<Array<{
   id: string; status: string; processorIds: string[];
 }>> {

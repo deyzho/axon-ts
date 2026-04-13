@@ -45,6 +45,12 @@ export interface IAxonProvider {
   listDeployments(): Promise<Deployment[]>;
 
   /**
+   * Delete/stop a deployment by its ID.
+   * Should be a no-op (not throw) if the deployment no longer exists.
+   */
+  teardown(deploymentId: string): Promise<void>;
+
+  /**
    * Send a message payload to a specific processor node.
    * @param processorId — processor public key (hex string)
    * @param payload     — arbitrary JSON-serialisable data

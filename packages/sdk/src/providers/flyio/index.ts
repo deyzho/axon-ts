@@ -14,7 +14,7 @@
 import type { IAxonProvider } from '../base.js';
 import type { DeploymentConfig, Deployment, CostEstimate, Message } from '../../types.js';
 import { FlyioMessagingClient } from './client.js';
-import { flyioDeploy, flyioEstimate, flyioListDeployments } from './deploy.js';
+import { flyioDeploy, flyioEstimate, flyioListDeployments, flyioTeardown } from './deploy.js';
 
 export class FlyioProvider implements IAxonProvider {
   readonly name = 'flyio' as const;
@@ -59,5 +59,9 @@ export class FlyioProvider implements IAxonProvider {
 
   onMessage(handler: (msg: Message) => void): () => void {
     return this.client.onMessage(handler);
+  }
+
+  async teardown(machineId: string): Promise<void> {
+    return flyioTeardown(machineId);
   }
 }

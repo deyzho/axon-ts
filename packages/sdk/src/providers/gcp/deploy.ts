@@ -2,30 +2,31 @@
  * GCP Cloud Run deployment logic.
  *
  * Deploys a container image to Google Cloud Run via the Cloud Run v2 REST API.
- * Authentication uses an OAuth2 access token obtained via `gcloud auth print-access-token`.
+ * Authentication uses Application Default Credentials (service account JSON key).
  *
  * Required env vars:
- *   GCP_PROJECT_ID      — GCP project ID
- *   GCP_ACCESS_TOKEN    — OAuth2 access token (gcloud auth print-access-token)
- *   GCP_CONTAINER_IMAGE — Docker image URI (e.g. gcr.io/my-project/my-image:latest)
- *   GCP_REGION          — GCP region (default: us-central1)
+ *   GCP_PROJECT_ID                 — GCP project ID
+ *   GOOGLE_APPLICATION_CREDENTIALS — Path to service account JSON key file
+ *   GCP_CONTAINER_IMAGE            — Docker image URI (e.g. gcr.io/my-project/my-image:latest)
+ *   GCP_REGION                     — GCP region (default: us-central1)
  */
 
 import { ProviderNotImplementedError } from '../../types.js';
 import type { DeploymentConfig, Deployment, CostEstimate } from '../../types.js';
 import { getPricing } from '../../pricing/index.js';
+import { getGcpAccessToken } from './auth.js';
 
 const CLOUD_RUN_API = 'https://run.googleapis.com/v2';
 
 export async function gcpDeploy(options: { config: DeploymentConfig }): Promise<Deployment> {
   const projectId = process.env['GCP_PROJECT_ID'];
-  const accessToken = process.env['GCP_ACCESS_TOKEN'];
   const containerImage = process.env['GCP_CONTAINER_IMAGE'];
   const region = process.env['GCP_REGION'] ?? 'us-central1';
 
   if (!projectId) throw new ProviderNotImplementedError('gcp', 'GCP_PROJECT_ID env var is required.');
-  if (!accessToken) throw new ProviderNotImplementedError('gcp', 'GCP_ACCESS_TOKEN env var is required. Run: gcloud auth print-access-token');
   if (!containerImage) throw new ProviderNotImplementedError('gcp', 'GCP_CONTAINER_IMAGE env var is required.');
+
+  const accessToken = await getGcpAccessToken();
 
   const config = options.config;
   const serviceName = `axon-${Date.now()}`;
@@ -75,7 +76,7 @@ export async function gcpDeploy(options: { config: DeploymentConfig }): Promise<
   for (let i = 0; i < 24; i++) {
     await new Promise(r => setTimeout(r, 5_000));
     const opRes = await fetch(`https://run.googleapis.com/v2/${operationName}`, {
-      headers: { 'Authorization': `Bearer ${accessToken}` },
+      headers: { 'Authorization': `Bearer ${await getGcpAccessToken()}` },
       signal: AbortSignal.timeout(10_000),
     });
     if (opRes.ok) {
@@ -118,12 +119,12 @@ export async function gcpListDeployments(): Promise<Array<{
   id: string; status: string; processorIds: string[];
 }>> {
   const projectId = process.env['GCP_PROJECT_ID'];
-  const accessToken = process.env['GCP_ACCESS_TOKEN'];
   const region = process.env['GCP_REGION'] ?? 'us-central1';
 
-  if (!projectId || !accessToken) return [];
+  if (!projectId) return [];
 
   try {
+    const accessToken = await getGcpAccessToken();
     const res = await fetch(
       `${CLOUD_RUN_API}/projects/${projectId}/locations/${region}/services`,
       {
@@ -144,5 +145,27 @@ export async function gcpListDeployments(): Promise<Array<{
       }));
   } catch {
     return [];
+  }
+}
+
+export async function gcpTeardown(deploymentId: string): Promise<void> {
+  const projectId = process.env['GCP_PROJECT_ID'];
+  const region = process.env['GCP_REGION'] ?? 'us-central1';
+  if (!projectId) return;
+
+  try {
+    const accessToken = await getGcpAccessToken();
+    // deploymentId may be full resource name like "projects/.../services/name" or just service name
+    const serviceName = deploymentId.startsWith('projects/') ? deploymentId : `projects/${projectId}/locations/${region}/services/${deploymentId}`;
+    const res = await fetch(`${CLOUD_RUN_API}/${serviceName}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${accessToken}` },
+      signal: AbortSignal.timeout(30_000),
+    });
+    if (!res.ok && res.status !== 404) {
+      throw new Error(`Cloud Run delete failed: ${res.status}`);
+    }
+  } catch {
+    // Best effort
   }
 }

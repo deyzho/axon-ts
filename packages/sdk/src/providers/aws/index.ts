@@ -14,7 +14,7 @@
 import type { IAxonProvider } from '../base.js';
 import type { DeploymentConfig, Deployment, CostEstimate, Message } from '../../types.js';
 import { AwsMessagingClient } from './client.js';
-import { awsDeploy, awsEstimate, awsListDeployments } from './deploy.js';
+import { awsDeploy, awsEstimate, awsListDeployments, awsTeardown } from './deploy.js';
 
 export class AwsProvider implements IAxonProvider {
   readonly name = 'aws' as const;
@@ -59,5 +59,9 @@ export class AwsProvider implements IAxonProvider {
 
   onMessage(handler: (msg: Message) => void): () => void {
     return this.client.onMessage(handler);
+  }
+
+  async teardown(deploymentId: string): Promise<void> {
+    return awsTeardown(deploymentId);
   }
 }

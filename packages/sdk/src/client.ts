@@ -162,6 +162,14 @@ export class AxonClient {
   }
 
   /**
+   * Delete/stop a deployment by its ID.
+   * @param deploymentId — The deployment ID returned by deploy()
+   */
+  async teardown(deploymentId: string): Promise<void> {
+    return this.provider.teardown(deploymentId);
+  }
+
+  /**
    * Send a message payload to a specific processor node.
    * @param processorId — processor public key (hex string)
    * @param payload     — any JSON-serialisable data

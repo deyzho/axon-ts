@@ -53,6 +53,14 @@ export type { IAxonRuntime, AxonRuntimeHttp, AxonRuntimeWs, RuntimeTarget } from
 export { getPricing, STATIC_PRICING, clearPricingCache } from './pricing/index.js';
 export type { ProviderPricing } from './pricing/index.js';
 
+// Retry utility — exponential backoff with jitter
+export { withRetry } from './utils/retry.js';
+export type { RetryOptions } from './utils/retry.js';
+
+// Auth cache utilities — useful for testing
+export { clearGcpTokenCache } from './providers/gcp/auth.js';
+export { clearAzureTokenCache } from './providers/azure/auth.js';
+
 // Router — multi-provider routing with circuit breaking and health monitoring
 export { AxonRouter } from './router/index.js';
 export type {

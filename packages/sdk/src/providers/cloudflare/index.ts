@@ -12,7 +12,7 @@
 import type { IAxonProvider } from '../base.js';
 import type { DeploymentConfig, Deployment, CostEstimate, Message } from '../../types.js';
 import { CloudflareMessagingClient } from './client.js';
-import { cloudflareDeploy, cloudflareEstimate, cloudflareListDeployments } from './deploy.js';
+import { cloudflareDeploy, cloudflareEstimate, cloudflareListDeployments, cloudflareTeardown } from './deploy.js';
 
 export class CloudflareProvider implements IAxonProvider {
   readonly name = 'cloudflare' as const;
@@ -57,5 +57,9 @@ export class CloudflareProvider implements IAxonProvider {
 
   onMessage(handler: (msg: Message) => void): () => void {
     return this.client.onMessage(handler);
+  }
+
+  async teardown(deploymentId: string): Promise<void> {
+    return cloudflareTeardown(deploymentId);
   }
 }

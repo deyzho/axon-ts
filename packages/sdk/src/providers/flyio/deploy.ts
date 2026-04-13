@@ -123,6 +123,33 @@ export async function flyioEstimate(config: DeploymentConfig): Promise<CostEstim
   };
 }
 
+export async function flyioTeardown(machineId: string): Promise<void> {
+  const apiToken = process.env['FLY_API_TOKEN'];
+  const appName = process.env['FLY_APP_NAME'];
+  if (!apiToken || !appName) return;
+
+  const authHeaders = { 'Authorization': `Bearer ${apiToken}`, 'Content-Type': 'application/json' };
+  try {
+    // Stop the machine first
+    await fetch(`${MACHINES_API}/apps/${appName}/machines/${machineId}/stop`, {
+      method: 'POST',
+      headers: authHeaders,
+      signal: AbortSignal.timeout(30_000),
+    });
+    // Then delete it
+    const res = await fetch(`${MACHINES_API}/apps/${appName}/machines/${machineId}?force=true`, {
+      method: 'DELETE',
+      headers: authHeaders,
+      signal: AbortSignal.timeout(30_000),
+    });
+    if (!res.ok && res.status !== 404) {
+      throw new Error(`Fly.io delete failed: ${res.status}`);
+    }
+  } catch {
+    // Best effort
+  }
+}
+
 export async function flyioListDeployments(): Promise<Array<{
   id: string; status: string; processorIds: string[];
 }>> {

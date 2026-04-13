@@ -349,6 +349,30 @@ export async function awsEstimate(config: DeploymentConfig): Promise<CostEstimat
   };
 }
 
+export async function awsTeardown(deploymentId: string): Promise<void> {
+  const accessKeyId = process.env['AWS_ACCESS_KEY_ID'];
+  const secretAccessKey = process.env['AWS_SECRET_ACCESS_KEY'];
+  const region = process.env['AWS_REGION'] ?? 'us-east-1';
+  if (!accessKeyId || !secretAccessKey) return;
+
+  // deploymentId may be the full FunctionArn or just the function name
+  const fnName = deploymentId.includes(':') ? deploymentId.split(':').pop()! : deploymentId;
+
+  try {
+    const res = await lambdaRequest({
+      method: 'DELETE',
+      path: `/2015-03-31/functions/${encodeURIComponent(fnName)}`,
+      region, accessKeyId, secretAccessKey,
+    });
+    // 204 = deleted, 404 = already gone — both are acceptable
+    if (res.status !== 204 && res.status !== 404) {
+      throw new Error(`Lambda DeleteFunction failed: ${res.status} ${res.body}`);
+    }
+  } catch {
+    // Best effort
+  }
+}
+
 export async function awsListDeployments(): Promise<Array<{
   id: string; status: string; processorIds: string[];
 }>> {

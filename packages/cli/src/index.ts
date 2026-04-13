@@ -85,6 +85,15 @@ program
     await runStatus(process.cwd());
   });
 
+// axon teardown <deploymentId>
+program
+  .command('teardown <deploymentId>')
+  .description('Delete a deployment from the provider')
+  .action(async (deploymentId: string) => {
+    const { runTeardown } = await import('./commands/teardown.js');
+    await runTeardown(deploymentId, process.cwd());
+  });
+
 // axon send <pubkey> <message>
 program
   .command('send <pubkey> <message>')

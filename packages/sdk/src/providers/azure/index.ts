@@ -15,7 +15,7 @@
 import type { IAxonProvider } from '../base.js';
 import type { DeploymentConfig, Deployment, CostEstimate, Message } from '../../types.js';
 import { AzureMessagingClient } from './client.js';
-import { azureDeploy, azureEstimate, azureListDeployments } from './deploy.js';
+import { azureDeploy, azureEstimate, azureListDeployments, azureTeardown } from './deploy.js';
 
 export class AzureProvider implements IAxonProvider {
   readonly name = 'azure' as const;
@@ -60,5 +60,9 @@ export class AzureProvider implements IAxonProvider {
 
   onMessage(handler: (msg: Message) => void): () => void {
     return this.client.onMessage(handler);
+  }
+
+  async teardown(deploymentId: string): Promise<void> {
+    return azureTeardown(deploymentId);
   }
 }

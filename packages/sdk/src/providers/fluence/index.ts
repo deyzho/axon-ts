@@ -75,4 +75,8 @@ export class FluenceProvider implements IAxonProvider {
   onMessage(handler: (msg: Message) => void): () => void {
     return this.client.onMessage(handler);
   }
+
+  async teardown(_deploymentId: string): Promise<void> {
+    // No centralized registry to teardown from — deployment expires naturally
+  }
 }

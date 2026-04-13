@@ -14,7 +14,7 @@
 import type { IAxonProvider } from '../base.js';
 import type { DeploymentConfig, Deployment, CostEstimate, Message } from '../../types.js';
 import { GcpMessagingClient } from './client.js';
-import { gcpDeploy, gcpEstimate, gcpListDeployments } from './deploy.js';
+import { gcpDeploy, gcpEstimate, gcpListDeployments, gcpTeardown } from './deploy.js';
 
 export class GcpProvider implements IAxonProvider {
   readonly name = 'gcp' as const;
@@ -59,5 +59,9 @@ export class GcpProvider implements IAxonProvider {
 
   onMessage(handler: (msg: Message) => void): () => void {
     return this.client.onMessage(handler);
+  }
+
+  async teardown(deploymentId: string): Promise<void> {
+    return gcpTeardown(deploymentId);
   }
 }

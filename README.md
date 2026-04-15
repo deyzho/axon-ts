@@ -1,5 +1,10 @@
 # Axon SDK
 
+[![CI](https://github.com/deyzho/phonixsdk/actions/workflows/publish.yml/badge.svg)](https://github.com/deyzho/phonixsdk/actions/workflows/publish.yml)
+[![npm](https://img.shields.io/npm/v/@axonsdk/sdk)](https://www.npmjs.com/package/@axonsdk/sdk)
+[![Node](https://img.shields.io/node/v/@axonsdk/sdk)](https://nodejs.org)
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue)](./LICENSE)
+
 **[phonixsdk.dev](https://phonixsdk.dev) · [npm](https://www.npmjs.com/org/axonsdk) · [GitHub](https://github.com/deyzho/phonixsdk)**
 
 **One SDK. Any compute. Route AI inference to the fastest, cheapest backend — cloud, edge, or your own infrastructure.**
@@ -176,7 +181,7 @@ client.disconnect();
 import OpenAI from 'openai';
 
 const client = new OpenAI({
-  baseURL: 'https://your-api.example.com/v1', // your Axon inference handler URL
+  baseURL: 'http://localhost:8000/v1', // your Axon inference handler URL
   apiKey:  process.env.AXON_SECRET_KEY,
 });
 
@@ -397,6 +402,22 @@ High-impact areas:
 - Integration tests against live provider sandboxes
 - Additional cloud provider support
 - Template library
+
+---
+
+## Ecosystem
+
+This repository contains the **TypeScript / Node.js** packages. If you're building with **Python**, see the companion repository:
+
+| Package | Description |
+|---|---|
+| [`axonsdk`](https://github.com/deyzho/axon) | Python SDK — same providers, FastAPI inference server, cloud provider support |
+
+```bash
+pip install axonsdk
+```
+
+**[axonsdk.dev](https://axonsdk.dev)** — full documentation for the Python SDK.
 
 ---
 

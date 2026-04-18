@@ -59,9 +59,7 @@
     "esbuild": "^0.20.0"
   },
   "optionalDependencies": {
-    "@_koii/web3.js": "npm:null@^1.0.0",
     "@fluencelabs/cli": "^0.15.0",
-    "@fluencelabs/js-client": "npm:null@^0.15.0",
     "ethers": "^6.0.0"
   },
   "devDependencies": {

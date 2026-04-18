@@ -78,7 +78,11 @@ export class AxonInferenceHandler {
    * Dispatch a parsed request body to the best available provider,
    * with automatic failover on errors or non-2xx responses.
    */
-  private async dispatchToProvider(body: InferenceRequest): Promise<Response> {
+  private async dispatchToProvider(body: InferenceRequest, attempt = 0): Promise<Response> {
+    if (attempt >= 5) {
+      return this.jsonError(503, 'provider_unavailable', 'All providers are currently unavailable.');
+    }
+
     // pickEndpoint() throws when no providers remain — convert to 503
     let route: ReturnType<AxonInferenceRouter['pickEndpoint']>;
     try {
@@ -106,7 +110,7 @@ export class AxonInferenceHandler {
       if (!providerRes.ok) {
         this.router.markUnavailable(route.provider);
         // Retry on next available provider
-        return this.dispatchToProvider(body);
+        return this.dispatchToProvider(body, attempt + 1);
       }
 
       if (body.stream) {
@@ -133,7 +137,7 @@ export class AxonInferenceHandler {
     } catch (err) {
       // Network-level error (fetch threw) — mark unavailable and try next
       this.router.markUnavailable(route.provider);
-      return this.dispatchToProvider(body);
+      return this.dispatchToProvider(body, attempt + 1);
     }
   }
 

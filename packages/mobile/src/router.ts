@@ -1,14 +1,11 @@
 /**
- * Copyright (c) 2024–present Axon. All rights reserved.
+ * Copyright (c) 2024–present Phonix. All rights reserved.
  *
- * PROPRIETARY AND CONFIDENTIAL
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * This file contains trade secret algorithms that form the core of the Axon
- * routing engine. Unauthorized copying, distribution, modification, reverse
- * engineering, or disclosure — in whole or in part — is strictly prohibited
- * without prior written consent from Axon.
- *
- * For licensing enquiries contact: legal@phonixsdk.dev
+ *     http://www.apache.org/licenses/LICENSE-2.0
  */
 
 /**

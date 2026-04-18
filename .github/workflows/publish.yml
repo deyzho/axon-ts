@@ -108,6 +108,10 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
+      - name: Build Mobile
+        working-directory: packages/mobile
+        run: npm run build
+
       - name: Publish @phonixsdk/mobile
         working-directory: packages/mobile
         run: npm publish --access public

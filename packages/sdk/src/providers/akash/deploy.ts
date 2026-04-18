@@ -165,7 +165,7 @@ services:
       - >-
         apk add --no-cache wget &&
         mkdir -p /app &&
-        wget -qO /app/bundle.js https://cloudflare-ipfs.com/ipfs/$BUNDLE_CID &&
+        wget -qO /app/bundle.js https://dweb.link/ipfs/$BUNDLE_CID &&
         node /app/bundle.js
     expose:
       - port: 3000

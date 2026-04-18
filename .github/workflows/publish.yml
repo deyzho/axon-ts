@@ -39,6 +39,10 @@ jobs:
         working-directory: packages/sdk
         run: npm test
 
+      - name: Run inference tests
+        working-directory: packages/inference
+        run: npm test
+
       - name: Run mobile tests
         working-directory: packages/mobile
         run: npm test

@@ -18,7 +18,6 @@
 import { AxonInferenceRouter } from './router.js';
 import type { AxonInferenceConfig, InferenceRequest, InferenceResponse, ModelInfo } from './types.js';
 
-const _rateLimitStore = new Map<string, number[]>();
 const RATE_LIMIT_RPM = 60;
 
 const SUPPORTED_MODELS: ModelInfo[] = [
@@ -31,6 +30,7 @@ const SUPPORTED_MODELS: ModelInfo[] = [
 export class AxonInferenceHandler {
   private router: AxonInferenceRouter;
   private apiKey: string;
+  private readonly rateLimitStore = new Map<string, number[]>();
 
   constructor(config: AxonInferenceConfig) {
     this.apiKey = config.apiKey;
@@ -159,10 +159,10 @@ export class AxonInferenceHandler {
   private checkRateLimit(key: string): boolean {
     const now = Date.now();
     const windowStart = now - 60_000;
-    const timestamps = (_rateLimitStore.get(key) ?? []).filter(t => t > windowStart);
+    const timestamps = (this.rateLimitStore.get(key) ?? []).filter(t => t > windowStart);
     if (timestamps.length >= RATE_LIMIT_RPM) return false;
     timestamps.push(now);
-    _rateLimitStore.set(key, timestamps);
+    this.rateLimitStore.set(key, timestamps);
     return true;
   }
 

@@ -23,7 +23,7 @@
  * with ngrok/cloudflared for tunnelling.
  */
 
-// `phonix` is the provider-agnostic runtime global injected at bundle time.
+// `axon` is the provider-agnostic runtime global injected at bundle time.
 // In local mode (_STD_ backward compat is also available via the mock shim).
 declare const axon: {
   ws: {

@@ -25,8 +25,8 @@ const execFileAsync = promisify(execFile);
 /**
  * Bundle an entry file to a single self-contained JS string using esbuild.
  *
- * The Acurast runtime bootstrap (`phonix` global mapping to `_STD_`) is
- * prepended to the output so deployment scripts can use either `phonix.*`
+ * The Acurast runtime bootstrap (`axon` global mapping to `_STD_`) is
+ * prepended to the output so deployment scripts can use either `axon.*`
  * or `_STD_.*` at runtime.
  *
  * Environment variables from `axon.json > environment` are injected via
@@ -103,7 +103,7 @@ export async function bundleEntryFile(
     throw new Error('esbuild produced no output');
   }
 
-  // Prepend the Acurast runtime bootstrap so `phonix` global is available
+  // Prepend the Acurast runtime bootstrap so `axon` global is available
   return generateRuntimeBootstrap('acurast') + outputFile.text;
 }
 

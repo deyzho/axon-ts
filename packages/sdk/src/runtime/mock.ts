@@ -2,7 +2,7 @@
  * Mock runtime bootstrap for `axon run-local`.
  *
  * Returns a JavaScript string that, when injected via `node --import`,
- * sets up both `globalThis.phonix` and `globalThis._STD_` (for backward
+ * sets up both `globalThis.axon` and `globalThis._STD_` (for backward
  * compatibility with templates that still reference _STD_ directly).
  *
  * The mock:

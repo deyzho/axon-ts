@@ -3,7 +3,7 @@
  *
  * Returns a JavaScript string prepended to bundles deployed to Fluence.
  * Fluence spells run in a JS environment with access to `fetch` and a
- * particle-based messaging context. This adapter maps `phonix` to that
+ * particle-based messaging context. This adapter maps `axon` to that
  * environment.
  *
  * Messaging model:

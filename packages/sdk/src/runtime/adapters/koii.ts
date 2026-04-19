@@ -3,7 +3,7 @@
  *
  * Returns a JavaScript string prepended to bundles deployed to Koii.
  * Koii tasks run in a Node.js environment with `namespaceWrapper` available
- * globally. This adapter maps `phonix` to that environment.
+ * globally. This adapter maps `axon` to that environment.
  *
  * Messaging model:
  *   - ws.open() registers a message handler; messages arrive via the

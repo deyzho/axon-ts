@@ -322,7 +322,7 @@ export async function akashDeploy(options: AkashDeployOptions): Promise<Deployme
   }
 
   const rawBundle = await bundleEntryFile(entryPath, config.environment ?? {});
-  // Prepend Akash runtime bootstrap so phonix.* global is available
+  // Prepend Akash runtime bootstrap so axon.* global is available
   const bootstrapCode = generateRuntimeBootstrap('akash');
   const bundleWithRuntime = bootstrapCode + rawBundle;
 

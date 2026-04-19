@@ -2,7 +2,7 @@
  * Fluence deployment helpers.
  *
  * Flow:
- *  1. Bundle the entry file with esbuild (IIFE, phonix runtime prepended)
+ *  1. Bundle the entry file with esbuild (IIFE, axon runtime prepended)
  *  2. Write to a temp directory as a Fluence spell JS file
  *  3. Shell out to the `fluence` CLI to deploy the spell
  *  4. Parse output for deal ID and worker peer IDs

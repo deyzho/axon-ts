@@ -148,7 +148,7 @@ export function mockRuntimeBootstrap(): string {
   };
 
   if (typeof globalThis !== 'undefined') {
-    globalThis.phonix = _ph;
+    globalThis.axon = _ph;
     // Backward compatibility: expose as _STD_ for templates that still use it
     globalThis._STD_ = {
       ws: _ph.ws,

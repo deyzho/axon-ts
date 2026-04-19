@@ -25,7 +25,7 @@
 
 // `phonix` is the provider-agnostic runtime global injected at bundle time.
 // In local mode (_STD_ backward compat is also available via the mock shim).
-declare const phonix: {
+declare const axon: {
   ws: {
     open(
       url: string,
@@ -123,7 +123,7 @@ function runInference(
 
   print('[phonix:inference] Calling ' + apiUrl + ' model=' + (model || INFERENCE_MODEL));
 
-  phonix.http.POST(apiUrl, headers, requestBody, (response: string) => {
+  axon.http.POST(apiUrl, headers, requestBody, (response: string) => {
     let parsed: {
       choices?: Array<{ message?: { content?: string }; text?: string }>;
       error?: { message?: string };
@@ -154,7 +154,7 @@ function runInference(
 
 // ─── WebSocket handler ────────────────────────────────────────────────────────
 
-phonix.ws.open(
+axon.ws.open(
   WS_URL,
 
   // WebSocket options
@@ -174,14 +174,14 @@ phonix.ws.open(
       parsed = JSON.parse(payload) as typeof parsed;
     } catch {
       print('[phonix:inference] Error: payload is not valid JSON');
-      phonix.ws.send(JSON.stringify({ error: 'Invalid JSON payload', requestId: null }));
+      axon.ws.send(JSON.stringify({ error: 'Invalid JSON payload', requestId: null }));
       return;
     }
 
     const { prompt, requestId, model } = parsed;
 
     if (!prompt) {
-      phonix.ws.send(
+      axon.ws.send(
         JSON.stringify({
           error: 'Missing required field: prompt',
           requestId: requestId ?? null,
@@ -197,7 +197,7 @@ phonix.ws.open(
 
       // onResult
       (result: string) => {
-        phonix.ws.send(
+        axon.ws.send(
           JSON.stringify({
             requestId: requestId ?? null,
             result,
@@ -211,7 +211,7 @@ phonix.ws.open(
       // onError
       (err: string) => {
         print('[phonix:inference] Inference error: ' + err);
-        phonix.ws.send(
+        axon.ws.send(
           JSON.stringify({
             error: err,
             requestId: requestId ?? null,

@@ -37,7 +37,7 @@ export function acurastRuntimeBootstrap(): string {
       _STD_.fulfill(result, contentType, destinations, onSuccess, onError);
     },
   };
-  if (typeof globalThis !== 'undefined') globalThis.phonix = _ph;
+  if (typeof globalThis !== 'undefined') globalThis.axon = _ph;
 })();
 // ─────────────────────────────────────────────────────────────────────────────
 `;

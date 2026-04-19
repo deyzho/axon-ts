@@ -60,7 +60,7 @@ async function bundleForFluence(
     format: 'iife',
     write: false,
     minify: false,
-    globalName: '__phonix_bundle',
+    globalName: '__axon_bundle',
     define: defines,
   });
 

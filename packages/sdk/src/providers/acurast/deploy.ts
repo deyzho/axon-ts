@@ -89,7 +89,7 @@ export async function bundleEntryFile(
     write: false,
     minify: false,
     // Acurast TEE runtime provides _STD_ globally — do not tree-shake it
-    globalName: '__phonix_bundle',
+    globalName: '__axon_bundle',
     define: defines,
   });
 

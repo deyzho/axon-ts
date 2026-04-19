@@ -144,7 +144,7 @@ export function akashRuntimeBootstrap(): string {
   };
 
   if (typeof globalThis !== 'undefined') {
-    globalThis.phonix = _ph;
+    globalThis.axon = _ph;
   }
 })();
 // ─────────────────────────────────────────────────────────────────────────────

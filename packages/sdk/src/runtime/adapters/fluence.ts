@@ -10,9 +10,9 @@
  *   - ws.open() registers an incoming message handler; in Fluence, messages
  *     arrive via particle calls routed by the Aqua scheduler.
  *   - ws.send() stores the outgoing payload so the Aqua caller can read it
- *     as the function's return value via `globalThis.__phonixResult`.
+ *     as the function's return value via `globalThis.__axonResult`.
  *   - The FluenceProvider's send() method calls the deployed spell function
- *     and reads `__phonixResult` from the return context.
+ *     and reads `__axonResult` from the return context.
  */
 export function fluenceRuntimeBootstrap(): string {
   return `
@@ -49,7 +49,7 @@ export function fluenceRuntimeBootstrap(): string {
       open: function (url, opts, onOpen, onMessage, onError) {
         _messageHandler = onMessage;
         if (typeof globalThis !== 'undefined') {
-          globalThis.__phonixMessageHandler = onMessage;
+          globalThis.__axonMessageHandler = onMessage;
         }
         if (typeof onOpen === 'function') {
           setTimeout(onOpen, 0);
@@ -58,7 +58,7 @@ export function fluenceRuntimeBootstrap(): string {
       send: function (payload) {
         // Store result for the Fluence caller to retrieve
         if (typeof globalThis !== 'undefined') {
-          globalThis.__phonixResult = payload;
+          globalThis.__axonResult = payload;
         }
       },
       close: function () {
@@ -67,16 +67,16 @@ export function fluenceRuntimeBootstrap(): string {
     },
     fulfill: function (result, contentType, destinations, onSuccess, onError) {
       if (typeof globalThis !== 'undefined') {
-        globalThis.__phonixResult = result;
+        globalThis.__axonResult = result;
       }
       if (typeof onSuccess === 'function') onSuccess();
     },
   };
 
   if (typeof globalThis !== 'undefined') {
-    globalThis.phonix = _ph;
-    // Provide __phonixDispatch so the Fluence caller can deliver a message
-    globalThis.__phonixDispatch = function (payload) {
+    globalThis.axon = _ph;
+    // Provide __axonDispatch so the Fluence caller can deliver a message
+    globalThis.__axonDispatch = function (payload) {
       if (_messageHandler) _messageHandler(payload);
     };
   }
